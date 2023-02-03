@@ -1347,6 +1347,7 @@ public class Db {
                 UtilsArmG.checkSizeFile(fileName);
             } catch (IOException e) {
                 UtilsArmG.outWriteAndExit(300, e.getMessage(), fileName, isExit);
+                return;
             }
             int codeRoad = Integer.parseInt(args[2]);
             int codeDepo = Integer.parseInt(args[3]);
@@ -1360,6 +1361,7 @@ public class Db {
                 arrBlock32 = new ArrBlock32(fileName, true);
             } catch (IOException e) {
                 UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, isExit);
+                return;
             }
             ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
             ArrTrains trains = chartDataset.getArrTrains();
@@ -1381,7 +1383,7 @@ public class Db {
                 UtilsArmG.outWriteAndExit(errCode, e.getMessage(), fileName, isExit);
             } catch (ClassNotFoundException e) {
                 UtilsArmG.outWriteAndExit(302, e.getMessage(), fileName, isExit);
-//            }
+                //            }
 //            long msToBase = System.currentTimeMillis() - msToBaseStart;
 //            UtilsArmG.outWriteAndExit(0, "успешно\n\n" + messMilliseconds + "Insert to base:    " + msToBase + " ms\n", fileName, false);
 //            System.out.println(fileName);
