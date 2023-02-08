@@ -81,7 +81,8 @@ public class Db {
             conn = DriverManager.getConnection(url, user, pass);
         }
         catch (SQLException e) {
-            throw new SQLException("Нет соедининия с сервером", "302");
+       //     throw new SQLException("Нет соединения с сервером", "302");
+            throw new SQLException(e.getMessage(), "302");
         }
         if (conn != null)
             statement = conn.createStatement();

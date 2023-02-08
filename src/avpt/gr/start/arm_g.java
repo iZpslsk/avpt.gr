@@ -24,9 +24,9 @@ import static avpt.gr.common.UtilsArmG.SQULite_BASE_NAME;
 
 public class arm_g {
 
-    private static void makeServerToPgSQL() throws RemoteException, AlreadyBoundException {
+    private static void makeServerToPgSQL(int port) throws RemoteException, AlreadyBoundException {
         ServerToPgSql serverToPgSql = new ServerToPgSql();
-        Registry registry = LocateRegistry.createRegistry(2999);
+        Registry registry = LocateRegistry.createRegistry(port);
         Remote stub = UnicastRemoteObject.exportObject(serverToPgSql, 0);
         registry.bind("server.toPgSQL", stub);
         System.out.println("server is created");
@@ -135,7 +135,7 @@ public class arm_g {
         }
         else if (args.length > 0 && args[0].equalsIgnoreCase("-server")) {
             try {
-                makeServerToPgSQL();
+                makeServerToPgSQL(Integer.parseInt(args[1]));
             } catch (RemoteException e) {
                 e.printStackTrace();
             } catch (AlreadyBoundException e) {
