@@ -242,29 +242,44 @@ public class InfoTrainPan extends JEditorPane {
 
     private void showSchedule() {
         def_kind_rep = info_schedule;
-        Stations stations = chartPanelArm.getChartArm().getStations();
+     //   Stations stations = chartPanelArm.getChartArm().getStations();
         String title = String.format(TITLE, "Информация о расписании поезда №" + train.getNumTrain() + " от " +
                 train.getDateTimeStart().format(formatDateTime));
-        int start = train.getSecondStart();
-        int end = train.getSecondsEnd();
+//        int start = train.getSecondStart();
+//        int end = train.getSecondsEnd();
         StringBuilder stations_content = new StringBuilder();
-        for (int i = 0; i < stations.size(); i++) {
-            Stations.Station station = stations.getStation(i);
+
+        List<Stations.Station> stations = train.getStations();
+        for (Stations.Station station : stations) {
             int val_arrival = (int)(station.getTimeArrivalFact() - station.getTimeArrivalSchedule());
             int val_departure = (int)(station.getTimeDepartureFact() - station.getTimeDepartureSchedule());
-            if (station.getSecond() >= start && station.getSecond() <= end) {
-                stations_content.append(String.format(STATIONS,
-                        String.format(HREF, i, station.getNameStation()),
-                        UtilsArmG.getTime((int)station.getTimeArrivalSchedule()),
-                        UtilsArmG.getTime((int)station.getTimeArrivalFact()),
-                        String.format("%4.1f", val_arrival / 60.0),
-                        UtilsArmG.getTime((int)station.getTimeDepartureSchedule()),
-                        UtilsArmG.getTime((int)station.getTimeDepartureFact()),
-                        String.format("%4.1f", val_departure / 60.0),
-                        station.getPercentAuto()));
-            }
+            stations_content.append(String.format(STATIONS,
+                    String.format(HREF, station.getIndex(), station.getNameStation()),
+                    UtilsArmG.getTime((int)station.getTimeArrivalSchedule()),
+                    UtilsArmG.getTime((int)station.getTimeArrivalFact()),
+                    String.format("%4.1f", val_arrival / 60.0),
+                    UtilsArmG.getTime((int)station.getTimeDepartureSchedule()),
+                    UtilsArmG.getTime((int)station.getTimeDepartureFact()),
+                    String.format("%4.1f", val_departure / 60.0),
+                    station.getPercentAuto()));
         }
 
+//        for (int i = 0; i < stations.size(); i++) {
+//            Stations.Station station = stations.getStation(i);
+//            int val_arrival = (int)(station.getTimeArrivalFact() - station.getTimeArrivalSchedule());
+//            int val_departure = (int)(station.getTimeDepartureFact() - station.getTimeDepartureSchedule());
+//            if (station.getSecond() >= start && station.getSecond() <= end) {
+//                stations_content.append(String.format(STATIONS,
+//                        String.format(HREF, i, station.getNameStation()),
+//                        UtilsArmG.getTime((int)station.getTimeArrivalSchedule()),
+//                        UtilsArmG.getTime((int)station.getTimeArrivalFact()),
+//                        String.format("%4.1f", val_arrival / 60.0),
+//                        UtilsArmG.getTime((int)station.getTimeDepartureSchedule()),
+//                        UtilsArmG.getTime((int)station.getTimeDepartureFact()),
+//                        String.format("%4.1f", val_departure / 60.0),
+//                        station.getPercentAuto()));
+//            }
+//        }
         String head = String.format(HEAD_STATIONS, "Станция", "Прибытие", "Отправление", "% в<br>авто-<br>ведении");
         String html = String.format(HTML, title + String.format(TABLE_STATIONS, head + stations_content));
         setText(html);

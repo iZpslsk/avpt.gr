@@ -182,31 +182,38 @@ public class ArrTrains {
         this.curTimeBr = curTimeBr;
         boolean result = false;
 
-//        LocalDateTime dateTime1 = getCurDateTime();
-//        LocalDateTime dateTime2 = getCurDateTime(curTimeBr);
-//
-//        long minutes = 0;
-//        if (dateTime1 != null && dateTime2 != null)
-//            minutes = Duration.between(dateTime1, dateTime2).toMinutes();
         if (isNewTrain /*&& (curSpeed > 0 || isManeuver)*/ /*|| curSpeedClub > 1)*/ /*&& !isManeuver*/) {
+
+            long second_prev = 0; // секунда начала предыдущего поезда (последнего на данный момент в listTrains)
+            if (!listTrains.isEmpty()) {
+                second_prev = listTrains.get(listTrains.size() - 1).getSecondStart();
+            }
+            long seconds = curSecond - second_prev;
+            // если последняя поездка меньше 120 секунд, удаляем
+            if (!listTrains.isEmpty() && seconds < 120 ) {
+                listTrains.remove(listTrains.size() - 1);
+            }
+
             Train train = new Train(curBlock);
             train.setSecondStart(curSecond);
             train.setDateTimeStart(getCurDateTime());
             setInitBr(train);
             setInitUsavp(train);
             setRoute(train);
-            result = listTrains.add(train);
+
+            long num_prev = -1;
+            long num_route = -1;
+            if (!listTrains.isEmpty()) {
+                num_prev = listTrains.get(listTrains.size() - 1).getNumTrain();
+                num_route  = listTrains.get(listTrains.size() - 1).getRouteId();
+            }
+            // не добавляем поезд если предыдущий и текущий одинаковые по номеру поезда
+            if (num_prev != train.getNumTrain() || num_route != train.getRouteId()) {
+                result = listTrains.add(train);
+            }
             isManeuver = false;
             isNewTrain = false;
         }
-//        if ((isManeuver || minutes > 30) && listTrains.size() > 0) {
-//            Train avpt.gr.train = listTrains.get(listTrains.size() - 1);
-//            if (avpt.gr.train.getBlEnd() == -1) {
-//                avpt.gr.train.setBlEnd(curBlock);
-//                avpt.gr.train.setSecondEnd(curSecond);
-//                avpt.gr.train.setDateTimeEnd(getCurDateTime());
-//            }
-//        }
         return result;
     }
 

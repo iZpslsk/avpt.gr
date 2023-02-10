@@ -645,7 +645,7 @@ public class SeriesLines {
         setRenderer(key, LineKeys.PRESS_TM_TAIL, index, renderer, new Color(0xFF2FD60D, true),false);
         setRenderer(key, LineKeys.PRESS_CAMERA_BHV, index, renderer, new Color(0xFFD6CC0D, true),false);
         // скорость
-        setRenderer(key, LineKeys.SPEED_MAX, index, renderer, COLOR_LIM_MAP,false); // максимальная скорость (невидимая линия над временными ограничениями)
+        setRenderer(key, LineKeys.SPEED_MAX, index, renderer, COLOR_LIM_MAP,true); // максимальная скорость (невидимая линия над временными ограничениями)
         if (key == LineKeys.SPEED_LIM_TMP) { // ограничения скорости временные
             BasicStroke basicStroke = new BasicStroke(5.0f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER);
             renderer.setSeriesStroke(index, basicStroke);

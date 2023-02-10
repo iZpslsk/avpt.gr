@@ -28,6 +28,7 @@ public class Stations {
     private final ArrayList<Station> stations = new ArrayList<Station>();
 
     public static class Station {
+        int index;
         int second;
         int id;
         long ecp;
@@ -54,10 +55,11 @@ public class Stations {
          * @param timeShiftSchedule - время сдвига расписания (секунд)
          * @param coordinate - линейная координата (пробег сначала маршрута м.)
          */
-        public Station(int second, int id, long ecp, int type,
+        public Station(int index, int second, int id, long ecp, int type,
                        long timeArrivalSchedule, long timeArrivalFact,
                        long timeDepartureSchedule, long timeDepartureFact,
                        long timeShiftSchedule, long coordinate) {
+            this.index = index;
             this.second = second;
             this.id = id;
             this.ecp = ecp;
@@ -76,6 +78,10 @@ public class Stations {
 
         public int getId() {
             return id;
+        }
+
+        public int getIndex() {
+            return index;
         }
 
         public long getEcp() {
@@ -131,6 +137,7 @@ public class Stations {
 
         int cnt_auto = 0;
         int cnt_usavp = 0;
+        int index_station = 0; // индекс станции в списке (для формирования списка станций одного поезда)
 
         for (int i = 0; i < arrBlock32.size(); i++) {
 
@@ -153,7 +160,8 @@ public class Stations {
                 if (subId == 0) {
                     Block32_C5_0 block32_c5_0 = new Block32_C5_0(block32.getValues());
                     Station station =
-                            new Station(block32.getSecond(),
+                            new Station(index_station,
+                                    block32.getSecond(),
                                     block32_c5_0.getStationId(),
                                     block32_c5_0.getECP(),
                                     block32_c5_0.getTypeStation(),
@@ -167,6 +175,7 @@ public class Stations {
                     cnt_auto = 0;
                     cnt_usavp = 0;
                     stations.add(station);
+                    index_station++;
 
                 }
                 if (subId == 1) {
@@ -184,7 +193,8 @@ public class Stations {
                     Block32 block32 = arrBlock32.get(i);
                     Block32_1D_9 block32_1D_9 = new Block32_1D_9(block32.getValues());
                     Station station =
-                            new Station(block32.getSecond(),
+                            new Station(index_station,
+                                    block32.getSecond(),
                                     block32_1D_9.getStationId(),
                                     block32_1D_9.getECP(),
                                     block32_1D_9.getTypeStation(),
@@ -198,6 +208,7 @@ public class Stations {
                     cnt_auto = 0;
                     cnt_usavp = 0;
                     stations.add(station);
+                    index_station++;
                 }
                 if (subId == 0x0A) {
                     Block32 block32 = arrBlock32.get(i);
@@ -218,7 +229,7 @@ public class Stations {
             for (int j = 0; j < arrTrains.size(); j++) {
                 Train train = arrTrains.get(j);
                 java.util.List<Station> stations = train.getStations();
-                if (station.getSecond() >= train.getSecondStart() && station.getSecond() <= train.getSecondsEnd()) {
+                if (station.getSecond() >= train.getSecondStart() - 20 && station.getSecond() <= train.getSecondsEnd() + 20) {
                     stations.add(station);
                 }
             }

@@ -11,6 +11,7 @@ import avpt.gr.train.Train;
 
 import java.io.IOException;
 import java.sql.*;
+import java.util.List;
 
 import static avpt.gr.common.UtilsArmG.parseToInt;
 
@@ -1328,17 +1329,25 @@ public class Db {
      */
     private void insetrtStationsSched(int iTrain, long idUnit, long idRoute) throws SQLException {
         Train train = arrTrains.get(iTrain);
-        int start = train.getSecondStart();
-        int end = train.getSecondsEnd();
-        for (int j = 0; j < stations.size(); j++) {
-            Stations.Station station = stations.getStation(j);
-            int cur_second = station.getSecond();
-            if (cur_second > start && cur_second < end) {
-                long idStation = insertStation(j);
-                if (idStation > -1)
-                    insertSchedule(j, idUnit, idStation, idRoute);
-            }
+        List<Stations.Station> stations = train.getStations();
+        for (Stations.Station station : stations) {
+            long idStation = insertStation(station.getIndex());
+            if (idStation > -1)
+                insertSchedule(station.getIndex(), idUnit, idStation, idRoute);
         }
+
+
+//        int start = train.getSecondStart();
+//        int end = train.getSecondsEnd();
+//        for (int j = 0; j < stations.size(); j++) {
+//            Stations.Station station = stations.getStation(j);
+//            int cur_second = station.getSecond();
+//            if (cur_second > start && cur_second < end) {
+//                long idStation = insertStation(j);
+//                if (idStation > -1)
+//                    insertSchedule(j, idUnit, idStation, idRoute);
+//            }
+//        }
     }
 
     public static void toPgSql(String[] args, boolean isExit) {
