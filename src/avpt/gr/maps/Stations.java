@@ -224,12 +224,21 @@ public class Stations {
     public void addStationsToTrains(ArrTrains arrTrains) {
         if (stations.size() == 0) return;
    //     ArrTrains arrTrains = chartArm.getChartDataset().getArrTrains();
-        for (int i = 0; i < stations.size(); i++) {
-            Station station = stations.get(i);
+        for (Station station : stations) {
             for (int j = 0; j < arrTrains.size(); j++) {
                 Train train = arrTrains.get(j);
                 java.util.List<Station> stations = train.getStations();
-                if (station.getSecond() >= train.getSecondStart() - 20 && station.getSecond() <= train.getSecondsEnd() + 20) {
+
+                int d = 0;
+                // станция начала или конца поездки может уходить за диапазон секунд поездки
+                // если координата станции - начало маршрута (3500)
+                // расширяем диапазон времени для обнаружения станции
+                if (station.getCoordinate() == 3500) {
+                    d = 1000;
+                }
+//                System.out.println(train.getCoordinate() + " " + station.getCoordinate() + " " + station.getNameStation());
+//                System.out.println(station.getSecond() + "_" + train.getSecondStart() + "_" + station.getNameStation());
+                if (station.getSecond() >= train.getSecondStart() - d && station.getSecond() <= train.getSecondsEnd() + d) {
                     stations.add(station);
                 }
             }

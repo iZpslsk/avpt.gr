@@ -207,7 +207,7 @@ public class ArrTrains {
                 num_prev = listTrains.get(listTrains.size() - 1).getNumTrain();
                 num_route  = listTrains.get(listTrains.size() - 1).getRouteId();
             }
-            // не добавляем поезд если предыдущий и текущий одинаковые по номеру поезда
+            // добавляем поезд если предыдущий и текущий отличаются по номеру или по маршруту
             if (num_prev != train.getNumTrain() || num_route != train.getRouteId()) {
                 result = listTrains.add(train);
             }
@@ -404,7 +404,7 @@ public class ArrTrains {
         for (int i = listTrains.size() - 1; i >= 0; i--) {
             Train train = listTrains.get(i);
             long d = train.getDistance();
-            if (d == 0)
+            if (d < 1000)
                 train.setNumTrain(9999);
 //            if (avpt.gr.train.getSecondsEnd() - avpt.gr.train.getSecondStart() < 60) {
             if (train.getSeconds() < 60 /*|| avpt.gr.train.getDistance() < 5*/) {
