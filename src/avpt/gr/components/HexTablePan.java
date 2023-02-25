@@ -215,9 +215,9 @@ public class HexTablePan extends JPanel {
                             hasFocus, row, column);
                 }
             });
-            setHotKeys();
+       //     setHotKeys();
         }
-
+        setHotKeys();
         add(new JScrollPane(table), BorderLayout.CENTER);
         JPopupMenu popupMenu = makePopupMenu();
         table.setComponentPopupMenu(popupMenu);
