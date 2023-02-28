@@ -4,75 +4,51 @@ import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.chart_dataset.ChartDataset;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.maps.Stations;
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.LocalTime;
 import avpt.gr.train.ArrTrains;
 import avpt.gr.train.Train;
+import org.threeten.bp.LocalDateTime;
+import org.threeten.bp.LocalTime;
 
 import java.io.IOException;
 import java.sql.*;
 import java.util.List;
 
-import static avpt.gr.common.UtilsArmG.parseToInt;
+public class DataToBase {
 
-public class Db {
-
-    private String user;
-    private String pass;
-    private String nameDB;
-    private String host; //  адрес и порт "127.0.0.1:5432"
     private Connection conn;
-    private Statement statement;
-    private ArrTrains arrTrains;
-    private ArrBlock32 arrBlock32;
+    private ArrTrains trains;
+    private final String fileName;
     private Stations stations;
+    private final String user;
 
-    // milliseconds ----------------------
-    private long msConnectStart;
-    private String mess_milliseconds = "";
-    private final int MAX_MS = 500;
-    //---------------------------------------
+    public DataToBase(
+            String fileName,
+            String host,
+            String nameDb,
+            String user,
+            String pass,
+            int codeRoad,
+            int codeDepo,
+            long guidFile) throws SQLException, ClassNotFoundException {
 
-    public static class ErrorMessage {
-        String mess;
-        String code;
-
-        public ErrorMessage(String mess, String code) {
-            this.mess = mess;
-            this.code = code;
+        ArrBlock32 arrBlock32;
+        this.fileName = fileName;
+        this.user = user;
+        try {
+            arrBlock32 = new ArrBlock32(fileName, true);
+        } catch (IOException e) {
+            UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, false);
+            return;
         }
-
-        public String getMess() {
-            return mess;
+        ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
+        trains = chartDataset.getArrTrains();
+        stations = new Stations(arrBlock32);
+        stations.addStationsToTrains(trains);
+        if (connect(host, nameDb, user, pass))
+            insertToBase(codeRoad, codeDepo, guidFile);
+        else {
+            UtilsArmG.outWriteAndExit(302, "нет соединения с сервером", fileName, false);
         }
-
-        public String getCode() {
-            return code;
-        }
-    }
-
-    private ErrorMessage errMess300;
-
-    public Db(ArrTrains arrTrains){
-        this.arrTrains = arrTrains;
-        errMess300 = new ErrorMessage("Файл поездки превышает допустимый размер", "300");
-    }
-
-    public boolean doConnect(String ConnectionString) throws SQLException, ClassNotFoundException {
-        msConnectStart = System.currentTimeMillis();
-        //"host=127.0.0.1:5432;databaseName=dbRPDA;user=postgres;password=xixwbuaz"
-        String[] strings = ConnectionString.split("[;]+");
-        for (String str : strings) {
-            if (str.replaceAll("\\s+","").toLowerCase().matches("^host=.*"))
-                host = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^databasename=.*"))
-                nameDB = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^user=.*"))
-                user = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^password=.*"))
-                pass = str.split("[=]")[1];
-        }
-        return connect(host, nameDB, user, pass);
     }
 
     private boolean connect(String host, String nameDB, String user, String pass) throws ClassNotFoundException, SQLException {
@@ -82,99 +58,44 @@ public class Db {
             conn = DriverManager.getConnection(url, user, pass);
         }
         catch (SQLException e) {
-       //     throw new SQLException("Нет соединения с сервером", "302");
             throw new SQLException(e.getMessage(), "302");
         }
-        if (conn != null)
-            statement = conn.createStatement();
-        long msConnect = System.currentTimeMillis() - msConnectStart;
-        if (msConnect > MAX_MS) mess_milliseconds += "connect:           " + msConnect + " ms\n";
         return conn != null;
     }
 
-    /**
-     * по окончании закрываем соединенеие
-     * @param codeRoad -
-     * @param codeDepot -
-     * @param guidFile -
-     * @throws SQLException -
-     */
-    public String insertToBase(ArrBlock32 arrBlock32, int codeRoad, int codeDepot, long guidFile) throws SQLException {
+    private void insertToBase(int codeRoad, int codeDepo, long guidFile) throws SQLException {
         if (conn == null) throw new SQLException("Нет соединения с сервером!") ;
-        this.arrBlock32 = arrBlock32;
-        this.stations = new Stations(arrBlock32);
-        stations.addStationsToTrains(arrTrains);
-//        for (int i = 0; i < arrTrains.size(); i++) {
-//            Train avpt.gr.train = arrTrains.get(i);
-////            System.out.println(
-////                            "position*:" + avpt.gr.train.getIsMainOrSlave() +
-////                            "\ndate:" +  avpt.gr.train.getDateTimeStart().format(formatDateTime) +
-////                            "\nst begin:" + avpt.gr.train.getStationBegin() +
-////                            "\nst end:" + avpt.gr.train.getStationEnd() +
-////                            "\nnum tr:" + avpt.gr.train.getNumTrain() +
-////                            "\nloc type:" + Train.getNameTypeLoc(avpt.gr.train.getTypeLoc(), avpt.gr.train.getLocTypeAsoup()) +
-////                            "\nloc type code:" + Train.getNameTypeLoc(avpt.gr.train.getTypeLoc(), avpt.gr.train.getLocTypeAsoup()) +
-////                            "\nloc num:" + avpt.gr.train.getNumLoc() +
-////                            "\ntab num:" + avpt.gr.train.getNumTab() +
-////                            "\nisavprtIsOk*:" + avpt.gr.train.getIavprtIsOk() +
-////                            "\ndistance:" + avpt.gr.train.getDistance()  / 1000.0+
-////                            "\nauto:" + avpt.gr.train.getDistance_auto() / 1000.0 +
-////                            "\nprompt:" + avpt.gr.train.getDistance_prompt() / 1000.0 +
-////                            "\nperc auto:" + avpt.gr.train.getPercentAuto() +
-////                            "\nperc prompt:" + avpt.gr.train.getPercentPrompt() +
-////                            "\nnum_slave:" + avpt.gr.train.getNumSlave() +
-////
-////                    "\n______________________________________"
-////            );
-//        }
-        StringBuilder messBuilder = new StringBuilder(mess_milliseconds);
         try {
             conn.setAutoCommit(false);
-            long msRoadStart = System.currentTimeMillis();
+            // дорога
             int idRoad = (int) getIdRoad(codeRoad);
-            long msRoad = System.currentTimeMillis() - msRoadStart;
-            if (msRoad > MAX_MS) messBuilder.append("road:              ").append(msRoad).append(" ms\n");
             if (idRoad == -1) throw new SQLException("Код дороги не найден в классификаторе", "304");
-
-            long msDepoStart = System.currentTimeMillis();
-            int idDepot = (int) insertDepot(idRoad, codeDepot);
+            // депо
+            int idDepot = (int) insertDepot(idRoad, codeDepo);
             if (idDepot == -1) throw new SQLException("Вставка депо неудачна", "305");
-            long msDepo = System.currentTimeMillis() - msDepoStart;
-            if (msDepo > MAX_MS) messBuilder.append("depo:              ").append(msDepo).append(" ms\n");
-
-            long msFileImageStart = System.currentTimeMillis();
+            // file
             long idImage = insertFileImage(idRoad, idDepot, guidFile);
             if (idImage == -1) throw new SQLException("Ошибка вставки в таблицу \"FILELIST_CARTRIDGES\"", "306");
-            long msFileImage = System.currentTimeMillis() - msFileImageStart;
-            if (msFileImage > MAX_MS) messBuilder.append("fileImage:         ").append(msFileImage).append(" ms\n");
-
-            long msUserStart = System.currentTimeMillis();
+            // user
             long idUser = getIdUser(user);
             if (idUser == -1) throw new SQLException("Пользователь не найден", "307");
-            long msUser = System.currentTimeMillis() - msUserStart;
-            if (msUser > MAX_MS) messBuilder.append("user:              ").append(msUser).append(" ms\n");
 
             boolean isCommit = false;
-            if (arrTrains.size() == 1 && arrTrains.get(0).getDistance() == 0)
+            if (trains.size() == 1 && trains.get(0).getDistance() == 0)
                 throw new SQLException("Поездки не определены", "317");
 
             String errMess = "Файл некорректный";
             String errCode = "308";
-            for (int i = 0; i < arrTrains.size(); i++) {
-                Train train = arrTrains.get(i);
+            for (int i = 0; i < trains.size(); i++) {
+                Train train = trains.get(i);
                 int idTypeMove = train.getTypeMove();
                 if (train.getDistance() < 1000) {
                     errCode = "309";
                     errMess = "Недостаточно информации для записи";
                     continue;
                 }
-
                 int typeSeries = convertTypeSeries(train.getTypeLoc(), train.getLocTypeAsoup());
-                long msTypeSeriesStart = System.currentTimeMillis();
                 int idTypeSeries = (int) getIdTypeSeries(typeSeries, idTypeMove);
-                long msTypeSeries = System.currentTimeMillis() - msTypeSeriesStart;
-                if (msTypeSeries > MAX_MS) messBuilder.append(i).append(": typeSeries:     ").append(msTypeSeries).append(" ms\n");
-
                 if (idTypeSeries == -1) {
                     errCode = "310";
                     errMess = "Неизвестный тип серии локомотива";
@@ -186,76 +107,55 @@ public class Db {
                     continue;
                 }
 
-                long msDriverStart = System.currentTimeMillis();
-                long idDriver = insertDriver(i, codeRoad, codeDepot);
-                long msDriver = System.currentTimeMillis() - msDriverStart;
-                if (msDriver > MAX_MS) messBuilder.append(i).append(": driver:         ").append(msDriver).append(" ms\n");
+                long idDriver = insertDriver(train, codeRoad, codeDepo);
                 if (idDriver == -1) {
                     errCode = "311";
                     errMess = "Ошибка добавления кода машиниста";
                     continue;
                 }
 
-                long msRouteStart = System.currentTimeMillis();
-                long idRoute = insertRoute(i, idRoad, idDepot);
-                long msRoute = System.currentTimeMillis() - msRouteStart;
-                if (msRoute > MAX_MS) messBuilder.append(i).append(": route:          ").append(msRoute).append(" ms\n");
+                long idRoute = insertRoute(train, idRoad, idDepot);
 
-                long msRouteUnitsStart = System.currentTimeMillis();
-                long idUnit = insertUnit(i, codeRoad, codeDepot, idRoute, idUser, idDriver, idTypeMove, idImage, guidFile);
-                long msRouteUnits = System.currentTimeMillis() - msRouteUnitsStart;
-                if (msRouteUnits > MAX_MS) messBuilder.append(i).append(": routeUnits:     ").append(msRouteUnits).append(" ms\n");
+                long idUnit = insertUnit(train, codeRoad, codeDepo, idRoute, idUser, idDriver, idTypeMove, idImage, guidFile);
                 if (idUnit == -1) {
                     errCode = "312";
                     errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_ROUTE_UNITS\" или запись дублируется";
                     continue;
                 }
-                long msRouteUnitsGenStart = System.currentTimeMillis();
-                long idUnitInfo = insertUnitInfo(i, idUnit);
-                long msRouteUnitsGen = System.currentTimeMillis() - msRouteUnitsGenStart;
-                if (msRouteUnitsGen > MAX_MS) messBuilder.append(i).append(": routeUnitsGen:  ").append(msRouteUnitsGen).append(" ms\n");
+
+                long idUnitInfo = insertUnitInfo(train, idUnit);
                 if (idUnitInfo == -1) {
                     errCode = "313";
                     errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_ROUTE_UNITS_GEN_INFO\"";
                     continue;
                 }
-                long msDiagnosticMovingStart = System.currentTimeMillis();
-                long idDiagnMoving = insertDiagnMoving(i, idUnit);
-                long msDiagnosticMoving = System.currentTimeMillis() - msDiagnosticMovingStart;
-                if (msDiagnosticMoving > MAX_MS) messBuilder.append(i).append(": diagnMoving:    ").append(msDiagnosticMoving).append(" ms\n");
+
+                long idDiagnMoving = insertDiagnMoving(train, idUnit);
                 if (idDiagnMoving == -1) {
                     errCode = "314";
                     errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_DIAGNOSTICS_MOVING\"";
                     continue;
                 }
-                long msSeriesTrainsStart = System.currentTimeMillis();
+
                 long idSeriesTrain = insertSeriesTrain(train, idRoad, idTypeSeries, idDepot);
-                long msSeriesTrains = System.currentTimeMillis() - msSeriesTrainsStart;
-                if (msSeriesTrains > MAX_MS) messBuilder.append(i).append(": seriesTrains:   ").append(msSeriesTrains).append(" ms\n");
                 if (idSeriesTrain == -1) {
                     errCode = "315";
                     errMess = "Ошибка вставки в таблицу \"Insert_DIRECTORY_SERIES_TRAINS\"";
                     continue;
                 }
-                long idSection = -1;
+
+                long idSection;
                 for (int iSect = 0; iSect < 4; iSect++) {
-                    long msSectionsStart = System.currentTimeMillis();
-                    idSection = insetrtSection(i, iSect, idUnit, idUser, idSeriesTrain);
-                    long msSections = System.currentTimeMillis() - msSectionsStart;
-                    if (msSections > MAX_MS) messBuilder.append(i).append(": s").append(iSect).append(" section:     ").append(msSections).append(" ms\n");
+                    idSection = insetrtSection(train, iSect, idUnit, idUser, idSeriesTrain);
                     if (idSection == -1) {
                         errCode = "316";
                         errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_SECTIONS\"";
                     }
-                 //   if (idSection == -1) continue;
                 }
-                long msScheduleStart = System.currentTimeMillis();
-                insetrtStationsSched(i, idUnit, idRoute);
-                long msSchedule = System.currentTimeMillis() - msScheduleStart;
-                if (msSchedule > MAX_MS) messBuilder.append(i).append(": ").append("schedule:       ").append(msSchedule).append(" ms\n");
+
+                insetrtStationsSched(train, idUnit, idRoute);
                 isCommit = true;
             }
-
             if (isCommit)
                 conn.commit();
             else {
@@ -266,13 +166,13 @@ public class Db {
         finally {
             conn.close();
         }
-        return messBuilder.toString();
     }
+
 
     /**
      * @param codeRoad - код дороги
      * @return - idRoad - идентификатор дороги
-     * @throws SQLException
+     * @throws SQLException -
      */
     private long getIdRoad(int codeRoad) throws SQLException {
         final int nCodeRoad = 1;
@@ -293,7 +193,7 @@ public class Db {
      * @param idRoad -
      * @param codeDepo  -
      * @return idDepo - идентификатор депо
-     * @throws SQLException
+     * @throws SQLException -
      */
     private long insertDepot(int idRoad, int codeDepo) throws SQLException {
         final int nIdRoad = 1;
@@ -320,7 +220,7 @@ public class Db {
      * @param idDepo -
      * @param guidFile - крайний параметр командной строки (id файла поездок)
      * @return - FILE_CARTRIDGE_ID
-     * @throws SQLException
+     * @throws SQLException -
      */
     private long insertFileImage(int idRoad, int idDepo, long guidFile) throws SQLException {
         final int nIdRoad = 1;
@@ -342,7 +242,7 @@ public class Db {
             prepStat.setString(nDateRead, timeStampStr);
 
             if (guidFile == -1)   // если крайний параметр командной строки не введен
-                prepStat.setString(nFileName, arrBlock32.getFileName());
+                prepStat.setString(nFileName, fileName);
             else
                 prepStat.setString(nFileName, Long.toString(guidFile));
             prepStat.setInt(nEnMan, -1);
@@ -351,29 +251,6 @@ public class Db {
             throwSQLException("insertFileImage", e.getMessage());
         }
         return execQuery(prepStat);
-    }
-
-    private void throwSQLException(String nameMeth, String mess) throws SQLException {
-        throw new SQLException(this.getClass().getName() + "." + nameMeth + " - " + mess);
-    }
-
-    /**
-     * @param prepStat - PreparedStatement
-     * @return результат запроса long
-     */
-    private long execQuery(PreparedStatement prepStat) throws SQLException {
-        long result = -1;
-        ResultSet rs;
-        try {
-            rs = prepStat.executeQuery();
-        } catch (SQLException e) {
-            throw new SQLException(e.getMessage());
-        }
-        if (rs.next())
-            result = rs.getLong(1);
-
-        rs.close();
-        return result;
     }
 
     /**
@@ -394,37 +271,6 @@ public class Db {
             throwSQLException("getIdUser", e.getMessage());
         }
         return execQuery(prepStat);
-    }
-
-    /**
-     * @param typeLoc -
-     * @param typeAsoup -
-     * @return - корректировка кода серии локомотива с учетом колдичества секций
-     */
-    private static int convertTypeSeries(int typeLoc, int typeAsoup) {
-        switch (typeLoc) {
-            // ЭС5К
-            case 5:
-                if (typeAsoup == 253) return 35;
-                else if (typeAsoup == 222)return 25;
-                else if (typeAsoup == 220)return 45;
-                else return 5;
-            // ЭС5К МСУД 15
-            case 11:
-                if (typeAsoup == 253) return 30;
-                else if (typeAsoup == 222)return 20;
-                else return 111;
-            // ЭС4К
-            case 9:
-                if (typeAsoup == 115) return 39;
-                else if (typeAsoup == 144)return 29;
-                else return 9;
-            // ВЛ10
-            case 2:
-                if (typeAsoup == 138) return 52;
-                else return 2;
-            default: return typeLoc;
-        }
     }
 
     /**
@@ -452,31 +298,68 @@ public class Db {
     }
 
     /**
-     * @param iTrain - индекс поезда
+     * @param train -
      * @param codeRoad -
      * @param codeDepo -
      * @return - DRIVER_ID
      * @throws SQLException
      */
-    private long insertDriver(int iTrain, int codeRoad, int codeDepo) throws SQLException {
+    private long insertDriver(Train train, int codeRoad, int codeDepo) throws SQLException {
         final int nTabNum = 1;
         final int nCodeRoad  = 2;
         final int nCodeDepo = 3;
         final String sql = "SELECT \"sp_GetDriverId\" ( ?, ?, ?)";
         PreparedStatement prepStat = conn.prepareStatement(sql);
-        //    try {
-        prepStat.setInt(nTabNum, (int)arrTrains.get(iTrain).getNumTab());
+        prepStat.setInt(nTabNum, (int)train.getNumTab());
         prepStat.setInt(nCodeRoad, codeRoad);
         prepStat.setInt(nCodeDepo, codeDepo);
-        //  }
-        //  catch (Exception e) {
-        //      throwSQLException("insertDriver", e.getMessage());
-        //  }
         return execQuery(prepStat);
     }
 
     /**
-     * @param iTrain -
+     * @param train -
+     * @param idRoad -
+     * @param idDepo -
+     * @return RAILROAD_DIRECTION_ID
+     */
+    private long insertRoute(Train train, int idRoad, int idDepo) throws SQLException {
+        final int nIdRoad = 1;
+        final int nIdDepo = 2;
+        final int nFlagActive = 3;
+        final int nIsRelateDir = 4;
+        final int nDirFlagUnit = 5;
+        final int nDateLastShed = 6;
+        final int nCntMap = 7;
+        final int nDateLastMap = 8;
+        final int nNameRoad = 9;
+
+        final String sql = "SELECT \"Insert_DIRECTORY_RAILROAD_DIRECTIONS\" (" +
+                "?, ?, ?, ?, ?, cast(? as timestamp with time zone), ?, cast(? as timestamp with time zone), ?); ";
+
+        PreparedStatement prepStat = conn.prepareStatement(sql);
+        try {
+            prepStat.setInt(nIdRoad, idRoad);
+            prepStat.setInt(nIdDepo, idDepo);
+            prepStat.setBoolean(nFlagActive, false);
+            prepStat.setInt(nIsRelateDir, -1);
+            prepStat.setInt(nDirFlagUnit, -1);
+            String timeStampStr = UtilsArmG.getTimestampStr(
+                    LocalDateTime.of(0, 1, 1, 1, 0));
+            prepStat.setString(nDateLastShed, timeStampStr);
+            prepStat.setInt(nCntMap, -1);
+            prepStat.setString(nDateLastMap, timeStampStr);
+            String routeName = train.getRoutName();
+            if (routeName == null) routeName = "";
+            prepStat.setString(nNameRoad, routeName);
+        }
+        catch (Exception e) {
+            throwSQLException("insertRoute", e.getMessage());
+        }
+        return execQuery(prepStat);
+    }
+
+    /**
+     * @param train -
      * @param codeRoad -
      * @param codeDepot -
      * @param idUser -
@@ -486,7 +369,7 @@ public class Db {
      * @return UNIT_ROUTE_ID
      * @throws SQLException
      */
-    private long insertUnit(int iTrain, int codeRoad, int codeDepot, long idRoute, long idUser, long idDrv,
+    private long insertUnit(Train train, int codeRoad, int codeDepot, long idRoute, long idUser, long idDrv,
                             int typeMove, long idFile, long guidFile) throws SQLException {
 
         final int num_road = 1;                                     // integer
@@ -547,7 +430,6 @@ public class Db {
             prepStat.setInt(RAILROAD_DIRECTION_ID, (int)idRoute); // Индекс направления
             prepStat.setLong(image_id, idFile);
             prepStat.setInt(USER_ID, (int)idUser);
-            Train train = arrTrains.get(iTrain);
             prepStat.setInt(PERSON_NUMBER_DRIVER, (int)train.getNumTab()); // табельный номер
             prepStat.setInt(NUMBER_ROUTE, train.getNumTrain()); // Номер поезда
             String timeStampStr = UtilsArmG.getTimestampStr(train.getDateTimeStart());
@@ -585,14 +467,13 @@ public class Db {
         return execQuery(prepStat);
     }
 
-
     /**
-     * @param iTrain -
+     * @param train -
      * @param idUnit -
      * @return UNIT_ROUTE_GEN_INFO_ID
      * @throws SQLException -
      */
-    private long insertUnitInfo(int iTrain, long idUnit) throws SQLException {
+    private long insertUnitInfo(Train train, long idUnit) throws SQLException {
         final int UNIT_ROUTE_ID = 1;                            // bigint
         final int TYPE_SYSTEM_USAVP = 2;                        // smallint
         final int NET_WEIGHT_TRAIN_Kg = 3;                      // integer
@@ -652,7 +533,6 @@ public class Db {
                         "cast(? as smallint)); ";   //27
         PreparedStatement prepStat = conn.prepareStatement(sql);
         try {
-            Train train = arrTrains.get(iTrain);
             prepStat.setLong(UNIT_ROUTE_ID, idUnit);
             prepStat.setLong(TYPE_SYSTEM_USAVP, -1);        // Тип системы УСАВП
             prepStat.setInt(NET_WEIGHT_TRAIN_Kg, train.getWeightTrain() * 1000);
@@ -689,54 +569,12 @@ public class Db {
     }
 
     /**
-     * @param iTrain -
-     * @param idRoad -
-     * @param idDepo -
-     * @return RAILROAD_DIRECTION_ID
-     */
-    private long insertRoute(int iTrain, int idRoad, int idDepo) throws SQLException {
-        final int nIdRoad = 1;
-        final int nIdDepo = 2;
-        final int nFlagActive = 3;
-        final int nIsRelateDir = 4;
-        final int nDirFlagUnit = 5;
-        final int nDateLastShed = 6;
-        final int nCntMap = 7;
-        final int nDateLastMap = 8;
-        final int nNameRoad = 9;
-
-        final String sql = "SELECT \"Insert_DIRECTORY_RAILROAD_DIRECTIONS\" (" +
-                "?, ?, ?, ?, ?, cast(? as timestamp with time zone), ?, cast(? as timestamp with time zone), ?); ";
-
-        PreparedStatement prepStat = conn.prepareStatement(sql);
-        try {
-            prepStat.setInt(nIdRoad, idRoad);
-            prepStat.setInt(nIdDepo, idDepo);
-            prepStat.setBoolean(nFlagActive, false);
-            prepStat.setInt(nIsRelateDir, -1);
-            prepStat.setInt(nDirFlagUnit, -1);
-            String timeStampStr = UtilsArmG.getTimestampStr(
-                    LocalDateTime.of(0, 1, 1, 1, 0));
-            prepStat.setString(nDateLastShed, timeStampStr);
-            prepStat.setInt(nCntMap, -1);
-            prepStat.setString(nDateLastMap, timeStampStr);
-            String routeName = arrTrains.get(iTrain).getRoutName();
-            if (routeName == null) routeName = "";
-            prepStat.setString(nNameRoad, routeName);
-        }
-        catch (Exception e) {
-            throwSQLException("insertRoute", e.getMessage());
-        }
-        return execQuery(prepStat);
-    }
-
-    /**
-     * @param iTrain -
+     * @param train -
      * @param idUnit -
      * @return DIAGNOSTICS_MOVING_ID
      * @throws SQLException -
      */
-    private long insertDiagnMoving(int iTrain, long idUnit) throws SQLException {
+    private long insertDiagnMoving(Train train, long idUnit) throws SQLException {
         final int UNIT_ROUTE_ID = 1;                            // bigint,
         final int COUNT_STARTS_MOVING_LOCOMOTIVE = 2;           // integer
         final int COUNT_SWITCH_KM = 3;                          // integer
@@ -885,7 +723,6 @@ public class Db {
 
         PreparedStatement prepStat = conn.prepareStatement(sql);
         try {
-            Train train = arrTrains.get(iTrain);
             prepStat.setLong(UNIT_ROUTE_ID, idUnit);
             prepStat.setInt(COUNT_STARTS_MOVING_LOCOMOTIVE, -1);        //Количество троганий локомотива
             prepStat.setInt(COUNT_SWITCH_KM, -1);                       // Количество переключений КМ (контроллер машиниста)
@@ -1046,7 +883,7 @@ public class Db {
     }
 
     /**
-     * @param iTrain -
+     * @param train -
      * @param indSection -
      * @param idUnit -
      * @param idUser -
@@ -1054,7 +891,7 @@ public class Db {
      * @return SECTION_ID
      * @throws SQLException -
      */
-    private long insetrtSection(int iTrain, int indSection, long idUnit, long idUser, long idSeriesTrain) throws SQLException {
+    private long insetrtSection(Train train, int indSection, long idUnit, long idUser, long idSeriesTrain) throws SQLException {
         final int UNIT_ROUTE_ID = 1;                            // bigint
         final int USER_ID = 2;                                  // integer
         final int SUBTYPE_SPEC_TRAIN = 3;                       // integer
@@ -1160,7 +997,6 @@ public class Db {
 
         PreparedStatement prepStat = conn.prepareStatement(sql);
         try {
-            Train train = arrTrains.get(iTrain);
             prepStat.setLong(UNIT_ROUTE_ID, idUnit);
             prepStat.setInt(USER_ID, (int)idUser);
             prepStat.setInt(SUBTYPE_SPEC_TRAIN, -1);                            // Подтип СПС (специальный подвижной состав)
@@ -1176,7 +1012,6 @@ public class Db {
             prepStat.setDouble(ENERGY_HEATING_kWh_4, 0);
             long act = train.getAct(indSection);
             prepStat.setDouble(ENERGY_ACTIVE, (int)act);
-         //   System.out.println(indSection + " " + act);
             prepStat.setDouble(ENERGY_REACTIVE, 0);
             prepStat.setInt(T_NNA, -1);                                 // Время без нагрузки, сек
             prepStat.setInt(T_XXO, -1);   // Время работы на ХХ одного дизеля, сек
@@ -1201,7 +1036,7 @@ public class Db {
             prepStat.setInt(EnCountStart, (int)start); // Показание общего счетчика энергии на начало поездки, в 1/4 кВт*ч
             prepStat.setInt(EnCountFinish, (int)train.getCnt_end_act(indSection));  // Показание общего счетчика энергии на конец поездки, в 1/4 кВт*ч
 
-          //  System.out.println((int)avpt.gr.train.getCnt_start_act(indSection) + "  " + (int)avpt.gr.train.getCnt_end_act(indSection));
+            //  System.out.println((int)avpt.gr.train.getCnt_start_act(indSection) + "  " + (int)avpt.gr.train.getCnt_end_act(indSection));
             prepStat.setInt(K_CCCA, -1);                                    // Кол-во запусков дизеля с помощью конденсаторов при отключеной системе САЗДТ
             prepStat.setShort(COUNTER_SHUTDOWN_FIRE_ALARMS, (short)-1);         // Счетчик Срабатываний пожарной сигнализации
             prepStat.setShort(COUNTER_SHUTDOWN_RELAY_BOXING, (short)-1);        // Счетчик Срабатываний реле боксования
@@ -1240,7 +1075,7 @@ public class Db {
         return execQuery(prepStat);
     }
 
-    private long insertSchedule(int indxStation, long idUnit, long idStation, long idRoute)  throws SQLException {
+    private void insertSchedule(int indxStation, long idUnit, long idStation, long idRoute)  throws SQLException {
         final int UNIT_ROUTE_ID = 1;                                        // long
         final int ESR_CODE_STATION = 2;                                     // int
         final int CODE_STATION_TRAIN_SCHEDULE = 3;                          // smallint
@@ -1317,25 +1152,23 @@ public class Db {
         catch (Exception e) {
             throwSQLException("insertSchedule", e.getMessage());
         }
-        return execQuery(prepStat);
+        execQuery(prepStat);
     }
 
     /**
      *
-     * @param iTrain -
+     * @param train -
      * @param idUnit -
      * @param idRoute -
-     * @return -
      */
-    private void insetrtStationsSched(int iTrain, long idUnit, long idRoute) throws SQLException {
-        Train train = arrTrains.get(iTrain);
+    private void insetrtStationsSched(Train train, long idUnit, long idRoute) throws SQLException {
+
         List<Stations.Station> stations = train.getStations();
         for (Stations.Station station : stations) {
             long idStation = insertStation(station.getIndex());
             if (idStation > -1)
                 insertSchedule(station.getIndex(), idUnit, idStation, idRoute);
         }
-
 
 //        int start = train.getSecondStart();
 //        int end = train.getSecondsEnd();
@@ -1349,114 +1182,59 @@ public class Db {
 //            }
 //        }
     }
+//----------------------------------------------------------------------------------------------------------------------
 
-    public static void toBase(String[] args, boolean isExit) {
-        final String fileName = args[1];
-        try {
-            UtilsArmG.checkSizeFile(fileName);
-        } catch (IOException e) {
-            UtilsArmG.outWriteAndExit(300, e.getMessage(), fileName, isExit);
-            return;
-        }
-        int codeRoad = Integer.parseInt(args[2]);
-        int codeDepo = Integer.parseInt(args[3]);
-        String connectionString = args[4];
-        long guidFile = -1;
-        if (args.length > 5)
-            guidFile = Long.parseLong(args[5]);
-
-        String[] strings = connectionString.split("[;]+");
-        String host = "";
-        String nameDB = "";
-        String user = "";
-        String pass = "";
-        for (String str : strings) {
-            if (str.replaceAll("\\s+","").toLowerCase().matches("^host=.*"))
-                host = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^databasename=.*"))
-                nameDB = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^user=.*"))
-                user = str.split("[=]")[1];
-            else if (str.replaceAll("\\s+","").toLowerCase().matches("^password=.*"))
-                pass = str.split("[=]")[1];
-        }
-        toPgSql(fileName, host, nameDB, user, pass, codeRoad, codeDepo, guidFile, isExit);
+    private void throwSQLException(String nameMeth, String mess) throws SQLException {
+        throw new SQLException(this.getClass().getName() + "." + nameMeth + " - " + mess);
     }
 
-    public static void toPgSql(String fileName,
-                               String host,
-                               String nameDb,
-                               String user,
-                               String pass,
-                               int codeRoad,
-                               int codeDepo,
-                               long guidFile,
-                               boolean isExists) {
+    /**
+     * @param prepStat - PreparedStatement
+     * @return результат запроса long
+     */
+    private long execQuery(PreparedStatement prepStat) throws SQLException {
+        long result = -1;
+        ResultSet rs;
         try {
-            new DataToBase(fileName, host, nameDb, user, pass, codeRoad, codeDepo, guidFile);
-            UtilsArmG.outWriteAndExit(0, "успешно", fileName, isExists);
+            rs = prepStat.executeQuery();
         } catch (SQLException e) {
-            int errCode;
-            try {
-                errCode = Integer.parseInt(e.getSQLState());
-            }
-            catch (NumberFormatException var3) {
-                errCode = 303;
-            }
-            UtilsArmG.outWriteAndExit(errCode, e.getMessage(), fileName, isExists);
-        } catch (ClassNotFoundException e) {
-            UtilsArmG.outWriteAndExit(302, e.getMessage(), fileName, isExists);
+            throw new SQLException(e.getMessage());
         }
+        if (rs.next())
+            result = rs.getLong(1);
+
+        rs.close();
+        return result;
     }
 
-    public static void toPgSql(String[] args, boolean isExit) {
-//        if (args.length > 4 && args[0].equalsIgnoreCase("-sendToPgSQL")) {
-            final String fileName = args[1];
-            try {
-                UtilsArmG.checkSizeFile(fileName);
-            } catch (IOException e) {
-                UtilsArmG.outWriteAndExit(300, e.getMessage(), fileName, isExit);
-                return;
-            }
-            int codeRoad = Integer.parseInt(args[2]);
-            int codeDepo = Integer.parseInt(args[3]);
-            String connectionString = args[4];
-            long guidFile = -1;
-            if (args.length > 5)
-                guidFile = Long.parseLong(args[5]);
-
-            ArrBlock32 arrBlock32 = null;
-            try {
-                arrBlock32 = new ArrBlock32(fileName, true);
-            } catch (IOException e) {
-                UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, isExit);
-                return;
-            }
-            ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
-            ArrTrains trains = chartDataset.getArrTrains();
-
-            Db db = new Db(trains);
-            String messMilliseconds = "";
-            long msToBaseStart = System.currentTimeMillis();
-            try {
-                if (db.doConnect(connectionString)) {
-                    messMilliseconds = db.insertToBase(arrBlock32, codeRoad, codeDepo, guidFile);
-                    long msToBase = System.currentTimeMillis() - msToBaseStart;
-                    UtilsArmG.outWriteAndExit(0, "успешно\n\n" + messMilliseconds + "Insert to base:    " + msToBase + " ms\n", fileName, isExit);
-                }
-                else {
-                    UtilsArmG.outWriteAndExit(302, "нет соединения с сервером", fileName, isExit);
-                }
-            } catch (SQLException e) {
-                int errCode = parseToInt(e.getSQLState(), 303);
-                UtilsArmG.outWriteAndExit(errCode, e.getMessage(), fileName, isExit);
-            } catch (ClassNotFoundException e) {
-                UtilsArmG.outWriteAndExit(302, e.getMessage(), fileName, isExit);
-                //            }
-//            long msToBase = System.currentTimeMillis() - msToBaseStart;
-//            UtilsArmG.outWriteAndExit(0, "успешно\n\n" + messMilliseconds + "Insert to base:    " + msToBase + " ms\n", fileName, false);
-//            System.out.println(fileName);
+    /**
+     * @param typeLoc -
+     * @param typeAsoup -
+     * @return - корректировка кода серии локомотива с учетом колдичества секций
+     */
+    private static int convertTypeSeries(int typeLoc, int typeAsoup) {
+        switch (typeLoc) {
+            // ЭС5К
+            case 5:
+                if (typeAsoup == 253) return 35;
+                else if (typeAsoup == 222)return 25;
+                else if (typeAsoup == 220)return 45;
+                else return 5;
+                // ЭС5К МСУД 15
+            case 11:
+                if (typeAsoup == 253) return 30;
+                else if (typeAsoup == 222)return 20;
+                else return 111;
+                // ЭС4К
+            case 9:
+                if (typeAsoup == 115) return 39;
+                else if (typeAsoup == 144)return 29;
+                else return 9;
+                // ВЛ10
+            case 2:
+                if (typeAsoup == 138) return 52;
+                else return 2;
+            default: return typeLoc;
         }
     }
-
 }

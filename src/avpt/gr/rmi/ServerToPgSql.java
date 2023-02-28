@@ -8,7 +8,8 @@ public class ServerToPgSql implements ToPgSql {
 
     @Override
     public void sendToPgSql(String[] args) throws RemoteException {
-        Db.toPgSql(args, false);
+//        Db.toPgSql(args, false);
+        Db.toBase(args, false);
 //        if (args.length > 4 && args[0].equalsIgnoreCase("-sendToPgSQL")) {
 //            final String fileName = args[1];
 //            try {

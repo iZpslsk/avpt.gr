@@ -35,7 +35,8 @@ public class arm_g {
     public static void main(String[] args) {
 
         if (args.length > 4 && args[0].equalsIgnoreCase("-sendToPgSQL")) {
-            Db.toPgSql(args, true);
+            Db.toBase(args, true);
+//            Db.toPgSql(args, true);
 //            final String fileName = args[1];
 //            try {
 //                UtilsArmG.checkSizeFile(fileName);
