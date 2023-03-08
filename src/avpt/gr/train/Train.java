@@ -1193,11 +1193,13 @@ public class Train {
     }
 
     public int getLenVLim() {
-        int len = 0;
+        int sum = 0;
         for (int i = 0; i < limits_v.size(); i++) {
-            len += limits_v.get(i).getLen();
+            int len = limits_v.get(i).getLen();
+            if (len > 0)
+                sum += limits_v.get(i).getLen();
         }
-        return len;
+        return sum;
     }
 
 //    public void setLimits_c(List<Limits.Limit> limits_c) {

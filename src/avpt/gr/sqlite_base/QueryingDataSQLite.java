@@ -31,7 +31,7 @@ public class QueryingDataSQLite {
         final String sql =
                 "SELECT count() AS cnt " +
                         "FROM file f " +
-                        "INNER JOIN avpt.gr.train t ON f.file_id = t.file_id " +
+                        "INNER JOIN train t ON f.file_id = t.file_id " +
                         "INNER JOIN driver d ON d.driver_id = t.driver_id " +
                         "INNER JOIN locomotive l ON l.locomotive_id = t.locomotive_id " +
                         "INNER JOIN locomotive_type lt ON lt.code_type_loc = l.code_type_loc " +
@@ -79,7 +79,7 @@ public class QueryingDataSQLite {
                         "vd.slave_link_vsc_perc, vd.num_link_loc, vd.test_thrust, vd.test_brake, vd.u_max, vd.is_alsn, " +
                         "f.file_name, t.num_section " +
                 "FROM file f " +
-                        " INNER JOIN avpt.gr.train t ON f.file_id = t.file_id " +
+                        " INNER JOIN train t ON f.file_id = t.file_id " +
                         " INNER JOIN driver d ON d.driver_id = t.driver_id " +
                         " INNER JOIN locomotive l ON l.locomotive_id = t.locomotive_id " +
                         " INNER JOIN locomotive_type lt ON lt.code_type_loc = l.code_type_loc AND lt.code_asoup = l.code_asoup " +
@@ -92,6 +92,7 @@ public class QueryingDataSQLite {
                         "    AND (l.num_loc = ? OR -1 = ?) " +
                         "    AND (lt.code_type_loc = ? OR 0 = ?) " +
                         "    AND (lt.code_asoup = ? OR 0 = ?) " +
+                        "    AND (t.distance > 1000) " +
                 "ORDER BY l.num_loc, t.date_begin";
 
         final int nDateBegin = 1;
@@ -137,7 +138,7 @@ public class QueryingDataSQLite {
                         "s.act, s.rec, t.speed, t.speed_move, t.v_lim_cnt, t.v_lim_len, t.wags_cnt, t.weight, t.wags_empty_cnt, t.route_name, f.file_name, f.date_save, " +
                         "t.route_name, r.name_road, t.num_tch, t.ver_po, t.date_map, t.is_shed_load, t.num_section " +
                         "FROM file f " +
-                        "INNER JOIN avpt.gr.train t ON f.file_id = t.file_id " +
+                        "INNER JOIN train t ON f.file_id = t.file_id " +
                         "INNER JOIN driver d ON d.driver_id = t.driver_id " +
                         "INNER JOIN locomotive l ON l.locomotive_id = t.locomotive_id " +
                         "INNER JOIN locomotive_type lt ON lt.code_type_loc = l.code_type_loc AND lt.code_asoup = l.code_asoup " +
@@ -149,6 +150,7 @@ public class QueryingDataSQLite {
                         "    AND (l.num_loc = ? OR -1 = ?) " +
                         "    AND (lt.code_type_loc = ? OR 0 = ?) " +
                         "    AND (lt.code_asoup = ? OR 0 = ?) " +
+                        "    AND (t.distance > 1000) " +
                         "ORDER BY t.train_id;";
 
         final int nDateBegin = 1;

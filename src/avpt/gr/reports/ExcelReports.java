@@ -180,32 +180,33 @@ public class ExcelReports {
         DateFormat dateTimeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         int curId = 0;
         int col = 0;
-
+        CellStyle cellStyle = getStyle(sheet, CellStyle.ALIGN_LEFT, true);
+        CellStyle cellStyleDateTime = getStyleDateTime(book, CellStyle.ALIGN_LEFT, true);
         while (rs.next()) {
             col = 0;
             row++;
-            toCell(sheet, row, col++, rs.getString("name_type_loc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("num_loc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_begin")), getStyleDateTime(book, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("train_num"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getString("route_name"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("seconds") / 3600.0, 2), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("distance") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("distance_auto") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("distance_auto_percent"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getString("type_vsc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("main_link_modem_perc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("main_link_vsc_perc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("slave_is_on_perc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("slave_link_modem_perc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("slave_link_vsc_perc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("num_link_loc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("test_thrust"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("test_brake"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("u_max"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("is_alsn"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, getShortNameFile(rs.getString("file_name")), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col++, rs.getInt("num_section"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
+            toCell(sheet, row, col++, rs.getString("name_type_loc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("num_loc"), cellStyle);
+            toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_begin")), cellStyleDateTime);
+            toCell(sheet, row, col++, rs.getInt("train_num"), cellStyle);
+            toCell(sheet, row, col++, rs.getString("route_name"), cellStyle);
+            toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("seconds") / 3600.0, 2), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("distance") / 1000.0, cellStyle);
+            toCell(sheet, row, col++, rs.getInt("distance_auto") / 1000.0, cellStyle);
+            toCell(sheet, row, col++, rs.getInt("distance_auto_percent"), cellStyle);
+            toCell(sheet, row, col++, rs.getString("type_vsc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("main_link_modem_perc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("main_link_vsc_perc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("slave_is_on_perc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("slave_link_modem_perc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("slave_link_vsc_perc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("num_link_loc"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("test_thrust"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("test_brake"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("u_max"), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("is_alsn"), cellStyle);
+            toCell(sheet, row, col++, getShortNameFile(rs.getString("file_name")), cellStyle);
+            toCell(sheet, row, col++, rs.getInt("num_section"), cellStyle);
         }
         return true;
     }
@@ -236,46 +237,48 @@ public class ExcelReports {
         int preId = 0;
         int col = 0;
         int col_en = 0;
+        CellStyle cellStyle = getStyle(sheet, CellStyle.ALIGN_LEFT, true);
+        CellStyle cellStyleDateTime = getStyleDateTime(book, CellStyle.ALIGN_LEFT, true);
         while (rs.next()) {
             curId = rs.getInt("train_id");
             int num = rs.getInt("num");
             if (curId != preId) {
                 col = 0;
                 row++;
-                toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_begin")), getStyleDateTime(book, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("train_num"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("tab_num"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getString("name_type_loc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("num_loc"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getString("stations_start_end_name"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getDouble("work") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("distance") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("distance_auto") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("distance_auto_percent"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("distance_prompt") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("distance_prompt_percent"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, getDurationTime(rs.getInt("seconds")), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
+                toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_begin")), cellStyleDateTime);
+                toCell(sheet, row, col++, rs.getInt("train_num"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("tab_num"), cellStyle);
+                toCell(sheet, row, col++, rs.getString("name_type_loc"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("num_loc"), cellStyle);
+                toCell(sheet, row, col++, rs.getString("stations_start_end_name"), cellStyle);
+                toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("work") / 1000.0, 3), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("distance") / 1000.0, cellStyle);
+                toCell(sheet, row, col++, rs.getInt("distance_auto") / 1000.0, cellStyle);
+                toCell(sheet, row, col++, rs.getInt("distance_auto_percent"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("distance_prompt") / 1000.0, cellStyle);
+                toCell(sheet, row, col++, rs.getInt("distance_prompt_percent"), cellStyle);
+                toCell(sheet, row, col++, getDurationTime(rs.getInt("seconds")), cellStyle);
                 col_en = col;
                 col += 8;
-                toCell(sheet, row, col++, rs.getDouble("speed"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getDouble("speed_move"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("v_lim_cnt"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("v_lim_len") / 1000.0, getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("wags_cnt"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("weight"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("wags_empty_cnt"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getString("route_name"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, getShortNameFile(rs.getString("file_name")), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_save")), getStyleDateTime(book, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getString("name_road"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("num_tch"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getString("ver_po"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, dateFormat.parse(rs.getString("date_map")), getStyleDate(book, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("is_shed_load"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-                toCell(sheet, row, col++, rs.getInt("num_section"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
+                toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("speed"), 2), cellStyle);
+                toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("speed_move"), 2), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("v_lim_cnt"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("v_lim_len") / 1000.0, cellStyle);
+                toCell(sheet, row, col++, rs.getInt("wags_cnt"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("weight"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("wags_empty_cnt"), cellStyle);
+                toCell(sheet, row, col++, rs.getString("route_name"), cellStyle);
+                toCell(sheet, row, col++, getShortNameFile(rs.getString("file_name")), cellStyle);
+                toCell(sheet, row, col++, dateTimeFormat.parse(rs.getString("date_save")), cellStyleDateTime);
+                toCell(sheet, row, col++, rs.getString("name_road"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("num_tch"), cellStyle);
+                toCell(sheet, row, col++, rs.getString("ver_po"), cellStyle);
+                toCell(sheet, row, col++, dateFormat.parse(rs.getString("date_map")), cellStyleDateTime);
+                toCell(sheet, row, col++, rs.getInt("is_shed_load"), cellStyle);
+                toCell(sheet, row, col++, rs.getInt("num_section"), cellStyle);
             }
-            toCell(sheet, row, col_en++, rs.getInt("act"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
-            toCell(sheet, row, col_en++, rs.getInt("rec"), getStyle(sheet, CellStyle.ALIGN_LEFT, true));
+            toCell(sheet, row, col_en++, rs.getInt("act"), cellStyle);
+            toCell(sheet, row, col_en++, rs.getInt("rec"), cellStyle);
 
             preId = curId;
         }
@@ -287,7 +290,7 @@ public class ExcelReports {
      * @return - true если строк больше максимального
      */
     private boolean showMessMoreMax(long cnt) {
-        final int MAX_CNT = 100000;
+        final int MAX_CNT = 1000000;
         if (cnt > MAX_CNT) {
             String mess = String.format("Запрос имеет %d строк!\n" +
                     "Рекомендуется выбрать конкретный локомотив\n" +
@@ -511,6 +514,7 @@ public class ExcelReports {
     }
 
     public static void toCell(XSSFSheet sheet, int nRow, int nCol, String val, CellStyle style) {
+        if (val == null) val = "";
         Cell cell = makeCell(sheet, nRow, nCol);
         if (style != null) cell.setCellStyle(style);
 
