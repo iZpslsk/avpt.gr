@@ -186,6 +186,11 @@ public class Train {
     private final VscDiagnostic slaveLinkModem = new VscDiagnostic();   // Связь по дополнительному каналу с модемом (%)
     private final VscDiagnostic slaveLinkVSC = new VscDiagnostic();     // Связь по дополнительному каналу между локомотивами (%)
     private final VscDiagnostic slaveIsOn = new VscDiagnostic();        // Включение доп канала (%)
+    private final VscDiagnostic modeManeuver = new VscDiagnostic();     // Маневровый режим (%)
+    private final VscDiagnostic autoDrive = new VscDiagnostic();        // Автоведение (%)
+    private final VscDiagnostic chainOff = new VscDiagnostic();         // выходные цепи (%)
+    private final VscDiagnostic banPT = new VscDiagnostic();            // запрет пневматических тормозов (%)
+
     private boolean isTestThrust;                                       // тест тяги не пройден
     private boolean isTestBrake;                                        // тест тормозов не пройден
     private long uMax;                                                  // максимальное напряжение контактной сети
@@ -1231,6 +1236,22 @@ public class Train {
         return slaveIsOn;
     }
 
+    public VscDiagnostic getModeManeuver() {
+        return modeManeuver;
+    }
+
+    public VscDiagnostic getAutoDrive() {
+        return autoDrive;
+    }
+
+    public VscDiagnostic getChainOff() {
+        return chainOff;
+    }
+
+    public VscDiagnostic getBanPT() {
+        return banPT;
+    }
+
     public boolean isTestThrust() {
         return isTestThrust;
     }
@@ -1459,11 +1480,11 @@ public class Train {
     public int getIavprtIsOk() {
         if (isIsavprt()) {
             if(getMainLinkModem().getPercent() > 97)
-                return 1;
+                return 0x8000;
             else
                 return 0;
         }
-        return -1;
+        return 0;
     }
 
     /**

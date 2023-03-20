@@ -642,6 +642,15 @@ public class ArrTrains {
                     // связь по дополнительному каналу
                     if (block32_21_4.getAdditionChannel() == 1) train.getSlaveLinkVSC().incCntFirst();
                     else train.getSlaveLinkVSC().incCntSecond();
+                    // маневровые работы
+                    if (block32_21_4.getManeuver() == 1) train.getModeManeuver().incCntFirst();
+                    else train.getModeManeuver().incCntSecond();
+                    // автоведение
+                    if (block32_21_4.getAuto() == 1) train.getAutoDrive().incCntFirst();
+                    else train.getAutoDrive().incCntSecond();
+                    // отключены выходные цепи
+                    if (block32_21_4.getChainOff() == 1) train.getChainOff().incCntFirst();
+                    else train.getChainOff().incCntSecond();
 
                     if (block32_21_4.getTestTractCorrupt() == 0) train.setTestThrust(true);   // тест тяги не пройден
                     if (block32_21_4.getTestBrakeCorrupt() == 0) train.setTestBrake(true);    // тест тормозов не пройден
@@ -704,6 +713,12 @@ public class ArrTrains {
                     // Включение доп канала
                     if (block32_1D_D.getAdditionalChenOn() == 1) train.getSlaveIsOn().incCntFirst();
                     else train.getSlaveIsOn().incCntSecond();
+                }
+                if (curSubId_1D == 0x04) {
+                    Block32_1D_4 block32_1D_4 = new Block32_1D_4(arrBlock32.get(i).getValues());
+                    // запрет превматического торможения
+                    if (block32_1D_4.getBanPT() == 1) train.getBanPT().incCntFirst();
+                    else train.getBanPT().incCntSecond();
                 }
             }
 

@@ -513,7 +513,7 @@ public class DataToBase {
                         "cast(? as bigint), " +     //7
                         "cast(? as bigint), " +     //8
                         "cast(? as timestamp), " +  //9
-                        "cast(? as bit), " +        //10
+                        "cast(? as bit(16)), " +        //10
                         "cast(? as real), " +       //11
                         "cast(? as real), " +       //12
                         "cast(? as real), " +       //13
@@ -543,7 +543,18 @@ public class DataToBase {
             prepStat.setLong(POINTER_SYSTEM_CONFIG_RPDA , -1); // Указатель комплектации системы РПДА (РПДА-T, РПДА-П, РПДА-Г), в зависимости от типа тягового состава (берется с картриджа)
             String timeStampStr = UtilsArmG.getTimestampStr(train.getDateTimeEnd());
             prepStat.setString(DATE_TIME_END_SHIFT, timeStampStr);  // Дата и время окончания смены
-            prepStat.setLong(E_Invalidate,Math.max(train.getIavprtIsOk(), 0));
+
+            int testThrust = train.isTestThrust() ? 0 : 0x0001;                         // тест тяги не пройден
+            int testBrake = train.isTestBrake() ? 0 :   0x0002;                         // тест торможения не пройден
+            int mainLinkVSC = train.getMainLinkVSC().getPercent() > 50 ? 0 : 0x0004;    // связь по основному каналу между локомотивами отсутствует
+            int slaveLinkVSC = train.getSlaveLinkVSC().getPercent() > 50 ? 0 : 0x0008;  // связь по дополнительному каналу между локомотивами отсутствует
+            int autoDrive = train.getAutoDrive().getPercent() > 50 ? 0 : 0x0010;        // автоведение отсутствует
+            int modeManeuver = train.getModeManeuver().getPercent() > 50 ? 0x0020 : 0;  // сигнал маневровые работы не отключен
+            int chainOff = train.getChainOff().getPercent() > 50 ? 0x0040 : 0;          // отключены выходные цепи
+            int banPT = train.getBanPT().getPercent() > 50 ? 0x0080 : 0;                // запрет пневматического торможения
+
+            prepStat.setLong(E_Invalidate, train.getIavprtIsOk()
+                | testThrust | testBrake | mainLinkVSC | slaveLinkVSC | autoDrive |modeManeuver | chainOff | banPT);
             prepStat.setDouble(x_Common, train.getDistance());
             prepStat.setDouble(x_SavpeAuto, train.getDistance_auto());
             prepStat.setDouble(x_SavpePrompt, train.getDistance_prompt());

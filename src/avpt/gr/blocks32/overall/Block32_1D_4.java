@@ -7,7 +7,7 @@ import static avpt.gr.common.UtilsArmG.toUnsignedInt;
  */
 public class Block32_1D_4 {
 
-    private byte[] values;
+    private final byte[] values;
 
     public Block32_1D_4(byte[] values) {
         this.values = values;
