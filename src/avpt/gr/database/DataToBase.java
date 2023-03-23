@@ -119,7 +119,8 @@ public class DataToBase {
                 long idUnit = insertUnit(train, codeRoad, codeDepo, idRoute, idUser, idDriver, idTypeMove, idImage, guidFile);
                 if (idUnit == -1) {
                     errCode = "312";
-                    errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_ROUTE_UNITS\" или запись дублируется";
+                    errMess = "Файл является дубликатом уже имеющихся данных";
+//                    errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_ROUTE_UNITS\" или запись дублируется";
                     continue;
                 }
 

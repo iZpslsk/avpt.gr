@@ -239,6 +239,7 @@ public class ExcelReports {
         int col_en = 0;
         CellStyle cellStyle = getStyle(sheet, CellStyle.ALIGN_LEFT, true);
         CellStyle cellStyleDateTime = getStyleDateTime(book, CellStyle.ALIGN_LEFT, true);
+        CellStyle cellStyleDate = getStyleDate(book, CellStyle.ALIGN_LEFT, true);
         while (rs.next()) {
             curId = rs.getInt("train_id");
             int num = rs.getInt("num");
@@ -251,13 +252,14 @@ public class ExcelReports {
                 toCell(sheet, row, col++, rs.getString("name_type_loc"), cellStyle);
                 toCell(sheet, row, col++, rs.getInt("num_loc"), cellStyle);
                 toCell(sheet, row, col++, rs.getString("stations_start_end_name"), cellStyle);
-                toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("work") / 1000.0, 3), cellStyle);
+                toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("work") / 1000.0, 2), cellStyle);
                 toCell(sheet, row, col++, rs.getInt("distance") / 1000.0, cellStyle);
                 toCell(sheet, row, col++, rs.getInt("distance_auto") / 1000.0, cellStyle);
                 toCell(sheet, row, col++, rs.getInt("distance_auto_percent"), cellStyle);
                 toCell(sheet, row, col++, rs.getInt("distance_prompt") / 1000.0, cellStyle);
                 toCell(sheet, row, col++, rs.getInt("distance_prompt_percent"), cellStyle);
-                toCell(sheet, row, col++, getDurationTime(rs.getInt("seconds")), cellStyle);
+//                toCell(sheet, row, col++, getDurationTime(rs.getInt("seconds")), cellStyle);
+                toCell(sheet, row, col++, UtilsArmG.round(rs.getInt("seconds") / 3600.0, 2), cellStyle);
                 col_en = col;
                 col += 8;
                 toCell(sheet, row, col++, UtilsArmG.round(rs.getDouble("speed"), 2), cellStyle);
@@ -273,7 +275,7 @@ public class ExcelReports {
                 toCell(sheet, row, col++, rs.getString("name_road"), cellStyle);
                 toCell(sheet, row, col++, rs.getInt("num_tch"), cellStyle);
                 toCell(sheet, row, col++, rs.getString("ver_po"), cellStyle);
-                toCell(sheet, row, col++, dateFormat.parse(rs.getString("date_map")), cellStyleDateTime);
+                toCell(sheet, row, col++, dateFormat.parse(rs.getString("date_map")), cellStyleDate);
                 toCell(sheet, row, col++, rs.getInt("is_shed_load"), cellStyle);
                 toCell(sheet, row, col++, rs.getInt("num_section"), cellStyle);
             }
