@@ -514,7 +514,7 @@ public class DataToBase {
                         "cast(? as bigint), " +     //7
                         "cast(? as bigint), " +     //8
                         "cast(? as timestamp), " +  //9
-                        "cast(? as bit(16)), " +        //10
+                        "cast(? as bit(1)), " +     //10
                         "cast(? as real), " +       //11
                         "cast(? as real), " +       //12
                         "cast(? as real), " +       //13
@@ -545,17 +545,19 @@ public class DataToBase {
             String timeStampStr = UtilsArmG.getTimestampStr(train.getDateTimeEnd());
             prepStat.setString(DATE_TIME_END_SHIFT, timeStampStr);  // Дата и время окончания смены
 
-            int testThrust = train.isTestThrust() ? 0 : 0x0001;                         // тест тяги не пройден
-            int testBrake = train.isTestBrake() ? 0 :   0x0002;                         // тест торможения не пройден
-            int mainLinkVSC = train.getMainLinkVSC().getPercent() > 50 ? 0 : 0x0004;    // связь по основному каналу между локомотивами отсутствует
-            int slaveLinkVSC = train.getSlaveLinkVSC().getPercent() > 50 ? 0 : 0x0008;  // связь по дополнительному каналу между локомотивами отсутствует
-            int autoDrive = train.getAutoDrive().getPercent() > 50 ? 0 : 0x0010;        // автоведение отсутствует
-            int modeManeuver = train.getModeManeuver().getPercent() > 50 ? 0x0020 : 0;  // сигнал маневровые работы не отключен
-            int chainOff = train.getChainOff().getPercent() > 50 ? 0x0040 : 0;          // отключены выходные цепи
-            int banPT = train.getBanPT().getPercent() > 50 ? 0x0080 : 0;                // запрет пневматического торможения
+//            int testThrust = train.isTestThrust() ? 0 : 0x0001;                         // тест тяги не пройден
+//            int testBrake = train.isTestBrake() ? 0 :   0x0002;                         // тест торможения не пройден
+//            int mainLinkVSC = train.getMainLinkVSC().getPercent() > 50 ? 0 : 0x0004;    // связь по основному каналу между локомотивами отсутствует
+//            int slaveLinkVSC = train.getSlaveLinkVSC().getPercent() > 50 ? 0 : 0x0008;  // связь по дополнительному каналу между локомотивами отсутствует
+//            int autoDrive = train.getAutoDrive().getPercent() > 50 ? 0 : 0x0010;        // автоведение отсутствует
+//            int modeManeuver = train.getModeManeuver().getPercent() > 50 ? 0x0020 : 0;  // сигнал маневровые работы не отключен
+//            int chainOff = train.getChainOff().getPercent() > 50 ? 0x0040 : 0;          // отключены выходные цепи
+//            int banPT = train.getBanPT().getPercent() > 50 ? 0x0080 : 0;                // запрет пневматического торможения
+//
+//            prepStat.setLong(E_Invalidate, train.getIavprtIsOk()
+//                | testThrust | testBrake | mainLinkVSC | slaveLinkVSC | autoDrive |modeManeuver | chainOff | banPT);
 
-            prepStat.setLong(E_Invalidate, train.getIavprtIsOk()
-                | testThrust | testBrake | mainLinkVSC | slaveLinkVSC | autoDrive |modeManeuver | chainOff | banPT);
+            prepStat.setLong(E_Invalidate, train.getIavprtIsOk());
             prepStat.setDouble(x_Common, train.getDistance());
             prepStat.setDouble(x_SavpeAuto, train.getDistance_auto());
             prepStat.setDouble(x_SavpePrompt, train.getDistance_prompt());

@@ -1480,7 +1480,8 @@ public class Train {
     public int getIavprtIsOk() {
         if (isIsavprt()) {
             if(getMainLinkModem().getPercent() > 97)
-                return 0x8000;
+              //  return 0x8000;
+                return 1;
             else
                 return 0;
         }
