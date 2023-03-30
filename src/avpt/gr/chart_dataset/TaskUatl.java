@@ -9,17 +9,20 @@ public class TaskUatl extends SeriesTasks {
     public static final int UATL_COMMAND_OFF = 0;   // отключить
     public static final int UATL_COMMAND_STEP1 = 1; // ступень 1
     public static final int UATL_COMMAND_STEP2 = 2; // ступень 2
+    public static final int UATL_COMMAND_UNKNOWN = 255; // неизвестно
 
     // режимы управления
     public static final int UATL_MODE_OFF = 0;   // отключено
     public static final int UATL_MODE_AUTO = 1;  // авто
     public static final int UATL_MODE_MANUAL = 2;// ручной
     public static final int UATL_MODE_AZ = 3;    // АЗ
+    public static final int UATL_MODE_UNKNOWN = 255; // неизвестно
 
     // режим работы
     public static final int UATL_WORK_OFF = 0;  //  отключен
     public static final int UATL_WORK_STEP1 = 1;//  ступень 1
     public static final int UATL_WORK_STEP2 = 2;//  ступень 2
+    public static final int UATL_WORK_UNKNOWN = 255;// неизвестно
 
     // режимы работы
 
@@ -34,17 +37,20 @@ public class TaskUatl extends SeriesTasks {
                 getMapPaints(2).put(UATL_COMMAND_OFF, new Color(0x626872));
                 getMapPaints(2).put(UATL_COMMAND_STEP1, new Color(0x2B5E2F));
                 getMapPaints(2).put(UATL_COMMAND_STEP2, new Color(0x276573));
+                getMapPaints(2).put(UATL_COMMAND_UNKNOWN, new Color(0x0E1517));
                 break;
             case 0:
                 getMapPaints(0).put(UATL_MODE_OFF, new Color(0x626872));
                 getMapPaints(0).put(UATL_MODE_AUTO, new Color(0xC3A14B));
                 getMapPaints(0).put(UATL_MODE_MANUAL, new Color(0x0F1EC7));
                 getMapPaints(0).put(UATL_MODE_AZ, new Color(0x420FC4));
+                getMapPaints(0).put(UATL_MODE_UNKNOWN, new Color(0x0E1517));
                 break;
             case  1:
                 getMapPaints(1).put(UATL_WORK_OFF, new Color(0x626872));
                 getMapPaints(1).put(UATL_WORK_STEP1, new Color(0x2B5E2F));
                 getMapPaints(1).put(UATL_WORK_STEP2, new Color(0x276573));
+                getMapPaints(1).put(UATL_WORK_UNKNOWN, new Color(0x0E1517));
                 break;
         }
     }
@@ -74,6 +80,7 @@ public class TaskUatl extends SeriesTasks {
             case UATL_COMMAND_STEP2:
                 result = "ступень 2";
                 break;
+          //  default: result = String.valueOf(val);
         }
         return " комманда управления: " + result;
     }
@@ -93,6 +100,7 @@ public class TaskUatl extends SeriesTasks {
             case UATL_MODE_AZ:
                 result = "режим «А3»";
                 break;
+         //   default: result = String.valueOf(val);
         }
         return " режим управления   : " + result;
     }
@@ -109,6 +117,7 @@ public class TaskUatl extends SeriesTasks {
             case UATL_WORK_STEP2:
                 result = "ступень 2";
                 break;
+         //   default: result = String.valueOf(val);
         }
         return " режим работы       : " + result;
     }
