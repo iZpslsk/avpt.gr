@@ -14,6 +14,7 @@ public class WeightBlocks {
     public final static int W_MAP = 70 * W_LINE / 100;
     public final static int W_SIGNAL = 70 * W_LINE / 100;
     public final static int W_GANTT = 5 * W_LINE / 100;
+    public final static int W_GANTT_UATL = 10 * W_LINE / 100;
     public final static int W_PROF = 20 * W_LINE / 100;
     public final static int W_POS = 20 * W_LINE / 100;
     public final static int W_KEY = 200 * W_LINE / 100;
@@ -94,7 +95,7 @@ public class WeightBlocks {
     private static int weight_pneumatic_usavp = W_GANTT;
     private static boolean visiblePneumatic_usavp = false;
 
-    private static int weight_uatl = W_GANTT;
+    private static int weight_uatl = W_GANTT_UATL;
     private static boolean visibleUatl = false;
 
     private static int weight_push_key = W_KEY;
@@ -1179,7 +1180,7 @@ public class WeightBlocks {
         }
         else if (subplot.getRangeAxis().getLabel().equals(UATL_LABEL)) {
             subplot.setWeight(EMPTY);
-            setWeight_uatl(W_GANTT);
+            setWeight_uatl(W_GANTT_UATL);
             setVisibleUatl(false);
         }
         else if (subplot.getRangeAxis().getLabel().equals(KEYS_LABEL)) {

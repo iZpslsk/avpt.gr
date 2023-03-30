@@ -1041,7 +1041,7 @@ public class ChartArm extends JFreeChart {
                     curRange.setRange(lower, upper);
                     //
                     XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
-                    Boolean isView = mapVisible.get((String)ser.getKey());
+                    Boolean isView = mapVisible.get(((LineKeys)ser.getKey()).getName());
 
                     if (!ser.getKey().equals(LineKeys.MAP_DIRECT)
                             && !ser.getKey().equals(LineKeys.MAP_LINE)

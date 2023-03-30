@@ -14,6 +14,7 @@ public class TaskUatl extends SeriesTasks {
     public static final int UATL_MODE_OFF = 0;   // отключено
     public static final int UATL_MODE_AUTO = 1;  // авто
     public static final int UATL_MODE_MANUAL = 2;// ручной
+    public static final int UATL_MODE_AZ = 3;    // АЗ
 
     // режим работы
     public static final int UATL_WORK_OFF = 0;  //  отключен
@@ -38,6 +39,7 @@ public class TaskUatl extends SeriesTasks {
                 getMapPaints(0).put(UATL_MODE_OFF, new Color(0x626872));
                 getMapPaints(0).put(UATL_MODE_AUTO, new Color(0xC3A14B));
                 getMapPaints(0).put(UATL_MODE_MANUAL, new Color(0x0F1EC7));
+                getMapPaints(0).put(UATL_MODE_AZ, new Color(0x420FC4));
                 break;
             case  1:
                 getMapPaints(1).put(UATL_WORK_OFF, new Color(0x626872));
@@ -87,6 +89,9 @@ public class TaskUatl extends SeriesTasks {
                 break;
             case UATL_MODE_MANUAL:
                 result = "ручной";
+                break;
+            case UATL_MODE_AZ:
+                result = "режим «А3»";
                 break;
         }
         return " режим управления   : " + result;

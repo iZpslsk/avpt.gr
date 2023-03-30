@@ -188,9 +188,9 @@ public class Block32_21_1 {
 
     // дата
     public LocalDate getDateMap() throws DateTimeException {
-        int year = getYear();
-        int month = getMonth();
-        int day = getDay();
+        int year = getYearMap();
+        int month = getMonthMap();
+        int day = getDayMap();
         try {
             return LocalDate.of(year, month, day);
         } catch (DateTimeException e) {

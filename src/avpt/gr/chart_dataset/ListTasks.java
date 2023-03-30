@@ -19,7 +19,7 @@ public class ListTasks {
     private final ArrayList<ItemTask> listPneumaticSrcTask = new ArrayList<ItemTask>();     //  статус блок
 
     // уатл
-    private final ArrayList<ItemTask> listUatlCommand = new ArrayList<ItemTask>();  // Команды управления
+    private final ArrayList<ItemTask> listUatlCommand = new ArrayList<ItemTask>();  // Команды управления УАТЛ
     private final ArrayList<ItemTask> listUatlMode = new ArrayList<ItemTask>();     // Режимы управления УАТЛ
     private final ArrayList<ItemTask> listUatlWork = new ArrayList<ItemTask>();     // Режимы работы УАТЛ
 
