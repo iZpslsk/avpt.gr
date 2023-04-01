@@ -267,13 +267,16 @@ public class ArrTrains {
         tabNum = block32_21_1.getTabNum();
         cntWags = block32_21_1.getNumWags();
         cntConditionWags = block32_21_1.getNumConditionalWags();
-        if (block32_21_1.getDate().getYear() > 2005)
-            dateInitUsavp = block32_21_1.getDate();
+
+        LocalDate date = block32_21_1.getDate();
+        if (date != null && date.getYear() > 2005)
+            dateInitUsavp = date;
         else
             dateInitUsavp = null;
 
-        if (block32_21_1.getDateMap().getYear() > 2000)
-            dateMapUsavp = block32_21_1.getDateMap();
+        date = block32_21_1.getDateMap();
+        if (date != null && date.getYear() > 2000)
+            dateMapUsavp = date;
         else
             dateMapUsavp = null;
 
