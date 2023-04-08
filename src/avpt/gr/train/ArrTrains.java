@@ -271,14 +271,14 @@ public class ArrTrains {
         LocalDate date = block32_21_1.getDate();
         if (date != null && date.getYear() > 2005)
             dateInitUsavp = date;
-        else
-            dateInitUsavp = null;
+//        else
+//            dateInitUsavp = null;
 
         date = block32_21_1.getDateMap();
         if (date != null && date.getYear() > 2000)
             dateMapUsavp = date;
-        else
-            dateMapUsavp = null;
+//        else
+//            dateMapUsavp = null;
 
         coordinate_init = block32_21_1.getCoordinate();
         statIsavprt = block32_21_1.getStatusIsavprt();
