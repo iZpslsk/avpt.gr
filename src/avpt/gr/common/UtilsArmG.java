@@ -10,6 +10,7 @@ import org.threeten.bp.format.DateTimeFormatter;
 import avpt.gr.start.StartFrame;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.*;
@@ -756,6 +757,19 @@ public class UtilsArmG {
         int[] result = new int[arr.length + n];
         System.arraycopy(arr, 0, result, 0, arr.length);
         return result;
+    }
+
+    /**
+     * свойства колонки
+     * @param column - колонка таблицы
+     * @param width	- ширина колонки
+     * @param header - заголовок
+     */
+    public static void setPropColumn(TableColumn column, int width, String header) {
+        column.setMinWidth(width / 2);
+        column .setMaxWidth(width * 2);
+        column.setPreferredWidth(width);
+        column.setHeaderValue(header);
     }
 
 }

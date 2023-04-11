@@ -231,8 +231,6 @@ class SearchMenu extends JPopupMenu {
     }
 
     private void initItem(JMenu menu, Item item) {
-        if (item.subId != 0)
-            System.out.println(item.getSubId());
         if (blocks.isNotExistsIdBl(item.getId(), item.getSubId())) return;
         buttonGroup.add(item);
         menu.add(item);

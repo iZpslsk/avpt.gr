@@ -1,7 +1,6 @@
 package avpt.gr.dialogs.packing;
 
 import avpt.gr.common.UtilsArmG;
-import avpt.gr.components.HexTablePan;
 import avpt.gr.dialogs.FileChooserRu;
 
 import javax.swing.*;
@@ -12,6 +11,8 @@ import java.awt.event.WindowEvent;
 import java.io.File;
 import java.util.Collection;
 import java.util.prefs.Preferences;
+
+import static avpt.gr.common.UtilsArmG.setPropColumn;
 
 public class PackHandling extends JDialog {
 
@@ -75,9 +76,7 @@ public class PackHandling extends JDialog {
         table.setSelectionBackground(new Color(0x202563));
         final Font fontDef = new Font("Monospaced", table.getFont().getStyle(), 12);
         table.setFont(fontDef);
-        HexTablePan.setPropColumn(table.getColumnModel().getColumn(0), 50, "");
-        // HexTablePan.setPropColumn(table.getColumnModel().getColumn(1), 200, "файл поездки");
-        //table.setBackground(Color.BLACK);
+        setPropColumn(table.getColumnModel().getColumn(0), 50, "");
         panel.add(table, BorderLayout.CENTER);
     }
 

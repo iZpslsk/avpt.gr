@@ -1,7 +1,6 @@
 package avpt.gr.start;
 
 import avpt.gr.common.GBC;
-import avpt.gr.components.HexTablePan;
 import avpt.gr.dialogs.AboutDialog;
 import avpt.gr.dialogs.TrainAnalysis;
 import avpt.gr.dialogs.packing.PackDialog;
@@ -42,25 +41,25 @@ public class StartFrame extends JFrame {
         // окно в центре экрана
         Toolkit kit = Toolkit.getDefaultToolkit();
         Dimension screenSize = kit.getScreenSize();
-        if (screenSize.width < 1990 ) {
-            sizeFont = 12;
-            HexTablePan.hexWidthNumBlk = 70;
-            HexTablePan.hexWidthIdBlk = 55;
-            HexTablePan.hexWidthSecond = 70;
-            HexTablePan.hexWidthCell =30;
-        } else if (screenSize.width < 3500) {
-            sizeFont = 16;
-            HexTablePan.hexWidthNumBlk = 100;
-            HexTablePan.hexWidthIdBlk = 70;
-            HexTablePan.hexWidthSecond = 100;
-            HexTablePan.hexWidthCell =40;
-        } else {
-            sizeFont = 18;
-            HexTablePan.hexWidthNumBlk = 120;
-            HexTablePan.hexWidthIdBlk = 85;
-            HexTablePan.hexWidthSecond = 120;
-            HexTablePan.hexWidthCell = 50;
-        }
+//        if (screenSize.width < 1990 ) {
+//            sizeFont = 12;
+//            HexTablePan.hexWidthNumBlk = 70;
+//            HexTablePan.hexWidthIdBlk = 55;
+//            HexTablePan.hexWidthSecond = 70;
+//            HexTablePan.hexWidthCell =30;
+//        } else if (screenSize.width < 3500) {
+//            sizeFont = 16;
+//            HexTablePan.hexWidthNumBlk = 100;
+//            HexTablePan.hexWidthIdBlk = 70;
+//            HexTablePan.hexWidthSecond = 100;
+//            HexTablePan.hexWidthCell =40;
+//        } else {
+//            sizeFont = 18;
+//            HexTablePan.hexWidthNumBlk = 120;
+//            HexTablePan.hexWidthIdBlk = 85;
+//            HexTablePan.hexWidthSecond = 120;
+//            HexTablePan.hexWidthCell = 50;
+//        }
 
         setLocation(screenSize.width / 2 - DEFAULT_WIDTH / 2, screenSize.height / 2 - DEFAULT_HEIGHT / 2);
         // иконки окна и логотипа

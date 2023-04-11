@@ -16,7 +16,6 @@ import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.chart_dataset.ChartDataset;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
-import avpt.gr.components.HexTablePan;
 import avpt.gr.components.hex_tab.HexTab;
 import avpt.gr.graph.ChartPanelArm;
 import org.threeten.bp.LocalDateTime;

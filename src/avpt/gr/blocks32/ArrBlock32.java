@@ -3,8 +3,6 @@ package avpt.gr.blocks32;
 import avpt.gr.blocks32.asim.Block32_C0_0;
 import avpt.gr.blocks32.overall.Block32_16_56;
 import avpt.gr.blocks32.overall.Block32_21_1;
-import avpt.gr.blocks32.passenger.Block32_26_66_96;
-import avpt.gr.blocks32.passenger.Block32_76;
 import avpt.gr.train.Train;
 
 import java.io.IOException;
@@ -29,11 +27,8 @@ public class ArrBlock32 {
 
     // присутствует ли данный тип движения в файле поездки
     private boolean isASIM;
-    private boolean isP;
-    private boolean isPT;
     private boolean isG;
-    private boolean isNotAsim;
-    private Set<Integer> setIdBlk = new HashSet<Integer>();
+    private final Set<Integer> setIdBlk = new HashSet<Integer>();
 
     /**
      * @param name файл поездки
@@ -48,7 +43,6 @@ public class ArrBlock32 {
             throw new IOException(name +
                     " (Формат файла не определен)");
         fillArrayList();
-       // WeightBlocks.setDefaultAsim(isASIM);
         if (arrayList.size() == 0)
             throw new IOException(
                     String.format("%s (Неизвестный формат файла поездки!)", name));
@@ -60,9 +54,6 @@ public class ArrBlock32 {
     	try {
             channel = file.getChannel();
     		len = (int)channel.size();
-//            if (len > 160 * 1000000)
-//                throw new IOException(
-//                        String.format("%s (файл поездки слишком велик!)", name));
     		buf = channel.map(FileChannel.MapMode.READ_ONLY, 0, len);
     	}
     	finally {
@@ -82,7 +73,6 @@ public class ArrBlock32 {
         int cnt_p = 0;
         int cnt_pt = 0;
         int cnt_g = 0;
-        int cnt_not_asim = 0;
         int cnt_everything = 0;
         while (buf.hasRemaining()) {
             if ((buf.position() + Block32.SIZE_BLOCK) > len)
@@ -103,17 +93,10 @@ public class ArrBlock32 {
                 }
 
                 if (block32.getId() != 0x21) cnt_everything++; // игнориоуем 0x21 посылку
-//                if (((block32.getId() == 0x20) || (block32.getId() >= 0x22 && block32.getId() <= 0x2F)) ||
-//                    (block32.getId() >= 0x40 && block32.getId() <= 0x4F) ||
-//                    (block32.getId() >= 0x60 && block32.getId() <= 0x6F) ||
-//                    (block32.getId() == 0xAA) ||
-//                    (block32.getId() >= 0x90 && block32.getId() <= 0x9F)) cnt_p++;  // p
                 if ((block32.getId() >= 0x10 && block32.getId() <= 0x1F) ||
                     (block32.getId() >= 0x50 && block32.getId() <= 0x5F)) cnt_g++;   // g
-//                if (block32.getId() >= 0x70 && block32.getId() <= 0x7F) cnt_pt++;   // pt
                 if (block32.getId() >= 0xC0 && block32.getId() <= 0xC7) cnt_asim++; // asim
-                else cnt_not_asim++;
-               // setIdBlk.add(block32.getId());
+//                else cnt_not_asim++;
             }
             else {
                 if (++cnt_shift < 3200000)
@@ -122,21 +105,11 @@ public class ArrBlock32 {
         }
         double percent_asim = (double) cnt_asim / (cnt_everything) * 100.0;
         double percent_g = (double) cnt_g / (cnt_everything) * 100.0;
-        double percent_p = (double) cnt_p / (cnt_everything) * 100.0;
-        double percent_pt = (double) cnt_pt / (cnt_everything) * 100.0;
         isASIM = percent_asim > 0;
-        isP = percent_p > 0;
-        isPT = percent_pt > 0;
         isG = percent_g > 0;
-        isNotAsim = percent_asim < 100;
 
         buf.clear();
         buf = null;
-
-//        Cleaner cleaner = ((sun.nio.ch.DirectBuffer) buf).cleaner();
-//        if (cleaner != null) {
-//            cleaner.clean();
-//        }
     }
 
     /**
@@ -209,15 +182,6 @@ public class ArrBlock32 {
             if (maxCnt > 0) cnt++;
         }
         while (nBl32 > 0 && (arrayList.get(nBl32).getId() != idType || curSubType != subType) && cnt <= maxCnt);
-//        }
-//        else {
-//            do {
-//                --nBl32;
-//                curSubType = Block32.getSubId_ASIM(arrayList.get(nBl32).getValues());
-//                if (maxCnt > 0) cnt++;
-//            }
-//            while (nBl32 > 0 && (arrayList.get(nBl32).getId() != idType || curSubType != subType) && cnt <= maxCnt);
-//        }
 
     	if (arrayList.get(nBl32).getId() == idType && curSubType == subType)
     		result = nBl32;
@@ -268,9 +232,6 @@ public class ArrBlock32 {
         }
         if (isASIM) {
             return idType == 0xC0 || idType == 0xC2 || idType == 0xC3 || idType == 0xC5;
-        }
-        if (isP) {
-            return idType == 0x1D || idType == 0x2D || idType == 0x5D || idType == 0x6D || idType == 0x9D;
         }
         return false;
     }
@@ -419,20 +380,7 @@ public class ArrBlock32 {
                     return block32_c0_0.getTypeLoc();
                 }
             }
-            if (isP && get(n).getId() == 0x26 || get(n).getId() == 0x66 || get(n).getId() == 0x96) {
-                    Block32_26_66_96 block32_26_66_96 = new Block32_26_66_96(get(n).getValues());
-                    return  block32_26_66_96.getTypeLoc();
-                }
-            if (isP && get(n).getId() == 0x76) {
-                Block32_76 block32_76 = new Block32_76(get(n).getValues());
-                return  block32_76.getTypeLoc();
-            }
         }
-//            if (get(n).getId() == 0x16 || get(n).getId() == 0x56) {
-//                Block32_16_56 block32_16_56 = new Block32_16_56(get(n).getValues());
-//                return block32_16_56.getTypeLoc();
-//            }
-//        }
         return -1;
     }
 
@@ -527,15 +475,6 @@ public class ArrBlock32 {
         return block32_21_1.getTypeLoc();
     }
 
-    public int getFirstType(int nBl) {
-        int type = getFirstTypeUSAVP(nBl);
-        if (type == -1)
-            type = getFirstTypeBr(nBl);
-        if (type == -1)
-            type = getFirstTypeASIM(nBl);
-        return type;
-    }
-
     /**
      * @return полное имя файла
      */
@@ -543,28 +482,8 @@ public class ArrBlock32 {
         return fileName;
     }
 
-    public boolean isASIM() {
-        return isASIM;
-    }
-
-    public boolean isNotAsim() {
-        return isNotAsim;
-    }
-
-    public boolean isP() {
-        return isP;
-    }
-
-    public boolean isPT() {
-        return isPT;
-    }
-
     public boolean isG() {
         return isG;
-    }
-
-    public boolean isExistsIdBlk(int idBlk) {
-        return setIdBlk.contains(idBlk);
     }
 
     /**

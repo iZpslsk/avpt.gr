@@ -1058,7 +1058,7 @@ public class ChartArrays {
         arrBlock32.get(index).setSecond(second_coordinate);
       //  arrBlock32.get(index).setDateTime(curDateTime_21);
         setDateTimeToArrBlock32(index);
-        arrBlock32.get(index).setCoordinate(coordinate);
+        arrBlock32.get(index).setCoordinate(cur_coordinate);
         arrBlock32.get(index).setKm(km);
         arrBlock32.get(index).setPk(pk);
         arrBlock32.get(index).setValLimTmp(tempLimit);
