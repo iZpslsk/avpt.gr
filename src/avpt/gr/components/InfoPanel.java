@@ -453,11 +453,11 @@ public class InfoPanel extends JPanel {
     private void invertViewLines() {
         if (keySelectedLine != null && chartArm != null) {
             CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot)chartArm.getXYPlot();
-            List subplotsList = cdPlot.getSubplots();
-            for (Object ob : subplotsList) {
+            for (Object ob : cdPlot.getSubplots()) {
                 XYPlot subplot = (XYPlot) ob;
                 XYDataset ds = subplot.getDataset(0);
                 XYItemRenderer rend = subplot.getRenderer();
+                double maxY = 0;
                 for (int i = 0; i < subplot.getSeriesCount(); i++) {
                     if (ds instanceof XYSeriesCollection) {
                         XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
@@ -469,32 +469,20 @@ public class InfoPanel extends JPanel {
                                 && key != LineKeys.POSITION
                                 && key != LineKeys.POSITION_S5k
                                 && key != LineKeys.WEAK_FIELD) {
-                                // сохраняем текущую шкалу
-                                ValueAxis curRange = subplot.getRangeAxis();
-                                Range range = curRange.getRange();
-                                double upper = range.getUpperBound();
-                                double lower = range.getLowerBound();
-//                                curRange.setRange(lower, upper);
-                                double maxY = ser.getMaxY();
-                        //    System.out.println("curY=" + upper + "; maxY=" + maxY + "; isVisible=" + rend.isSeriesVisible(i));
+                                    rend.setSeriesVisible(i, !rend.isSeriesVisible(i), true);
+                                    SeriesLines.getMapVisible().put(key.getName(), rend.isSeriesVisible(i));
+                                    WeightBlocks.setModified(true);
 
-//                            if (!rend.isSeriesVisible(i))
-//                                curRange.setRange(lower, maxY);
-                            rend.setSeriesVisible(i, !rend.isSeriesVisible(i), true);
-                        //    System.out.println("curY=" + upper + "; maxY=" + maxY + "; isVisible=" + rend.isSeriesVisible(i));
-//                            if (rend.isSeriesVisible(i) && upper <= maxY) {
-//                                curRange.setRange(lower, maxY);
-//                            }
-                            SeriesLines.getMapVisible().put(key.getName(), rend.isSeriesVisible(i));
-                            WeightBlocks.setModified(true);
-
-//                            double upper = subplot.getRangeAxis().getRange().getUpperBound();
-//                            double max_range = ser.getMaxY();
-////                            if (upper <= max_range && rend.isSeriesVisible(i))
-////                                subplot.getRangeAxis().setRange(0, max_range);
-//                            System.out.println(max_range + " " + upper + " " + rend.isSeriesVisible(i));
+                        }
+                        if (rend.isSeriesVisible(i)) {
+                            maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;
                         }
                     }
+                }
+                if (maxY > 0) {
+                    ValueAxis curRange = subplot.getRangeAxis();
+                    Range range = curRange.getRange();
+                    curRange.setRange(range.getLowerBound(), maxY + 3);
                 }
             }
         }
