@@ -95,17 +95,12 @@ public class ArrBlock32 {
                 cnt_shift = 0;
                 if ((block32.getId() >= 0x10 && block32.getId() <= 0x1F) || // g
                     (block32.getId() == 0x21) ||
- //                   (block32.getId() >= 0x20 && block32.getId() <= 0x2F) || // p
-//                    (block32.getId() >= 0x40 && block32.getId() <= 0x4F) || // p
                     (block32.getId() >= 0x50 && block32.getId() <= 0x5F) || // g
                     (block32.getId() == 0x61) ||
-//                    (block32.getId() >= 0x60 && block32.getId() <= 0x6F) || // p
-//                    (block32.getId() >= 0x70 && block32.getId() <= 0x7F) || // pt
-//                    (block32.getId() >= 0x90 && block32.getId() <= 0x9F) || // p
-//                     block32.getId() == 0xAA ||                             // p
-//                    (block32.getId() >= 0xF0 && block32.getId() <= 0xFF) || //
-                    (block32.getId() >= 0xC0 && block32.getId() <= 0xC7))   // asim
+                    (block32.getId() >= 0xC0 && block32.getId() <= 0xC7)) {  // asim
+                    addIdToSetId(block32);
                     arrayList.add(block32);
+                }
 
                 if (block32.getId() != 0x21) cnt_everything++; // игнориоуем 0x21 посылку
 //                if (((block32.getId() == 0x20) || (block32.getId() >= 0x22 && block32.getId() <= 0x2F)) ||
@@ -118,7 +113,7 @@ public class ArrBlock32 {
 //                if (block32.getId() >= 0x70 && block32.getId() <= 0x7F) cnt_pt++;   // pt
                 if (block32.getId() >= 0xC0 && block32.getId() <= 0xC7) cnt_asim++; // asim
                 else cnt_not_asim++;
-                setIdBlk.add(block32.getId());
+               // setIdBlk.add(block32.getId());
             }
             else {
                 if (++cnt_shift < 3200000)
@@ -153,6 +148,28 @@ public class ArrBlock32 {
     		return arrayList.get(nBl);
     	else
     		return null;
+    }
+
+    /**
+     * @param nBl - номер блока
+     * @return - секунда на номер блока
+     */
+    public int getSecond(int nBl) {
+        if (nBl >= 0 && nBl < arrayList.size())
+            return arrayList.get(nBl).getSecond();
+        else
+            return -1;
+    }
+
+    /**
+     * @param nBl - номер блока
+     * @return - метр на номер блока
+     */
+    public int getCoordinate(int nBl) {
+        if (nBl >= 0 && nBl < arrayList.size())
+            return arrayList.get(nBl).getCoordinate();
+        else
+            return -1;
     }
 
     /**
@@ -369,6 +386,19 @@ public class ArrBlock32 {
         return train;
     }
 
+    /**
+     * добавляем id и subId блока в множество блоков, существующих в поездке
+     * первые 8 бит - id
+     * следующие 8 бит - subId
+     * @param block32 - Block32
+     */
+    private void addIdToSetId(Block32 block32) {
+        int idBl = block32.getId();
+        int subIdBl = Block32.getSubId(idBl, block32.getValues());
+        int id = (subIdBl & 0xFF) << 8 | (idBl & 0xFF);   // 0..7 - id, 8..15 - subId
+        setIdBlk.add(id);
+    }
+
     public int getFirstTypeTrain(int nBl) {
         for (int n = nBl; n < size(); n++) {
 //            if (get(n).getId() == 0x56 || get(n).getId() == 0x16) {
@@ -535,5 +565,15 @@ public class ArrBlock32 {
 
     public boolean isExistsIdBlk(int idBlk) {
         return setIdBlk.contains(idBlk);
+    }
+
+    /**
+     * сущесвует ли блок с идентификатором idBl и subIdBl
+     * @param idBl - идентификатор блока
+     * @param subIdBl - доп идентификатор
+     * @return - да/нет
+     */
+    public boolean isNotExistsIdBl(int idBl, int subIdBl) {
+        return !setIdBlk.contains((idBl & 0xFF) | ((subIdBl & 0xFF) << 8));
     }
 }

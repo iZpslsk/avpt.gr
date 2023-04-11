@@ -5,8 +5,8 @@ import avpt.gr.chart_dataset.*;
 import avpt.gr.chart_dataset.keysEnum.LineKeys;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
-import avpt.gr.components.HexTablePan;
 import avpt.gr.components.ScrollBarArm;
+import avpt.gr.components.hex_tab.HexTab;
 import avpt.gr.maps.Limits;
 import avpt.gr.maps.Objects;
 import avpt.gr.maps.Profiles;
@@ -54,7 +54,7 @@ public class ChartArm extends JFreeChart {
     private final Limits limits;
     private final ChartDataset chartDataset;
     private final NumberAxis domainAxis;
-    private final HexTablePan hexTablePan;
+    private final HexTab hexTab;
     private final UtilsArmG.MutableDouble boundUpper;
     private boolean isTextAnnotationProfile = true;
     private boolean isAllAnnotationProfile;
@@ -188,7 +188,7 @@ public class ChartArm extends JFreeChart {
     public static final String SIGN_LINK_LABEL =        "Связь      ";
     public static final String SIGN_BHV_LABEL =         "Сигналы БХВ";
 
-    public ChartArm(ChartDataset chartDataset, HexTablePan hexTablePan, UtilsArmG.MutableDouble boundUpper) {
+    public ChartArm(ChartDataset chartDataset, HexTab hexTab, UtilsArmG.MutableDouble boundUpper) {
         super(new CombinedDomainXYPlot(new NumberAxis()));
         this.chartDataset = chartDataset;
         minDuration = 90;
@@ -197,7 +197,7 @@ public class ChartArm extends JFreeChart {
             minDuration *= 10;
             maxDuration *= 10;
         }
-        this.hexTablePan = hexTablePan;
+        this.hexTab = hexTab;
         this.boundUpper = boundUpper;
         this.trainLabelMarkers = new ArrayList();
         clearSubtitles();
@@ -896,7 +896,7 @@ public class ChartArm extends JFreeChart {
      * установка строки в таблице в соответсвии с положением вертикального курсора
      */
     public void setRowHexTab() {
-        if (hexTablePan == null) return;
+        if (hexTab == null) return;
         double x = getXMarker();
         int row;
         ArrBlock32 arrBlock32;
@@ -910,7 +910,7 @@ public class ChartArm extends JFreeChart {
             row = arrBlock32.searchIndexBySecond((int)x, 0, arrBlock32.size() - 1);
         }
       //  System.out.println((int)x + "_" + Math.abs(row));
-        hexTablePan.selectRow(Math.abs(row));
+        hexTab.selectRow(Math.abs(row));
     }
 
     /**

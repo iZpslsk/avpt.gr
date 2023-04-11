@@ -17,6 +17,7 @@ import avpt.gr.chart_dataset.ChartDataset;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
 import avpt.gr.components.HexTablePan;
+import avpt.gr.components.hex_tab.HexTab;
 import avpt.gr.graph.ChartPanelArm;
 import org.threeten.bp.LocalDateTime;
 
@@ -502,7 +503,7 @@ public class TrainAnalysis extends JDialog {
      * @param chartDataset -
      * @param hexTablePan -
      */
-    private void addChartPanelArm(ChartDataset chartDataset, HexTablePan hexTablePan) {
+    private void addChartPanelArm(ChartDataset chartDataset, JPanel hexTablePan) {
         int curVerticalSplitPos = -1; // текущая позиция сплиттера для chartPanelArm
         if (chartPanelArm != null) {
             curVerticalSplitPos = chartPanelArm.getVerticalSplitPos();
@@ -569,6 +570,12 @@ public class TrainAnalysis extends JDialog {
         toFront();
     }
 
+    private void hexTabToChartPan(ChartDataset chartDataset) {
+        final HexTab hexTab = new HexTab.Builder(arrBlock32).build();
+        hexTab.setVisible(false);
+        addChartPanelArm(chartDataset, hexTab);
+    }
+
     /**
      * пересоздать по координате или времени
      * @param isTime - если true то по времени, если false то по координате
@@ -577,9 +584,10 @@ public class TrainAnalysis extends JDialog {
         if (arrBlock32 == null) return;
         try {
             ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime);
-            HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-            hexTablePan.setVisible(false); //
-            addChartPanelArm(chartDataset, hexTablePan);
+            hexTabToChartPan(chartDataset);
+//            HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
+//            hexTablePan.setVisible(false); //
+//            addChartPanelArm(chartDataset, hexTablePan);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -598,9 +606,10 @@ public class TrainAnalysis extends JDialog {
                 UtilsArmG.checkSizeFile(fileName);
                 ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime);
                 arrBlock32 = chartDataset.getArrBlock32();
-                HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-                hexTablePan.setVisible(false); //
-                addChartPanelArm(chartDataset, hexTablePan);
+                hexTabToChartPan(chartDataset);
+//                HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
+//                hexTablePan.setVisible(false); //
+//                addChartPanelArm(chartDataset, hexTablePan);
                 if (chartDataset.getArrTrains().size() == 0)
                     JOptionPane.showMessageDialog(
                             this, "Поездки не сформированы!",
@@ -646,9 +655,10 @@ public class TrainAnalysis extends JDialog {
               UtilsArmG.checkSizeFile(fileName);
               ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime);
               arrBlock32 = chartDataset.getArrBlock32();
-              HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-              hexTablePan.setVisible(false); //
-              addChartPanelArm(chartDataset, hexTablePan);
+              hexTabToChartPan(chartDataset);
+//              HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
+//              hexTablePan.setVisible(false); //
+//              addChartPanelArm(chartDataset, hexTablePan);
               if (chartDataset.getArrTrains().size() == 0)
 //                throw (new IOException(mess_error));
                   JOptionPane.showMessageDialog(

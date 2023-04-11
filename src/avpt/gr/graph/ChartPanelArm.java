@@ -2,10 +2,10 @@ package avpt.gr.graph;
 
 import avpt.gr.chart_dataset.ChartDataset;
 import avpt.gr.common.UtilsArmG;
-import avpt.gr.components.HexTablePan;
 import avpt.gr.components.InfoPanel;
 import avpt.gr.components.ScrollBarArm;
 import avpt.gr.components.StatusPanelArm;
+import avpt.gr.components.hex_tab.HexTab;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
@@ -17,7 +17,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.text.ParseException;
 
 import static avpt.gr.common.UtilsArmG.*;
 import static avpt.gr.common.WeightBlocks.*;
@@ -33,7 +32,7 @@ public class ChartPanelArm extends JPanel {
     private final ChartArm chartArm;
     private final ChartPanel chartPanel;
     private final ScrollBarArm scrollBar;
-    private final HexTablePan hexTablePan;
+    private final HexTab hexTab;
     private final ChartDataset chartDataset;
     private final InfoPanel infoPanel;
     private final UtilsArmG.MutableDouble boundUpper; // тип для передаче по ссыл
@@ -56,18 +55,18 @@ public class ChartPanelArm extends JPanel {
 //    public static Font stationNameFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
 //    public static Font menuFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
 
-    public ChartPanelArm(final ChartDataset chartDataset, final HexTablePan hexTablePan) {
+    public ChartPanelArm(final ChartDataset chartDataset, final JPanel hexTab) {
         super(new BorderLayout());
         UIManager.put("Menu.font", menuFont);
         UIManager.put("MenuItem.font", menuFont);
         UIManager.put("RadioButtonMenuItem.font", menuFont);
         this.chartDataset = chartDataset;
-        this.hexTablePan = hexTablePan;
-        JTable table = hexTablePan.getTable();
-        table.setFocusable(false);
-        if (table.getRowCount() > 0) hexTablePan.selectRow(0);
+        this.hexTab = (HexTab) hexTab;
+//        JTable table = hexTablePan.getTable();
+//        table.setFocusable(false);
+//        if (table.getRowCount() > 0) hexTablePan.selectRow(0);
         boundUpper = new UtilsArmG.MutableDouble();
-        chartArm = new ChartArm(chartDataset, hexTablePan, boundUpper);
+        chartArm = new ChartArm(chartDataset, this.hexTab, boundUpper);
         scrollBar = new ScrollBarArm(chartArm);
         infoPanel = new InfoPanel(scrollBar, chartArm);
         StatusPanelArm statusPanel = new StatusPanelArm(this);
@@ -86,34 +85,44 @@ public class ChartPanelArm extends JPanel {
 //                double d = ((ChartPanelInheritor)chartPanel).doZoomByCrosshair(new Point(e.getX(), e.getY()), rotation);
 //            }
 //        });
-        splitPanVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hexTablePan, chartPanel);
+        splitPanVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hexTab, chartPanel);
         // отключаем панель с таблиицей при getDividerLocation() < 30 для обеспечения возможности закрытия сплитера
         splitPanVertical.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                if (splitPanVertical.getDividerLocation() > 30)
-                    hexTablePan.setVisible(true);
-                else
-                    hexTablePan.setVisible(false);
+                hexTab.setVisible(splitPanVertical.getDividerLocation() > 30);
             }
+//            public void propertyChange(PropertyChangeEvent evt) {
+//                if (splitPanVertical.getDividerLocation() > 30)
+//                    hexTablePan.setVisible(true);
+//                else
+//                    hexTablePan.setVisible(false);
+//            }
         });
         JSplitPane splitPanHorisontal = makeSplitPanHorisontal(splitPanVertical, infoPanel);
         add(splitPanHorisontal, BorderLayout.CENTER);
         setKeyEventMoveCursor();
 
         // событие смены выделенной строки таблицы
-        hexTablePan.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+        (this.hexTab).addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent event) {
-                try {
-                    hexTablePan.doChange();
-                } catch (ParseException e) {
-                    e.printStackTrace();
-                }
-                // установка вертикального курсора в соответствии с таблицей hexTab
+            public void valueChanged(ListSelectionEvent e) {
                 setMarkerByRowTab();
             }
         });
+
+//        hexTablePan.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+//            @Override
+//            public void valueChanged(ListSelectionEvent event) {
+//                try {
+//                    hexTablePan.doChange();
+//                } catch (ParseException e) {
+//                    e.printStackTrace();
+//                }
+//                // установка вертикального курсора в соответствии с таблицей hexTab
+//                setMarkerByRowTab();
+//            }
+//        });
        // chartArm.doZoom(1);
 
         addComponentListener(new ComponentListener() {
@@ -401,15 +410,21 @@ public class ChartPanelArm extends JPanel {
      * установка вертикального курсора в соответсвии со строкой в таблице
      */
     private void setMarkerByRowTab() {
-        final int nCol = 2; // индекс колонки "секунды"
-        int row = hexTablePan.getCurRow();
+//        final int nCol = 2; // индекс колонки "секунды"
+//        int row = hexTablePan.getCurRow();
+//        if (row == -1) return;
+//        int xx = Integer.parseInt((String)hexTablePan.getTable().getValueAt(row, nCol));
+//        if (chartArm != null) {
+//            chartArm.paintMarker(chartPanelArmMain, chartPanelArmSlave, scrollBar, xx);
+//            infoPanel.repaint();
+//        }
+        int row = hexTab.getCurRow();
         if (row == -1) return;
-        int xx = Integer.parseInt((String)hexTablePan.getTable().getValueAt(row, nCol));
+        int xx = hexTab.getCurSecond();
         if (chartArm != null) {
             chartArm.paintMarker(chartPanelArmMain, chartPanelArmSlave, scrollBar, xx);
             infoPanel.repaint();
         }
-//        drawMarker(xx);
     }
 
     public void initHeight() {
@@ -598,34 +613,38 @@ public class ChartPanelArm extends JPanel {
         amap.put("chartPanelArm.up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                int row = hexTablePan.getCurRow();// table.getSelectedRow();
+                int row = hexTab.getCurRow();// table.getSelectedRow();
                 if (row > 0) row--;
-                hexTablePan.selectRow(row);
+                hexTab.selectRow(row);
             }
         });
         // hexTablePanel - строка вниз
         amap.put("chartPanelArm.down", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                JTable table = hexTablePan.getTable();
-                table.requestFocus(true);
-                int row = hexTablePan.getCurRow();
-                if (row < table.getRowCount() - 1) row++;
-                hexTablePan.selectRow(row);
+//                JTable table = hexTablePan.getTable();
+//                table.requestFocus(true);
+//                int row = hexTablePan.getCurRow();
+//                if (row < table.getRowCount() - 1) row++;
+//                hexTablePan.selectRow(row);
+
+                int row = hexTab.getCurRow();
+                if (row < hexTab.getRowCount() - 1) row++;
+                hexTab.selectRow(row);
             }
         });
 
         amap.put("chartPanelArm.search_up", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                hexTablePan.selectSearchedType(true);
+                hexTab.selectSearchedIdBl(true);
             }
         });
 
         amap.put("chartPanelArm.search_down", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                hexTablePan.selectSearchedType(false);
+                hexTab.selectSearchedIdBl(false);
             }
         });
     }
@@ -646,9 +665,9 @@ public class ChartPanelArm extends JPanel {
         return chartDataset;
     }
 
-    public HexTablePan getHexTablePan() {
-        return hexTablePan;
-    }
+//    public HexTablePan getHexTablePan() {
+//        return hexTablePan;
+//    }
 
     public InfoPanel getInfoPanel() {
         return infoPanel;
