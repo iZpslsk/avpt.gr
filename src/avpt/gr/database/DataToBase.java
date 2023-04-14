@@ -37,8 +37,9 @@ public class DataToBase {
         try {
             arrBlock32 = new ArrBlock32(fileName, true);
         } catch (IOException e) {
-            UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, false);
-            return;
+            throw new SQLException(e.getMessage(), "301");
+//            UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, false);
+//            return;
         }
         ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
         trains = chartDataset.getArrTrains();
@@ -119,7 +120,7 @@ public class DataToBase {
                 long idUnit = insertUnit(train, codeRoad, codeDepo, idRoute, idUser, idDriver, idTypeMove, idImage, guidFile);
                 if (idUnit == -1) {
                     errCode = "312";
-                    errMess = "Файл является дубликатом уже имеющихся данных";
+                    errMess = "запись дублируется";
 //                    errMess = "Ошибка вставки в таблицу \"Insert_SPECIFICATION_ROUTE_UNITS\" или запись дублируется";
                     continue;
                 }
