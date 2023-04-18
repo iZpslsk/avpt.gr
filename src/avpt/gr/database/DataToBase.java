@@ -17,9 +17,12 @@ public class DataToBase {
 
     private Connection conn;
     private ArrTrains trains;
-    private final String fileName;
+    private String fileName;
     private Stations stations;
-    private final String user;
+    private String user;
+
+    String errMess = "Недостаточно информации для записи";
+    String errCode = "309";
 
     public DataToBase(
             String fileName,
@@ -46,7 +49,7 @@ public class DataToBase {
         stations = new Stations(arrBlock32);
         stations.addStationsToTrains(trains);
         if (connect(host, nameDb, user, pass))
-            insertToBase(codeRoad, codeDepo, guidFile);
+            insertToBase(codeRoad, codeDepo, guidFile, true);
         else {
             UtilsArmG.outWriteAndExit(302, "нет соединения с сервером", fileName, false);
         }
@@ -170,6 +173,200 @@ public class DataToBase {
         }
     }
 
+    /**
+     * @param conn - Connection
+     */
+    public DataToBase(Connection conn) {
+        this.conn = conn;
+    }
+
+    private void doCatch(SQLException e) throws SQLException {
+        errCode = e.getSQLState();
+        errMess = e.getMessage();
+        conn.rollback();
+    }
+
+    /**
+     * запись в базу при открытом соединении
+     * @param fileName - полное имя файла поездок
+     * @param codeRoad - код дороги
+     * @param codeDepo - номер депо
+     * @param guidFile - id файла поездок
+     */
+    public void perform(String fileName, int codeRoad, int codeDepo, long guidFile) {
+        if (conn == null) {
+            UtilsArmG.outWriteAndExit(302, "нет соединения с сервером!", fileName, false);
+            return;
+        }
+        try {
+            this.user = conn.getMetaData().getUserName();
+        } catch (SQLException e) {
+            UtilsArmG.outWriteAndExit(302, e.getMessage(), fileName, false);
+        }
+        ArrBlock32 arrBlock32;
+        try {
+            arrBlock32 = new ArrBlock32(fileName, true);
+        } catch (IOException e) {
+            UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, false);
+            return;
+        }
+        trains = new ChartDataset(arrBlock32, true, true).getArrTrains();
+        stations = new Stations(arrBlock32);
+        stations.addStationsToTrains(trains);
+        try {
+            insertToBase(codeRoad, codeDepo, guidFile, false);
+            UtilsArmG.outWriteAndExit(0, "успешно", fileName, false);
+        } catch (SQLException e) {
+            int errCode;
+            try {
+                errCode = Integer.parseInt(e.getSQLState());
+            }
+            catch (NumberFormatException var3) {
+                errCode = 303;
+            }
+            UtilsArmG.outWriteAndExit(errCode, e.getMessage(), fileName, false);
+        }
+    }
+
+    private void insertToBase(int codeRoad, int codeDepo, long guidFile, boolean isCloseConnect) throws SQLException {
+        if (conn == null) throw new SQLException("Нет соединения с сервером!") ;
+        try {
+            conn.setAutoCommit(false);
+
+            if (trains.size() == 1 && trains.get(0).getDistance() == 0)
+                throw new SQLException("Поездки не определены", "317");
+            // дорога
+            int idRoad = (int) getIdRoad(codeRoad);
+            if (idRoad == -1) throw new SQLException("Код дороги не найден в классификаторе", "304");
+            // депо
+            int idDepot = (int) insertDepot(idRoad, codeDepo);
+            if (idDepot == -1) throw new SQLException("Вставка депо неудачна", "305");
+            // file
+            long idImage = insertFileImage(idRoad, idDepot, guidFile);
+            if (idImage == -1) throw new SQLException("Ошибка вставки в таблицу \"FILELIST_CARTRIDGES\"", "306");
+            // user
+            long idUser = getIdUser(user);
+            if (idUser == -1) throw new SQLException("Пользователь не найден", "307");
+
+            conn.commit();
+
+            boolean isCommit = false;
+            try {
+                for (int i = 0; i < trains.size(); i++) {
+                    Train train = trains.get(i);
+
+                    if (train.getDistance() < 1000) {
+//                        errCode = "309";
+//                        errMess = "Недостаточно информации для записи";
+                        continue;
+                    }
+                    // серия локомотива
+                    int idTypeMove = train.getTypeMove();
+                    int typeSeries = convertTypeSeries(train.getTypeLoc(), train.getLocTypeAsoup());
+                    int idTypeSeries;
+                    try {
+                        idTypeSeries = (int) getIdTypeSeries(typeSeries, idTypeMove);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    // время поездки меньше 2 мин
+                    if (train.getSeconds() < 120) {
+//                        errCode = "309";
+//                        errMess = "Недостаточно информации для записи";
+                        conn.rollback();
+                        continue;
+                    }
+                    // машинист
+                    long idDriver;
+                    try {
+                        idDriver = insertDriver(train, codeRoad, codeDepo);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    //
+                    long idRoute;
+                    try {
+                        idRoute = insertRoute(train, idRoad, idDepot);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    //
+                    long idUnit;
+                    try {
+                        idUnit = insertUnit(train, codeRoad, codeDepo, idRoute, idUser, idDriver, idTypeMove, idImage, guidFile);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    //
+                    try {
+                        insertUnitInfo(train, idUnit);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    //
+                    try {
+                        insertDiagnMoving(train, idUnit);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    //
+                    long idSeriesTrain;
+                    try {
+                        idSeriesTrain = insertSeriesTrain(train, idRoad, idTypeSeries, idDepot);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    // секции
+                    try {
+                        insetrtSection(train, 0, idUnit, idUser, idSeriesTrain);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    try {
+                        insetrtSection(train, 1, idUnit, idUser, idSeriesTrain);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    try {
+                        insetrtSection(train, 2, idUnit, idUser, idSeriesTrain);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+                    try {
+                        insetrtSection(train, 3, idUnit, idUser, idSeriesTrain);
+                    } catch (SQLException e) {
+                        doCatch(e);
+                        continue;
+                    }
+
+                    insetrtStationsSched(train, idUnit, idRoute);
+
+                    conn.commit();
+                    isCommit = true;
+                }
+            } catch (SQLException e) {
+                throw new SQLException(e.getMessage(), e.getSQLState());
+            }
+            if (!isCommit)
+                throw new SQLException(errMess, errCode);
+        }
+        finally {
+            if (isCloseConnect) {
+                conn.close();
+                conn = null;
+            }
+        }
+    }
 
     /**
      * @param codeRoad - код дороги
@@ -282,6 +479,10 @@ public class DataToBase {
      * @throws SQLException -
      */
     private long getIdTypeSeries(int typeLoc, int typeMove) throws  SQLException {
+
+        final String ERR_CODE = "310";
+        final String ERR_MESS = "Неизвестный тип серии локомотива";
+
         final int TYPE_LOC = 1;
         final int TYPE_MOVE  = 2;
         final String sql =
@@ -293,10 +494,18 @@ public class DataToBase {
             prepStat.setInt(TYPE_LOC, typeLoc);
             prepStat.setInt(TYPE_MOVE, typeMove);
         }
-        catch (Exception e) {
-            throwSQLException("getIdTypeSeries", e.getMessage());
+        catch (SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -307,15 +516,32 @@ public class DataToBase {
      * @throws SQLException
      */
     private long insertDriver(Train train, int codeRoad, int codeDepo) throws SQLException {
+
+        final String ERR_MESS = "Ошибка добавления кода машиниста";
+        final String ERR_CODE = "311";
+
         final int nTabNum = 1;
         final int nCodeRoad  = 2;
         final int nCodeDepo = 3;
         final String sql = "SELECT \"sp_GetDriverId\" ( ?, ?, ?)";
         PreparedStatement prepStat = conn.prepareStatement(sql);
-        prepStat.setInt(nTabNum, (int)train.getNumTab());
-        prepStat.setInt(nCodeRoad, codeRoad);
-        prepStat.setInt(nCodeDepo, codeDepo);
-        return execQuery(prepStat);
+        try {
+            prepStat.setInt(nTabNum, (int) train.getNumTab());
+            prepStat.setInt(nCodeRoad, codeRoad);
+            prepStat.setInt(nCodeDepo, codeDepo);
+        }
+        catch (SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -325,6 +551,10 @@ public class DataToBase {
      * @return RAILROAD_DIRECTION_ID
      */
     private long insertRoute(Train train, int idRoad, int idDepo) throws SQLException {
+
+        final String ERR_MESS = "Insert to DIRECTORY_RAILROAD_DIRECTIONS";
+        final String ERR_CODE = "318";
+
         final int nIdRoad = 1;
         final int nIdDepo = 2;
         final int nFlagActive = 3;
@@ -355,9 +585,17 @@ public class DataToBase {
             prepStat.setString(nNameRoad, routeName);
         }
         catch (Exception e) {
-            throwSQLException("insertRoute", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -373,6 +611,9 @@ public class DataToBase {
      */
     private long insertUnit(Train train, int codeRoad, int codeDepot, long idRoute, long idUser, long idDrv,
                             int typeMove, long idFile, long guidFile) throws SQLException {
+
+        final String ERR_MESS = "Запсись дублируется";
+        final String ERR_CODE = "312";
 
         final int num_road = 1;                                     // integer
         final int num_tch = 2;                                      // integer
@@ -464,9 +705,17 @@ public class DataToBase {
             prepStat.setString(INFO_RPDA_TYPE_BLOCK_BR, " ");
         }
         catch (Exception e) {
-            throwSQLException("insertUnit", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -476,6 +725,10 @@ public class DataToBase {
      * @throws SQLException -
      */
     private long insertUnitInfo(Train train, long idUnit) throws SQLException {
+
+        final String ERR_MESS = "Insert to SPECIFICATION_ROUTE_UNITS_GEN_INFO";
+        final String ERR_CODE = "313";
+
         final int UNIT_ROUTE_ID = 1;                            // bigint
         final int TYPE_SYSTEM_USAVP = 2;                        // smallint
         final int NET_WEIGHT_TRAIN_Kg = 3;                      // integer
@@ -578,9 +831,17 @@ public class DataToBase {
             prepStat.setInt(TEMP_OUTSIDE, -1);
         }
         catch (Exception e) {
-            throwSQLException("insertUnitInfo", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -590,6 +851,10 @@ public class DataToBase {
      * @throws SQLException -
      */
     private long insertDiagnMoving(Train train, long idUnit) throws SQLException {
+
+        final String ERR_MESS = "Insert to SPECIFICATION_DIAGNOSTICS_MOVING";
+        final String ERR_CODE = "314";
+
         final int UNIT_ROUTE_ID = 1;                            // bigint,
         final int COUNT_STARTS_MOVING_LOCOMOTIVE = 2;           // integer
         final int COUNT_SWITCH_KM = 3;                          // integer
@@ -815,12 +1080,24 @@ public class DataToBase {
             prepStat.setInt(t_pr, -1);                                      // Время пропуска регистрации, сек
         }
         catch (Exception e) {
-            throwSQLException("insertDiagnMoving", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     private long insertSeriesTrain(Train train, int idRoad, int idTypeLoc, long idDepo) throws SQLException {
+
+        final String ERR_MESS = "Insert to DIRECTORY_SERIES_TRAINS";
+        final String ERR_CODE = "315";
+
         final int RAILROAD_ID = 1;                                          // integer
         final int DEPOT_ID = 2;                                             // integer
         final int MIN_NUMBER_SECTION = 3;                                   // integer
@@ -892,9 +1169,17 @@ public class DataToBase {
             prepStat.setInt(SERIAL_CNSI, -1);
         }
         catch (Exception e) {
-            throwSQLException("insertSeriesTrain", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     /**
@@ -907,6 +1192,10 @@ public class DataToBase {
      * @throws SQLException -
      */
     private long insetrtSection(Train train, int indSection, long idUnit, long idUser, long idSeriesTrain) throws SQLException {
+
+        final String ERR_MESS = "Insert to SPECIFICATION_SECTIONS";
+        final String ERR_CODE = "319";
+
         final int UNIT_ROUTE_ID = 1;                            // bigint
         final int USER_ID = 2;                                  // integer
         final int SUBTYPE_SPEC_TRAIN = 3;                       // integer
@@ -1066,12 +1355,24 @@ public class DataToBase {
             prepStat.setShort(kwET, (short)-1);                                 // Кол-во включений компрессора
         }
         catch (Exception e) {
-            throwSQLException("insetrtSection", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     private long insertStation(int iStatioin) throws SQLException {
+
+        final String ERR_MESS = "Insert to DIRECTORY_STATIONS";
+        final String ERR_CODE = "321";
+
         final int ESR_CODE_STATION = 1;                             // int
         final int CODE_STATION_INTERNAL_DATABASE = 2;               // int
         final int STATION_NAME = 3;                                 // character varying
@@ -1085,12 +1386,24 @@ public class DataToBase {
             prepStat.setString(STATION_NAME, stations.getStation(iStatioin).getNameStation());
         }
         catch (Exception e) {
-            throwSQLException("insertStation", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        return execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        return result;
     }
 
     private void insertSchedule(int indxStation, long idUnit, long idStation, long idRoute)  throws SQLException {
+
+        final String ERR_MESS = "Insert to SPECIFICATION_TRAIN_SCHEDULES";
+        final String ERR_CODE = "322";
+
         final int UNIT_ROUTE_ID = 1;                                        // long
         final int ESR_CODE_STATION = 2;                                     // int
         final int CODE_STATION_TRAIN_SCHEDULE = 3;                          // smallint
@@ -1165,9 +1478,16 @@ public class DataToBase {
             prepStat.setInt(RAILROAD_DIRECTION_ID, (int)idRoute);
         }
         catch (Exception e) {
-            throwSQLException("insertSchedule", e.getMessage());
+            throw new SQLException(ERR_MESS, ERR_CODE);
         }
-        execQuery(prepStat);
+        long result;
+        try {
+            result = execQuery(prepStat);
+        } catch(SQLException e) {
+            throw new SQLException(ERR_MESS, ERR_CODE);
+        }
+        if (result == -1)
+            throw new SQLException(ERR_MESS, ERR_CODE);
     }
 
     /**
@@ -1180,9 +1500,22 @@ public class DataToBase {
 
         List<Stations.Station> stations = train.getStations();
         for (Stations.Station station : stations) {
-            long idStation = insertStation(station.getIndex());
-            if (idStation > -1)
-                insertSchedule(station.getIndex(), idUnit, idStation, idRoute);
+
+            long idStation;
+            try {
+                idStation = insertStation(station.getIndex());
+            } catch (SQLException e) {
+                doCatch(e);
+                continue;
+            }
+
+            if (idStation > -1) {
+                try {
+                    insertSchedule(station.getIndex(), idUnit, idStation, idRoute);
+                } catch (SQLException e) {
+                    doCatch(e);
+                }
+            }
         }
 
 //        int start = train.getSecondStart();
