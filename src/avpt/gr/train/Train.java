@@ -16,6 +16,123 @@ import java.util.List;
 
 public class Train {
 
+    /**
+     * перечисление типов движения
+     */
+    public enum EnumMove {
+        PASSENGER_E(1),
+        PASSENGER_T(2),
+        FREIGHT_E(3),
+        FREIGHT_T(4),
+        ASIM(7),
+        UNKNOWN(-1);
+
+        private final int code;
+
+        EnumMove(int code) {
+            this.code = code;
+        }
+
+        int code() {
+            return code;
+        }
+    }
+
+    public enum EnumLoc {
+        _VL11("ВЛ11", 1, 1, 134, EnumMove.FREIGHT_E),
+        _VL10("ВЛ10", 2, 2, 123, EnumMove.FREIGHT_E),
+        _VL10U("ВЛ10У", 2, 52, 138, EnumMove.FREIGHT_E),
+        _VL80("ВЛ80С", 3, 3, 240, EnumMove.FREIGHT_E),
+        _VL85("ВЛ85", 4, 4, 244, EnumMove.FREIGHT_E),
+        _S5K("ЭС5К(МСУД-Н)", 5, 5, -1, EnumMove.FREIGHT_E),
+        _2S5K("2ЭС5К(МСУД-Н)", 5, 25, 222, EnumMove.FREIGHT_E),
+        _3S5K("3ЭС5К(МСУД-Н)", 5, 35, 253, EnumMove.FREIGHT_E),
+        _4S5K("4ЭС5К(МСУД-Н)", 5, 45, 220, EnumMove.FREIGHT_E),
+        _KZ8A("KZ8A", 6, 6, -1, EnumMove.FREIGHT_E),
+        _2S5("2ЭС5", 7, 7, 222, EnumMove.FREIGHT_E),
+        _2S6("2ЭС6", 8,  8, 145, EnumMove.FREIGHT_E),
+        _S4K("ЭС4К", 9, 9, -1, EnumMove.FREIGHT_E),
+        _2S4K("2ЭС4К", 9, 29,144, EnumMove.FREIGHT_E),
+        _3S4K("3ЭС4К", 9, 39,115, EnumMove.FREIGHT_E),
+        _S5K_2("ЭС5К(МСУД-015)", 11, 11, -1, EnumMove.FREIGHT_E),
+        _2S5K_2("2ЭС5К(МСУД-015)", 11, 20, 222, EnumMove.FREIGHT_E),
+        _3S5K_2("3ЭС5К(МСУД-015)",  11, 30, 253, EnumMove.FREIGHT_E),
+        _4S5K_2("4ЭС5К(МСУД-015)", 11, 40, 220, EnumMove.FREIGHT_E),
+        // АСИМ
+        _VL11_ASIM("ВЛ11 АСИМ", 16, 16, 134, EnumMove.ASIM),
+        _VL15_ASIM("ВЛ15 АСИМ", 17, 17, 142, EnumMove.ASIM),
+        _VL85_ASIM("ВЛ85 АСИМ", 20, 20, 244, EnumMove.ASIM),
+        _VL10_ASIM("ВЛ10 АСИМ", 32, 32, 123, EnumMove.ASIM),
+        _VL11K_ASIM("ВЛ11К АСИМ", 46, 46, 135, EnumMove.ASIM),
+        _VL80C_ASIM("ВЛ80С АСИМ", 51, 51, 240, EnumMove.ASIM),
+        _VL80T_ASIM("ВЛ80С АСИМ", 52, 52, 226, EnumMove.ASIM),
+        _VL80TK_ASIM("ВЛ80ТК АСИМ", 53, 53, 230, EnumMove.ASIM),
+        _VL80P_ASIM("ВЛ80Р АСИМ", 54, 54, 233, EnumMove.ASIM),
+        _VL80SK_ASIM("ВЛ80СК АСИМ", 988, 988, 239, EnumMove.ASIM),
+        _VL10UK_ASIM("ВЛ10УК АСИМ", 989, 989, 139, EnumMove.ASIM),
+        _VL10K_ASIM("ВЛ10К АСИМ", 995, 995, 125, EnumMove.ASIM),
+        _VL10U_ASIM("ВЛ10У АСИМ", 996, 996, 138, EnumMove.ASIM),
+        _VL11M_ASIM("ВЛ11М АСИМ", 997, 997, 153, EnumMove.ASIM),
+        UNKNOWN("?????", 0, 0, 0, EnumMove.UNKNOWN);
+
+        private final String name;
+        private final int code;
+        private final int codeBase;
+        private final int asoup;
+        private final EnumMove movement;
+
+        /**
+         *
+         * @param name - название типа локомотива
+         * @param code - код типа локомотива от рпда
+         * @param codeBase - код типа локомотива в базе данных
+         * @param asoup - код тиап локомотива асоуп
+         * @param movement - код типа движения
+         */
+        EnumLoc(String name, int code, int codeBase, int asoup, EnumMove movement) {
+            this.name = name;
+            this.code = code;
+            this.codeBase = codeBase;
+            this.asoup = asoup;
+            this.movement = movement;
+        }
+
+        /**
+         * @return название типа локомотива
+         */
+        public String getName() {
+            return name;
+        }
+
+        /**
+         * @return  код типа локомотива от рпда
+         */
+        public int getCode() {
+            return code;
+        }
+
+        /**
+         * @return код типа локомотива в базе данных
+         */
+        public int getCodeBase() {
+            return codeBase;
+        }
+
+        /**
+         * @return код тиап локомотива асоуп
+         */
+        public int getAsoup() {
+            return asoup;
+        }
+
+        /**
+         * @return код типа движения
+         */
+        public EnumMove getMovement() {
+            return movement;
+        }
+    }
+
     public final static int VL11 = 1;   // ВЛ11
     public final static int VL10 = 2;   // ВЛ10
     public final static int VL80 = 3;   // ВЛ80
@@ -41,31 +158,6 @@ public class Train {
     public final static int VL10K_ASIM = 995; // ВЛ10К
     public final static int VL10U_ASIM = 996; // ВЛ10У
     public final static int VL11M_ASIM = 997; // ВЛ11М
-    // pass
-    public final static int CHS7 = 101;         // ЧС-7
-    public final static int CHS7_EKS = 102;     // ЧС-7 ЕКС
-    public final static int CHS7_KAUD_F = 103;  // ЧС-7 КАУД-Ф
-    public final static int CHS2_RED_FLAG = 104;// ЧС-2 Красн.Знамя
-    public final static int CHS2_KAUD = 105;    // ЧС-2 КАУД
-    public final static int CHS2_EKS_2 = 106;   // ЧС-2 ЕКС-2
-    public final static int CHS2K_USAVPP = 107; // ЧС-2К УСАВПП
-    public final static int CHS2K_KAUD = 108;   // ЧС-2К КАУД
-    public final static int CHS2K_ESAUP = 109;  // ЧС-2К ЕСАУП
-    public final static int CHS2T_KAUD = 110;   // ЧС-2Т КАУД
-    public final static int CHS6_KAUD = 111;    // ЧС-6/200 КАУД
-    public final static int CHS4T_KAUD = 112;   // ЧС-4Т КАУД
-    public final static int EP1_KAUD = 113;     // ЭП1 КАУД
-    public final static int CHS8_KAUD = 114;    // ЧС-8 КАУД
-    public final static int EP1_U = 115;        // ЭП1У КАУД
-    public final static int CHS7_EKS2 = 116;    // ЧС-7 ЕКС2
-    public final static int EP2K_KAUD = 117;    // ЭП2К КАУД
-    public final static int EP20_KAUD = 118;    // ЭП20 КАУД
-    public final static int CHS7_KAUD_L = 119;  // ЧС-7 КАУД-Л
-    public final static int KZ4AT = 120;        // KZ4AT
-    public final static int TEP33A = 121;       // ТЭП33А
-    public final static int EP1_P = 153;         // ЭП1П
-    public final static int TEP70 = 171;       // ТЭП70
-    public final static int TEP70BS = 172;       // ТЭП70БС
 
     public static final String WRONG_TYPE_NAME = "-";
 
@@ -1452,14 +1544,6 @@ public class Train {
         int emptyCnt = 0;
         for (ItemWag item : wags) if (item.getWeight() == 0) emptyCnt++;
         return emptyCnt;
-    }
-
-    public static boolean isCHS7(int typeLoc) {
-        return  typeLoc == CHS7 ||
-                typeLoc == CHS7_EKS ||
-                typeLoc == CHS7_EKS2 ||
-                typeLoc == CHS7_KAUD_F ||
-                typeLoc == CHS7_KAUD_L;
     }
 
     /**

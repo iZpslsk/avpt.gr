@@ -160,11 +160,8 @@ public class ChartArrays {
     private avpt.gr.blocks32.asim.Block32_C3_2 block32_C3_2_prev = null;
     private avpt.gr.blocks32.asim.Block32_C3_3 block32_C3_3_prev = null;
 
-    private avpt.gr.blocks32.passenger.Block32_23_63_93 block32_23_63_93_prev = null;
-
     private int acdc_ui = -1; // постоянка переменка для асим и эп20
 
-    private final avpt.gr.blocks32.overall.Block32_21_9 block32_21_9_prev = null;  // предшествующяя посылка 0x21_9;
     private final int second_21_9_prev = -1;                          // предыдущая секунда
     private double profile = 0;
     private double min_prof = 2;
@@ -182,7 +179,6 @@ public class ChartArrays {
     }
 
     public void fill(int nBlStart, int nBlFinish) {
-        //curTypeLoc = arrBlock32.getFirstType(nBlStart);
         curTypeMove = arrBlock32.getFirstTypeMove(nBlStart);
         curTypeLoc = arrBlock32.getFirstTypeTrain(nBlStart);
         if (curTypeLoc == -1) {
@@ -201,23 +197,14 @@ public class ChartArrays {
         avpt.gr.blocks32.overall.Block32_16_56 block32_16_56;
         switch (arrBlock32.get(index).getId()) {
             case 0x61:
-//            case 0x91:
-//            case 0x79:
-//            case 0x40:
             case 0x21: {
-//                if (curTypeMove == CODE_MOVE_G) {
                     int curSubId_21 = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                     switch (curSubId_21) {
                         case 0x01:
                             Block32_21_1 block32_21_1 = new Block32_21_1(arrBlock32.get(index).getValues());
                             arrTrains.addInitUsavp(block32_21_1);
                             curTypeLoc = block32_21_1.getTypeLoc();
-
-//                        if (curDateTime_21 != null)
                             curDateTime_21 = block32_21_1.getDateTime();
-//                        else
-//                            curDateTime_21 = block32_21_1.getDateTime(initDate_26);
-
                             numConditionWags = block32_21_1.getNumConditionalWags();
                             numSections = block32_21_1.getCntSections();
                             break;
@@ -235,7 +222,6 @@ public class ChartArrays {
                             arrTrains.addMainUsavp(block32_21_4);
 
                             int d = coordinate > 0 ? block32_21_4.getCoordinate() - coordinate : 0;
-//                        if (coordinate > 0) d = block32_21_4.getCoordinate() - coordinate;
                             if (coordinate > -1 && d > 0 && d < 100)
                                 cur_coordinate += d;//block32_21_4.getCoordinate() - coordinate;
                             coordinate = block32_21_4.getCoordinate();
@@ -259,9 +245,6 @@ public class ChartArrays {
 
                                 listLines.add(listLines.getListWeakField(), second_coordinate, block32_21_4.getWeakField(), max_second_21_4);
                             }
-
-                            //listLines.add(listLines.getListWeakField(), second_coordinate, block32_21_4.getWeakField(), max_second_21_4);
-
                             listSignals.add(listSignals.getListBanThrust(), second_coordinate, block32_21_4.getBanTract() == 1);
                             listSignals.add(listSignals.getListBanBrake(), second_coordinate, block32_21_4.getBanBrake() == 1);
                             listSignals.add(listSignals.getListEmulate(), second_coordinate, block32_21_4.getEmulate() == 1);
@@ -449,10 +432,8 @@ public class ChartArrays {
                             listTasks.add(listTasks.getListALSN_CLUB(), second_coordinate, block32_21_E.getTrafficLight(), curTypeLoc, -1);
                             lat = block32_21_E.getGpsLat(); // широта
                             lon = block32_21_E.getGpsLon(); // долгота
-                            //arrTrains.addClubU(block32_21_E);
                             break;
                     }
-//                }
             }
                 break;
 
@@ -2638,25 +2619,25 @@ public class ChartArrays {
         }
     }
 
-    private int typeLocFromTypeLocUsavp(int typeLocUsavp) {
-        switch (typeLocUsavp) {
-            case 0: return CHS7;
-            case 1: return CHS2_KAUD;
-            case 3: return CHS2K_KAUD;
-            case 4: return CHS2T_KAUD;
-            case 5: return CHS6_KAUD;
-            case 6: return CHS4T_KAUD;
-            case 7: return EP1_KAUD;
-            case 8: return CHS8_KAUD;
-            case 9: return EP2K_KAUD;
-            case 10: return EP1_P;
-            case 11: return TEP70;
-            case 13:
-            case 14: return EP20_KAUD;
-
-            default: return -1;
-        }
-    }
+//    private int typeLocFromTypeLocUsavp(int typeLocUsavp) {
+//        switch (typeLocUsavp) {
+//            case 0: return CHS7;
+//            case 1: return CHS2_KAUD;
+//            case 3: return CHS2K_KAUD;
+//            case 4: return CHS2T_KAUD;
+//            case 5: return CHS6_KAUD;
+//            case 6: return CHS4T_KAUD;
+//            case 7: return EP1_KAUD;
+//            case 8: return CHS8_KAUD;
+//            case 9: return EP2K_KAUD;
+//            case 10: return EP1_P;
+//            case 11: return TEP70;
+//            case 13:
+//            case 14: return EP20_KAUD;
+//
+//            default: return -1;
+//        }
+//    }
 
 //    /**
 //     * 0x21 - пассажирское движение
