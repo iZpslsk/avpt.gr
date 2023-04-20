@@ -37,7 +37,8 @@ public class DualColorContext implements PaintContext {
         Raster t = savedTile;
 
         if (t == null || w > t.getWidth() || h > t.getHeight()) {
-            Raster one = xrgbmodel.createCompatibleWritableRaster(w, h/2);
+            int half_h = Math.max((int)Math.round(h/2.2), 1);
+            Raster one = xrgbmodel.createCompatibleWritableRaster(w, half_h);
             Raster two = xrgbmodel.createCompatibleWritableRaster(w, h);
 
             IntegerComponentRaster icrOne = (IntegerComponentRaster) one;
