@@ -4,6 +4,7 @@ import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.blocks32.Block32;
 import avpt.gr.blocks32.overall.Block32_21_9;
 import avpt.gr.graph.ChartArm;
+import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.annotations.XYShapeAnnotation;
 import org.jfree.chart.plot.XYPlot;
 import avpt.gr.train.ArrTrains;
@@ -12,6 +13,7 @@ import avpt.gr.train.Train;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import static avpt.gr.graph.ChartArm.SPEED_LABEL;
 
@@ -25,6 +27,7 @@ public class Limits {
 
     public static Color COLOR_LIM_MAP = new Color(0x3BFF84DF, true);
     private final ArrayList<Limit> limits = new ArrayList<Limit>();
+    private final java.util.List<XYAnnotation> annotations = new ArrayList<XYAnnotation>();
     private int last_second;
     private long last_coordinate;
 
@@ -157,12 +160,9 @@ public class Limits {
     }
 
     public void addAnnotationLimit(ChartArm chartArm, XYPlot plot) {
-
         String label = plot.getRangeAxis().getLabel();
         if (!label.equals(SPEED_LABEL) || limits.size() == 0) return;
-        Train train_prev = null;
         Limit limit_prev = null;
-        double speed = -1;
         if (limits.size() > 1) {
             for (int i = 1; i < limits.size(); i++) {
                 limit_prev = limits.get(i - 1);
@@ -177,18 +177,10 @@ public class Limits {
                 Train train = chartArm.getChartDataset().getArrTrains().getTrain(
                         chartArm.getChartDataset().getArrBlock32(), limit_prev.second);
                 if (train != null) {
-                    plot.addAnnotation(a);
+                //    plot.addAnnotation(a);
+                    annotations.add(a);
                     train.incCLim();
-                //    System.out.println(avpt.gr.train.getBlStart() + "_" + limit_prev.getSpeed());
                 }
-//                if (avpt.gr.train != null) {
-//       //             plot.addAnnotation(a);
-//
-//                    speed = i > 1 ? limits.get(i - 2).getSpeed() : 0;
-//                    if (train_prev != null && (train_prev.getBlStart() != avpt.gr.train.getBlStart() || speed != limit_prev.speed))
-//                        System.out.println(avpt.gr.train.getBlStart() + "_" + speed);
-//                }
-                train_prev = train;
             }
         }
         // обработка последнего ограничения
@@ -199,15 +191,8 @@ public class Limits {
         XYShapeAnnotation a = new XYShapeAnnotation(
                 new Rectangle2D.Double(limit_last.second, limit_last.speed, len, 100),
                 new BasicStroke(1f), new Color(0x0FF84DF,true), COLOR_LIM_MAP);
-        plot.addAnnotation(a);
-
-      //  Train end_train = chartArm.getChartDataset().getArrTrains().get(chartArm.getChartDataset().getArrTrains().size() - 1);
-       // if (avpt.gr.train != null)
-  //      double speed = limits.get(limits.size() - 1).getSpeed();
-//        if (train_prev != null && (train_prev.getBlStart() != avpt.gr.train.getBlStart()))
-       // if (end_train.getBlStart() != train_prev.getBlStart())
-     //   if (limit_prev != null && limit_prev.speed != speed)
-    //    System.out.println(end_train.getBlStart() + "_" + limit_last.speed);
+        //plot.addAnnotation(a);
+        annotations.add(a);
     }
 
     // ограничение
@@ -242,5 +227,9 @@ public class Limits {
             }
         }
         return Double.NaN;
+    }
+
+    public List<XYAnnotation> getAnnotations() {
+        return annotations;
     }
 }

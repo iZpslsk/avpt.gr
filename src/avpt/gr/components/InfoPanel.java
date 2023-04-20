@@ -463,16 +463,15 @@ public class InfoPanel extends JPanel {
                         XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
                         LineKeys key = (LineKeys) ser.getKey();
                         if (keySelectedLine == key
-                                && key != LineKeys.SPEED_MAX
                                 && key != LineKeys.PROFILE
                                 && key != LineKeys.PROFILE_DIRECT
                                 && key != LineKeys.POSITION
                                 && key != LineKeys.POSITION_S5k
                                 && key != LineKeys.WEAK_FIELD) {
-                                    rend.setSeriesVisible(i, !rend.isSeriesVisible(i), true);
-                                    SeriesLines.getMapVisible().put(key.getName(), rend.isSeriesVisible(i));
-                                    WeightBlocks.setModified(true);
-
+                                chartArm.setLimMap(subplot, key, rend.isSeriesVisible(i));
+                                rend.setSeriesVisible(i, !rend.isSeriesVisible(i), true);
+                                SeriesLines.getMapVisible().put(key.getName(), rend.isSeriesVisible(i));
+                                WeightBlocks.setModified(true);
                         }
                         if (rend.isSeriesVisible(i)) {
                             maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;

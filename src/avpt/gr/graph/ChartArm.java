@@ -12,6 +12,7 @@ import avpt.gr.maps.Objects;
 import avpt.gr.maps.Profiles;
 import avpt.gr.maps.Stations;
 import org.jfree.chart.JFreeChart;
+import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.axis.*;
 import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.xy.*;
@@ -358,33 +359,43 @@ public class ChartArm extends JFreeChart {
             limits.addAnnotationLimit(this, plot);
             limits.addLimitsToTrains(getChartDataset().getArrTrains());
         }
-        //XYPlot plot = new XYPlot(dataset, null, range, renderer);
-        //plot.setForegroundAlpha(0.5f);
-
         int cnt = plot.getSeriesCount();
         int totalDots = 0;
         // толщина и цвет линий диаграмм для линейных графиков
-        //String key = (String)plot.getDataset().getSeriesKey(index);
-      //  XYItemRenderer renderer = plot.getRenderer();// RendererForDataset(plot.getDataset());
         for (int i = 0; i < cnt; i++) {
             LineKeys key = (LineKeys) plot.getDataset().getSeriesKey(i);
             SeriesLines.setColorVisibleAndStrokeLines(i, key, renderer); // цвет и толщина линий
+            setLimMap(plot, key, !plot.getRenderer().isSeriesVisible(i));
             totalDots += ((XYSeriesCollection) dataset).getSeries(i).getItemCount();
         }
         setCrosshair(plot);
         addMarker(plot);
         addMarkerTrains(plot, chartDataset.getArrTrains());
-//        if (title.equals(ChartArm.TRAIN_LABEL))
-//            plot.setBackgroundPaint(backgroundColor2);
-//        else
-//        plot.setBackgroundPaint(BACKGROUND_COLOR);
-//        plot.setDomainGridlinesVisible(false);
         // добавляем где есть данные или plot с информацией о поезде
         if (totalDots > 0 | title.equals(ChartArm.TRAIN_LABEL)) {
             plotCombine.add(plot, 1);
             plot.setWeight(weight);
         }
         return plot;
+    }
+
+    /**
+     * устанавливаем ограничения карты
+     * @param plot -
+     * @param key - LineKeys - тип линии
+     * @param isVisible - включена
+     */
+    public void setLimMap(XYPlot plot, LineKeys key, boolean isVisible) {
+        if (key == LineKeys.SPEED_MAX) {
+            if (isVisible) {
+                plot.clearAnnotations();
+            }
+            else {
+                for (XYAnnotation a : limits.getAnnotations()) {
+                    plot.addAnnotation(a);
+                }
+            }
+        }
     }
 
     private XYPlot addSignalsToPlotCombine(SeriesSignals seriesSignals, String title, int weight) {
@@ -1047,8 +1058,10 @@ public class ChartArm extends JFreeChart {
                             && !ser.getKey().equals(LineKeys.MAP_LINE)
                             && !ser.getKey().equals(LineKeys.PROFILE)
                             && !ser.getKey().equals(LineKeys.PROFILE_DIRECT)
-                            && !ser.getKey().equals(LineKeys.SPEED_MAX))
+                            /*&& !ser.getKey().equals(LineKeys.SPEED_MAX)*/) {
+                        setLimMap(subplot, (LineKeys) ser.getKey(), rend.isSeriesVisible(i));
                         rend.setSeriesVisible(i, isView, true);
+                    }
                 }
             }
         }
