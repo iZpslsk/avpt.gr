@@ -388,9 +388,14 @@ public class ChartArm extends JFreeChart {
     public void setLimMap(XYPlot plot, LineKeys key, boolean isVisible) {
         if (key == LineKeys.SPEED_MAX) {
             if (isVisible) {
-                plot.clearAnnotations();
+                for (XYAnnotation a : limits.getAnnotations()) {
+                    plot.removeAnnotation(a);
+                }
             }
             else {
+                for (XYAnnotation a : limits.getAnnotations()) {
+                    plot.removeAnnotation(a);
+                }
                 for (XYAnnotation a : limits.getAnnotations()) {
                     plot.addAnnotation(a);
                 }
@@ -1042,6 +1047,7 @@ public class ChartArm extends JFreeChart {
             XYDataset ds = subplot.getDataset(0);
             XYItemRenderer rend = subplot.getRenderer();
             WeightBlocks.setWeightDef(subplot);
+            double maxY = 0;
             for (int i = 0; i < subplot.getSeriesCount(); i++) {
                 if (ds instanceof XYSeriesCollection) {
                     // сохраняем текущую шкалу
@@ -1052,25 +1058,26 @@ public class ChartArm extends JFreeChart {
                     curRange.setRange(lower, upper);
                     //
                     XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
+                    LineKeys key = (LineKeys)ser.getKey();
                     Boolean isView = mapVisible.get(((LineKeys)ser.getKey()).getName());
 
-                    if (!ser.getKey().equals(LineKeys.MAP_DIRECT)
-                            && !ser.getKey().equals(LineKeys.MAP_LINE)
-                            && !ser.getKey().equals(LineKeys.PROFILE)
-                            && !ser.getKey().equals(LineKeys.PROFILE_DIRECT)
-                            /*&& !ser.getKey().equals(LineKeys.SPEED_MAX)*/) {
-                        setLimMap(subplot, (LineKeys) ser.getKey(), rend.isSeriesVisible(i));
+                    if (key != LineKeys.MAP_DIRECT && key != LineKeys.MAP_LINE && key != LineKeys.PROFILE && key != LineKeys.PROFILE_DIRECT) {
                         rend.setSeriesVisible(i, isView, true);
+                        setLimMap(subplot, key, !rend.isSeriesVisible(i));
+                    }
+                    if (rend.isSeriesVisible(i)) {
+                        maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;
                     }
                 }
+            }
+            if (maxY > 0) {
+                ValueAxis curRange = subplot.getRangeAxis();
+                Range range = curRange.getRange();
+                curRange.setRange(range.getLowerBound(), maxY + 3);
             }
         }
         WeightBlocks.setModified(true);
         SeriesLines.setMapVisible(new HashMap<String, Boolean>(SeriesLines.mapDefVisible));
-    }
-
-    private void setWeightDef(XYPlot plot) {
-
     }
 
     public ChartDataset getChartDataset() {
