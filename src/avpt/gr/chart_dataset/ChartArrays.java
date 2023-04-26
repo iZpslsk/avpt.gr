@@ -231,7 +231,7 @@ public class ChartArrays {
                             listLines.add(listLines.getListCurSpeedLimit(), second_coordinate, block32_21_4.getCurSpeedLimit(), -1);
                             listLines.add(listLines.getListSpeed_USAVP(), second_coordinate, block32_21_4.getSpeed(), max_second_21_4);
                             listLines.add(listLines.getListSpeed_ERG(), second_coordinate, block32_21_4.getSpeedERG(), max_second_21_4);
-                            listLines.add_lim_map(listLines.getListSpeedMax(), second_coordinate, Block32_21_4.getMaxLimit());
+                         //   listLines.add_lim_map(listLines.getListSpeedMax(), second_coordinate, Block32_21_4.getMaxLimit());
                             listLines.add(listLines.getListPressTC_USAVP(), second_coordinate, block32_21_4.getPressTC(), max_second_21_4);
                             listLines.add(listLines.getListPressTM_USAVP(), second_coordinate, block32_21_4.getPressTM(), max_second_21_4);
                             listLines.add(listLines.getListPressUR_USAVP(), second_coordinate, block32_21_4.getPressUR(), max_second_21_4);
@@ -342,7 +342,7 @@ public class ChartArrays {
                             listSignals.add(listSignals.getListBHV_AllowAnswer(), second_coordinate, block32_21_8.getAllowAnswer() == 1);
                             break;
                         case 0x09:
-                            final int MAX_SECOND_21_9 = 1;
+ //                           final int MAX_SECOND_21_9 = 1;
                             Block32_21_9 block32_21_9 = new Block32_21_9(arrBlock32.get(index).getValues());
                             int mapLimit = block32_21_9.getLimSpeed();
                             if (mapLimit > 0)
@@ -1271,7 +1271,7 @@ public class ChartArrays {
         listLines.complete(listLines.getListSpeed_BLOCK(), second_coordinate);
         listLines.complete(listLines.getListSpeed_Task(), second_coordinate);
         listLines.complete(listLines.getListSpeed_ERG(), second_coordinate);
-        listLines.complete(listLines.getListSpeedMax(), second_coordinate);
+     //   listLines.complete(listLines.getListSpeedMax(), second_coordinate);
         listLines.complete(listLines.getListSpeed_CLUB(), second_coordinate);
         listLines.complete(listLines.getListSpeed_BS_DPS(), second_coordinate);
         listLines.complete(listLines.getListPermissibleSpeed_CLUB(), second_coordinate);

@@ -365,7 +365,8 @@ public class ChartArm extends JFreeChart {
         for (int i = 0; i < cnt; i++) {
             LineKeys key = (LineKeys) plot.getDataset().getSeriesKey(i);
             SeriesLines.setColorVisibleAndStrokeLines(i, key, renderer); // цвет и толщина линий
-            setLimMap(plot, key, !plot.getRenderer().isSeriesVisible(i));
+            if (key == LineKeys.SPEED_MAX)
+                setLimMap(plot, key, !plot.getRenderer().isSeriesVisible(i));
             totalDots += ((XYSeriesCollection) dataset).getSeries(i).getItemCount();
         }
         setCrosshair(plot);

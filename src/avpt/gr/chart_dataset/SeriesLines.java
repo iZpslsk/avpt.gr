@@ -433,7 +433,8 @@ public class SeriesLines {
             serPressCollect.addSeries(makeSerDots(LineKeys.PRESS_CAMERA_BHV, listLines.getListPressWorkCameraBhv(), secondStart, secondEnd));
         }
         // скорость
-        serSpeedCollect.addSeries(makeSerDots(LineKeys.SPEED_MAX, listLines.getListSpeedMax(), secondStart, secondEnd));
+        if (listLines.getListSpeedLimitConst().size() > 3)
+            serSpeedCollect.addSeries(makeSerDots(LineKeys.SPEED_MAX, listLines.getListSpeedLimitConst(), secondStart, secondEnd));
         serSpeedCollect.addSeries(makeSerDots(LineKeys.SPEED_LIM_TMP, listLines.getListSpeedLimitTemp(), secondStart, secondEnd));
         if (listLines.getListCurSpeedLimit().size() > MAX_ITEM_CNT) {
             serSpeedCollect.addSeries(makeSerDots(LineKeys.SPEED_LIM_CUR, listLines.getListCurSpeedLimit(), secondStart, secondEnd));
