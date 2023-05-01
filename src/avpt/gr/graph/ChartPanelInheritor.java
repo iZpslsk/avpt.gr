@@ -36,6 +36,7 @@ import java.util.List;
 
 import static avpt.gr.common.UtilsArmG.*;
 import static avpt.gr.graph.ChartArm.*;
+import static avpt.gr.maps.Limits.COLOR_LIM_MAP;
 
 
 /**
@@ -609,9 +610,12 @@ public class ChartPanelInheritor extends ChartPanel {
                     hd = (int) rec.getHeight(); // высота строки description
                     if (wd < (int) rec.getWidth()) wd = (int) rec.getWidth();    // макс ширина строки description
                     max_h += (int) rec.getHeight();
-
                     g2.setFont(descriptFont);
-                    g2.setColor((Color) renderer.getSeriesPaint(i)); // квадратик рисуем в цвет текущей series
+                    // квадратик рисуем в цвет текущей series
+                    if (key == LineKeys.SPEED_MAX)
+                        g2.setColor(COLOR_LIM_MAP);
+                    else
+                        g2.setColor((Color) renderer.getSeriesPaint(i));
                     hh += hd;
                     //String description = getDescription(chartArm, ser, key, x, val);
 

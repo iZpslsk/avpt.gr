@@ -645,7 +645,7 @@ public class TrainAnalysis extends JDialog {
      * @return - JFileChooser.*_OPTION
      */
     public int openFileTrain(boolean isTime) {
-        String mess_error = "Неизвестный формат поездки!\nВозможно данный тип локомотива пока не поддерживается!";
+        String mess_error = "Неизвестный формат поездки!\nВозможно данный тип локомотива не поддерживается!";
         int result = fileChooser.showOpenDialog(TrainAnalysis.this);
         if (result == JFileChooser.APPROVE_OPTION) {
           infoTrainsDialog = null;
@@ -673,7 +673,7 @@ public class TrainAnalysis extends JDialog {
           catch (ExecutionException e1) {
               e1.printStackTrace();
               JOptionPane.showMessageDialog(
-                      this, e1.getMessage(), TITLE_ARM, JOptionPane.INFORMATION_MESSAGE);
+                      this, mess_error, TITLE_ARM, JOptionPane.INFORMATION_MESSAGE);
               result = JFileChooser.ERROR_OPTION;
           }
           catch (InterruptedException e2) {

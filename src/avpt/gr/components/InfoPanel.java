@@ -32,6 +32,7 @@ import static avpt.gr.common.WeightBlocks.*;
 import static avpt.gr.common.UtilsArmG.*;
 import static avpt.gr.graph.ChartArm.*;
 import static avpt.gr.graph.ChartPanelInheritor.COLOR_DESCRIPTION_FONT;
+import static avpt.gr.maps.Limits.COLOR_LIM_MAP;
 
 public class InfoPanel extends JPanel {
 
@@ -273,7 +274,11 @@ public class InfoPanel extends JPanel {
                         hd = (int) rec.getHeight(); // высота строки description
 
                         g2.setFont(descriptFont);
-                        g2.setColor((Color) renderer.getSeriesPaint(i)); // квадратик рисуем в цвет текущей series
+                        // квадратик рисуем в цвет текущей series
+                        if (key == LineKeys.SPEED_MAX)
+                            g2.setColor(COLOR_LIM_MAP);
+                        else
+                            g2.setColor((Color) renderer.getSeriesPaint(i));
                         hh += hd;
                         String description = ChartPanelInheritor.getDescription(chartArm, ser, key, x, val);
 
