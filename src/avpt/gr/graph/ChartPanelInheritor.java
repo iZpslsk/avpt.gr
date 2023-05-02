@@ -58,6 +58,10 @@ public class ChartPanelInheritor extends ChartPanel {
     private int shiftVertCur = 0; // вертикальное смещение данных курсора
     private int shiftHorCur = 0;  // горизонтальное смещение данных курсора
 
+    CombinedDomainXYPlot cdPlot;// = (CombinedDomainXYPlot) chartArm.getXYPlot();
+    ChartRenderingInfo chartInfo;// = getChartRenderingInfo();
+    List subplotsList;// = cdPlot.getSubplots();
+
     /**
      * установка размера вертикально шкалы
      * @param rotation - направление
@@ -91,6 +95,10 @@ public class ChartPanelInheritor extends ChartPanel {
         setFillZoomRectangle(false);
         setHorizontalAxisTrace(false);
         setVerticalAxisTrace(false);
+
+        cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
+        chartInfo = getChartRenderingInfo();
+        subplotsList = cdPlot.getSubplots();
 
 
         addMouseWheelListener(new MouseWheelListener() {
@@ -213,6 +221,7 @@ public class ChartPanelInheritor extends ChartPanel {
 
             public void mouseEntered(MouseEvent e) {
                 isRepaintCursorValues = true;
+                setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
                 repaint();
             }
         });
@@ -347,8 +356,8 @@ public class ChartPanelInheritor extends ChartPanel {
      */
     private void setPosCrosshair(int mouseX, int mouseY) {
 
-        CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
-        ChartRenderingInfo chartInfo = getChartRenderingInfo();
+//        CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
+//        ChartRenderingInfo chartInfo = getChartRenderingInfo();
         Point2D java2DPoint = translateScreenToJava2D(new Point(mouseX, mouseY));
         PlotRenderingInfo plotInfo = chartInfo.getPlotInfo();
 
@@ -364,7 +373,7 @@ public class ChartPanelInheritor extends ChartPanel {
 
             Rectangle2D panelArea = getScreenDataArea(mouseX, mouseY);
 
-            List subplotsList = cdPlot.getSubplots();
+//            List subplotsList = cdPlot.getSubplots();
             Iterator iterator = subplotsList.iterator();
             int index = 0;
             setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
