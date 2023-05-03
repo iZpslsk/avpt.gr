@@ -26,6 +26,25 @@ public class LoadAnimate extends JDialog {
         private int nBlStart;
         private int nBlEnd;
         private boolean isTime;
+        private int precision;
+
+//        /**
+//         * конструктор по имени файла
+//         * nBLStart и nBlEnd инициализируются после создания ArrBlock32 от 0 до arrBlock32.size() - 1
+//         * @param owner - диалоговое окно - владелец
+//         * @param fileName - имя файла поездки
+//         * @param load - диалог LoadAnimate
+//         * @param isShift - есть ли сдвижка
+//         */
+//        public Worker(JDialog owner, String fileName, JDialog load, boolean isShift, boolean isTime) {
+//            SwingUtilities.updateComponentTreeUI(load);
+//            this.fileName = fileName;
+//            this.load = load;
+//            this.isShift = isShift;
+//            this.isTime = isTime;
+//            this.owner = owner;
+//            this.precision = 1;
+//        }
 
         /**
          * конструктор по имени файла
@@ -34,25 +53,49 @@ public class LoadAnimate extends JDialog {
          * @param fileName - имя файла поездки
          * @param load - диалог LoadAnimate
          * @param isShift - есть ли сдвижка
+         * @param precision - точность 1... .
          */
-        public Worker(JDialog owner, String fileName, JDialog load, boolean isShift, boolean isTime) {
-            SwingUtilities.updateComponentTreeUI(load);
+        private Worker(JDialog owner, String fileName, JDialog load, boolean isShift, boolean isTime, int precision) {
+            if (load != null)
+                SwingUtilities.updateComponentTreeUI(load);
             this.fileName = fileName;
             this.load = load;
             this.isShift = isShift;
             this.isTime = isTime;
             this.owner = owner;
+            this.precision = precision;
         }
 
+//        /**
+//         * конструктор по ArrBlock32
+//         * @param owner - диалоговое окно - владелец
+//         * @param arrBlock32 - массив 32-х байтных посылок
+//         * @param load - диалог LoadAnimate
+//         * @param isShift - есть ли сдвижка
+//         */
+//        public Worker(JDialog owner, ArrBlock32 arrBlock32, JDialog load, boolean isShift, int nBlStart, int nBlEnd, boolean isTime) {
+//            SwingUtilities.updateComponentTreeUI(load);
+//            this.load = load;
+//            this.isShift = isShift;
+//            this.owner = owner;
+//            this.arrBlock32 = arrBlock32;
+//            this.nBlStart = nBlStart;
+//            this.nBlEnd = nBlEnd;
+//            this.isTime = isTime;
+//            this.precision = 1;
+//        }
+
         /**
-         * конструктор по ArrBlock32 (если ArrBlock32 уже существует)
+         * конструктор по ArrBlock32
          * @param owner - диалоговое окно - владелец
          * @param arrBlock32 - массив 32-х байтных посылок
          * @param load - диалог LoadAnimate
          * @param isShift - есть ли сдвижка
+         * @param precision - точность 1... .
          */
-        public Worker(JDialog owner, ArrBlock32 arrBlock32, JDialog load, boolean isShift, int nBlStart, int nBlEnd, boolean isTime) {
-            SwingUtilities.updateComponentTreeUI(load);
+        private Worker(JDialog owner, ArrBlock32 arrBlock32, JDialog load, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision) {
+            if (load != null)
+                SwingUtilities.updateComponentTreeUI(load);
             this.load = load;
             this.isShift = isShift;
             this.owner = owner;
@@ -60,6 +103,7 @@ public class LoadAnimate extends JDialog {
             this.nBlStart = nBlStart;
             this.nBlEnd = nBlEnd;
             this.isTime = isTime;
+            this.precision = precision;
         }
 
         @Override
@@ -74,7 +118,7 @@ public class LoadAnimate extends JDialog {
                     if (nBlEnd < 0) nBlEnd = 0;
                 }
                 chartDataset = new ChartDataset(arrBlock32, isTime, true);
-                chartDataset.setSeriesLines(0, arrBlock32.get(arrBlock32.size() - 1).getSecond(), 1);
+                chartDataset.setSeriesLines(0, arrBlock32.get(arrBlock32.size() - 1).getSecond(), precision);
 //                chartDataset.setSeriesLines(10000, 15000, 1);
                 chartDataset.setSeriesSignalsDiscrete();
                 chartDataset.setSeriesSignalsAutodisp();
@@ -111,8 +155,8 @@ public class LoadAnimate extends JDialog {
 
         @Override
         protected void done() {
-            load.dispose();
-            owner.getOwner().setVisible(isVisible);
+            if (load != null) load.dispose();
+            if (owner != null) owner.getOwner().setVisible(isVisible);
         }
     }
 
@@ -135,39 +179,89 @@ public class LoadAnimate extends JDialog {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
     }
 
+//    /**
+//     * @param owner - диалоговое окно (владелец)
+//     * @param fileName - имя файла поездки
+//     * @param isShift - есть ли сдвижка
+//     * @return - ChartDataset
+//     * @throws ExecutionException -
+//     * @throws InterruptedException -
+//     */
+//    public static ChartDataset execMakeArrBl32(JDialog owner, String fileName, boolean isShift, boolean isTime)
+//            throws ExecutionException, InterruptedException {
+//        LoadAnimate dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(fileName));
+//        Worker worker = new Worker(owner, fileName, dialog, isShift, isTime);
+//        worker.execute();
+//        SwingUtilities.updateComponentTreeUI(dialog);
+//        dialog.setVisible(true);
+//        return worker.get();
+//    }
+
     /**
+     * из файла поездки
+     * Параметр owner == null - окно анимации не показывать
      * @param owner - диалоговое окно (владелец)
      * @param fileName - имя файла поездки
      * @param isShift - есть ли сдвижка
+     * @param precision - точность 1... .
      * @return - ChartDataset
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public static ChartDataset execMakeArrBl32(JDialog owner, String fileName, boolean isShift, boolean isTime)
+    public static ChartDataset execMakeArrBl32(JDialog owner, String fileName, boolean isShift, boolean isTime, int precision)
             throws ExecutionException, InterruptedException {
-        LoadAnimate dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(fileName));
-        Worker worker = new Worker(owner, fileName, dialog, isShift, isTime);
+        LoadAnimate dialog = null;
+        if (owner != null)
+            dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(fileName));
+        Worker worker = new Worker(owner, fileName, dialog, isShift, isTime, precision);
         worker.execute();
-        SwingUtilities.updateComponentTreeUI(dialog);
-        dialog.setVisible(true);
+        if (dialog != null) {
+            SwingUtilities.updateComponentTreeUI(dialog);
+            dialog.setVisible(true);
+        }
         return worker.get();
     }
 
+//    /**
+//     * @param owner - диалоговое окно (владелец)
+//     * @param arrBlock32 - массив 32-х байтных посылок
+//     * @param isShift - есть ли сдвижка
+//     * @return - ChartDataset
+//     * @throws ExecutionException -
+//     * @throws InterruptedException -
+//     */
+//    public static ChartDataset execMakeArrBl32(JDialog owner, ArrBlock32 arrBlock32, boolean isShift, int nBlStart, int nBlEnd, boolean isTime)
+//            throws ExecutionException, InterruptedException {
+//        LoadAnimate dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(arrBlock32.getFileName()));
+//        Worker worker = new Worker(owner, arrBlock32, dialog, isShift, nBlStart, nBlEnd, isTime);
+//        worker.execute();
+//        SwingUtilities.updateComponentTreeUI(dialog);
+//        dialog.setVisible(true);
+//        return worker.get();
+//    }
+
     /**
+     * из arrBlock32
+     * Параметр owner == null - окно анимации не показывать
      * @param owner - диалоговое окно (владелец)
      * @param arrBlock32 - массив 32-х байтных посылок
      * @param isShift - есть ли сдвижка
+     * @param precision - точность
      * @return - ChartDataset
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public static ChartDataset execMakeArrBl32(JDialog owner, ArrBlock32 arrBlock32, boolean isShift, int nBlStart, int nBlEnd, boolean isTime)
+    public static ChartDataset execMakeArrBl32(JDialog owner, ArrBlock32 arrBlock32, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision)
             throws ExecutionException, InterruptedException {
-        LoadAnimate dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(arrBlock32.getFileName()));
-        Worker worker = new Worker(owner, arrBlock32, dialog, isShift, nBlStart, nBlEnd, isTime);
+        LoadAnimate dialog = null;
+        if (owner != null)
+            dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(arrBlock32.getFileName()));
+        Worker worker = new Worker(owner, arrBlock32, dialog, isShift, nBlStart, nBlEnd, isTime, precision);
         worker.execute();
-        SwingUtilities.updateComponentTreeUI(dialog);
-        dialog.setVisible(true);
+        if (dialog != null) {
+            SwingUtilities.updateComponentTreeUI(dialog);
+            dialog.setVisible(true);
+        }
         return worker.get();
     }
 }

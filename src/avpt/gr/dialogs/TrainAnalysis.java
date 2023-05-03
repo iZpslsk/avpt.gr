@@ -295,7 +295,7 @@ public class TrainAnalysis extends JDialog {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            remakeSaveMarker(isTime = false);
+            remakeSaveMarker(isTime = false, true, 1);
             this.setEnabled(isTime);
             viewTimeAction.setEnabled(!isTime);
             itemCoordinate.setSelected(true);
@@ -314,7 +314,7 @@ public class TrainAnalysis extends JDialog {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            remakeSaveMarker(isTime = true);
+            remakeSaveMarker(isTime = true, true, 1);
             this.setEnabled(!isTime);
             viewCoordinateAction.setEnabled(isTime);
             itemTime.setSelected(true);
@@ -519,8 +519,10 @@ public class TrainAnalysis extends JDialog {
     /**
      * пересоздать по координате или времени с сохранением положения курсора
      * @param isTime- если true то по времени, если false то по координате
+     * @param isAnimation - аоказывать окно анимации
+     * @param precision - точность 1... .
      */
-    private void remakeSaveMarker(boolean isTime) {
+    private void remakeSaveMarker(boolean isTime, boolean isAnimation, int precision) {
         infoTrainsDialog = null;
         final int N = 10;
         ChartPanelArm chartPanelArmMain = trainAnalysisMain != null ? trainAnalysisMain.getChartPanelArm() : null;
@@ -540,11 +542,11 @@ public class TrainAnalysis extends JDialog {
 //        int oldPosScroll = chartPanelArm.getScrollBar().getValue();
 //        int oldSecond = chartPanelArm.getChartDataset().getArrBlock32().get(k).getSecond();
 
-        remakeChartDataset(isTime);
+        remakeChartDataset(isTime, isAnimation, precision);
         int n = chartPanelArm.getChartDataset().get_xByDateTime(dateTime);
 
         if (trainAnalysisSlave != null) {
-            trainAnalysisSlave.remakeChartDataset(isTime);
+            trainAnalysisSlave.remakeChartDataset(isTime, isAnimation, precision);
             chartPanelArmSlave = trainAnalysisSlave.getChartPanelArm();
             if (chartPanelArmSlave != null)
                 chartPanelArmSlave.setChartPanelArmMain(chartPanelArm);
@@ -578,11 +580,14 @@ public class TrainAnalysis extends JDialog {
     /**
      * пересоздать по координате или времени
      * @param isTime - если true то по времени, если false то по координате
+     * @param isAnimation - показывать окно анимации
+     * @param precision - точность 1... .
      */
-    private void remakeChartDataset(boolean isTime) {
+    private void remakeChartDataset(boolean isTime, boolean isAnimation, int precision) {
         if (arrBlock32 == null) return;
+        JDialog owner = isAnimation ? this : null;
         try {
-            ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime);
+            ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(owner, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime, precision);
             hexTabToChartPan(chartDataset);
 //            HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
 //            hexTablePan.setVisible(false); //
@@ -603,7 +608,7 @@ public class TrainAnalysis extends JDialog {
             infoTrainsDialog = null;
             try {
                 UtilsArmG.checkSizeFile(fileName);
-                ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime);
+                ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime, 1);
                 arrBlock32 = chartDataset.getArrBlock32();
                 hexTabToChartPan(chartDataset);
 //                HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
@@ -652,7 +657,7 @@ public class TrainAnalysis extends JDialog {
           fileName = fileChooser.getSelectedFile().getAbsolutePath();
           try {
               UtilsArmG.checkSizeFile(fileName);
-              ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime);
+              ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime, 1);
               arrBlock32 = chartDataset.getArrBlock32();
               hexTabToChartPan(chartDataset);
 //              HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
