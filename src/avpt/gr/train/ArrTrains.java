@@ -451,7 +451,7 @@ public class ArrTrains {
                 x_end = arrBlock32.get(end).getSecond();
             else
                 continue;
-            if (x >= x_start && x < x_end) break;
+            if (x >= x_start && x <= x_end) break;
         }
         if (i == listTrains.size()) i = -1;
         return i;
