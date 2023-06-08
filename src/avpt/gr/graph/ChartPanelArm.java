@@ -40,21 +40,6 @@ public class ChartPanelArm extends JPanel {
     private ChartPanelArm chartPanelArmMain; // если второе окно - chartPanelArmMain != null;
     private ChartPanelArm chartPanelArmSlave; // если первое окно и есть второе
 
-    // шрифты
-//    public static Font commonFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont); // дата, время, широта, долгота
-//    public static Font titleFont = new Font(Font.SANS_SERIF, Font.BOLD, sizeFont); // шрифт для заголовка
-//    public static Font descriptFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont); // шрифт для значений - crosshair
-//    public static Font signalFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont); // // шрифт для значений дискретных сигналов - crosshair
-//    public static Font trainFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont - 1); // шрифт для значений - crosshair
-//    public static Font statusFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont);
-//    public static Font hexTableFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont);
-//    public static Font labelYAxisFont = new Font(Font.MONOSPACED, Font.PLAIN, sizeFont);
-//    public static Font tickFont = new Font(Font.MONOSPACED, Font.ITALIC, sizeFont);
-//    public static Font trMarkerFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
-//    public static Font profNameFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
-//    public static Font stationNameFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
-//    public static Font menuFont = new Font(Font.SANS_SERIF, Font.PLAIN, sizeFont);
-
     public ChartPanelArm(final ChartDataset chartDataset, final JPanel hexTab) {
         super(new BorderLayout());
         UIManager.put("Menu.font", menuFont);
@@ -62,9 +47,6 @@ public class ChartPanelArm extends JPanel {
         UIManager.put("RadioButtonMenuItem.font", menuFont);
         this.chartDataset = chartDataset;
         this.hexTab = (HexTab) hexTab;
-//        JTable table = hexTablePan.getTable();
-//        table.setFocusable(false);
-//        if (table.getRowCount() > 0) hexTablePan.selectRow(0);
         boundUpper = new UtilsArmG.MutableDouble();
         chartArm = new ChartArm(chartDataset, this.hexTab, boundUpper);
         scrollBar = new ScrollBarArm(chartArm);
@@ -77,14 +59,6 @@ public class ChartPanelArm extends JPanel {
         chartPanel.setMinimumDrawWidth(10);
         chartPanel.setMaximumDrawHeight(5000);
         chartPanel.setMinimumDrawHeight(50);
-//        chartPanel.addMouseWheelListener(new MouseWheelListener() {
-//            @Override
-//            public void mouseWheelMoved(MouseWheelEvent e) {
-//                final int rotation = e.getWheelRotation();
-//                if (rotation == 0) return;
-//                double d = ((ChartPanelInheritor)chartPanel).doZoomByCrosshair(new Point(e.getX(), e.getY()), rotation);
-//            }
-//        });
         splitPanVertical = new JSplitPane(JSplitPane.VERTICAL_SPLIT, hexTab, chartPanel);
         // отключаем панель с таблиицей при getDividerLocation() < 30 для обеспечения возможности закрытия сплитера
         splitPanVertical.addPropertyChangeListener(new PropertyChangeListener() {
@@ -92,12 +66,6 @@ public class ChartPanelArm extends JPanel {
             public void propertyChange(PropertyChangeEvent evt) {
                 hexTab.setVisible(splitPanVertical.getDividerLocation() > 30);
             }
-//            public void propertyChange(PropertyChangeEvent evt) {
-//                if (splitPanVertical.getDividerLocation() > 30)
-//                    hexTablePan.setVisible(true);
-//                else
-//                    hexTablePan.setVisible(false);
-//            }
         });
         JSplitPane splitPanHorisontal = makeSplitPanHorisontal(splitPanVertical, infoPanel);
         add(splitPanHorisontal, BorderLayout.CENTER);
@@ -111,32 +79,12 @@ public class ChartPanelArm extends JPanel {
             }
         });
 
-//        hexTablePan.getTable().getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-//            @Override
-//            public void valueChanged(ListSelectionEvent event) {
-//                try {
-//                    hexTablePan.doChange();
-//                } catch (ParseException e) {
-//                    e.printStackTrace();
-//                }
-//                // установка вертикального курсора в соответствии с таблицей hexTab
-//                setMarkerByRowTab();
-//            }
-//        });
-       // chartArm.doZoom(1);
-
         addComponentListener(new ComponentListener() {
             @Override
             public void componentResized(ComponentEvent e) {
                 int height = e.getComponent().getHeight();
                 setWeightResize(height);
                 setLabelResize(height);
-//                if (chartPanel != null) {
-//                    chartPanel.setMaximumDrawHeight(e.getComponent().getHeight());
-//                    chartPanel.setMaximumDrawWidth(e.getComponent().getWidth());
-//                    chartPanel.setMinimumDrawWidth(e.getComponent().getWidth());
-//                    chartPanel.setMinimumDrawHeight(e.getComponent().getHeight());
-//                }
             }
 
             @Override
@@ -410,19 +358,13 @@ public class ChartPanelArm extends JPanel {
      * установка вертикального курсора в соответсвии со строкой в таблице
      */
     private void setMarkerByRowTab() {
-//        final int nCol = 2; // индекс колонки "секунды"
-//        int row = hexTablePan.getCurRow();
-//        if (row == -1) return;
-//        int xx = Integer.parseInt((String)hexTablePan.getTable().getValueAt(row, nCol));
-//        if (chartArm != null) {
-//            chartArm.paintMarker(chartPanelArmMain, chartPanelArmSlave, scrollBar, xx);
-//            infoPanel.repaint();
-//        }
         int row = hexTab.getCurRow();
         if (row == -1) return;
         int xx = hexTab.getCurSecond();
         if (chartArm != null) {
             chartArm.paintMarker(chartPanelArmMain, chartPanelArmSlave, scrollBar, xx);
+            if (!chartArm.isSelected())
+                chartArm.setIntervalXMarker(xx, xx);
             infoPanel.repaint();
         }
     }
@@ -431,50 +373,6 @@ public class ChartPanelArm extends JPanel {
         setWeightResize(getHeight());
         setLabelResize(getHeight());
     }
-
-//    /**
-//     * установка курсора в соответствии с x
-//     * @param x - положение курсора
-//     */
-//    public void drawMarker(int x) {
-////        if (chartArm.getDomainAxis() == null) return;
-////        double lower = chartArm.getDomainAxis().getRange().getLowerBound();
-////        double upper = chartArm.getDomainAxis().getRange().getUpperBound();
-////        if (x > upper) scrollBar.setValue((int)(lower + (x - upper)) + (int)(upper - lower) / 2);
-////        if (x < lower) scrollBar.setValue((int)(lower - (lower - x)) - (int)(upper - lower) / 2);
-////        if (chartArm != null) {
-////            chartArm.setXMarker(x);
-////            infoPanel.repaint();
-//////            labelTime.repaint();
-//////            labelLatLon.repaint();
-////        }
-//        if (chartArm != null) {
-//            chartArm.paintMarker(chartPanelArmMain, scrollBar, x);
-//           // chartArm.setRowHexTab();
-//        }
-//
-////        if (chartPanelArmMain != null) {
-////            LocalDateTime dateTime = chartDataset.getDateTime(x);
-////
-////
-////            int n = chartPanelArmMain.getChartDataset().get_xByDateTime(dateTime);
-////            chartPanelArmMain.getChartArm().drawMarker(scrollBar, n);
-////
-////            chartPanelArmMain.getChartArm().drawMarker(scrollBar, dateTime);
-////            chartPanelArmMain.getChartArm().setRowHexTab();
-////            chartPanelArmMain.getInfoPanel().repaint();
-////        }
-//        infoPanel.repaint();
-//    }
-
-//    /**
-//     * установка курсора в соответсвии с датой временем
-//     * @param dateTime - дата время
-//     */
-//    public void drawMarker(LocalDateTime dateTime) {
-//        int x = chartDataset.get_xByDateTime(dateTime);
-//        chartArm.drawMarker(null, scrollBar, x);
-//    }
 
     /**
      * установка горячих клавиш перемещения вертикольного курсора, выделение строки таблицы, zoom
@@ -622,12 +520,6 @@ public class ChartPanelArm extends JPanel {
         amap.put("chartPanelArm.down", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-//                JTable table = hexTablePan.getTable();
-//                table.requestFocus(true);
-//                int row = hexTablePan.getCurRow();
-//                if (row < table.getRowCount() - 1) row++;
-//                hexTablePan.selectRow(row);
-
                 int row = hexTab.getCurRow();
                 if (row < hexTab.getRowCount() - 1) row++;
                 hexTab.selectRow(row);
@@ -664,10 +556,6 @@ public class ChartPanelArm extends JPanel {
     public ChartDataset getChartDataset() {
         return chartDataset;
     }
-
-//    public HexTablePan getHexTablePan() {
-//        return hexTablePan;
-//    }
 
     public InfoPanel getInfoPanel() {
         return infoPanel;

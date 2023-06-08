@@ -66,6 +66,7 @@ public class ChartArm extends JFreeChart {
     private SeriesSignalsTed seriesSignalsTed;
     private SeriesSignalsTed_s5k seriesSignalsTed_s5k;
     private SeriesSignalsLink seriesSignalsLink;
+    private boolean isSelected = false; // режим выделения
 
     private TaskAlsn seriesAlsn;
     private TaskAlsnClub seriesAlsnClub;
@@ -886,6 +887,7 @@ public class ChartArm extends JFreeChart {
      * @param isSelect - с выделением участка
      */
     public void stepCursor(ScrollBarArm scrollBar, int step, boolean isForward, boolean isSelect) {
+        this.isSelected = isSelect;
         double lower = domainAxis.getRange().getLowerBound();
         double upper = domainAxis.getRange().getUpperBound();
         int d = (int)((upper - lower) / 1500);
@@ -927,7 +929,8 @@ public class ChartArm extends JFreeChart {
             row = arrBlock32.searchIndexBySecond((int)x, 0, arrBlock32.size() - 1);
         }
       //  System.out.println((int)x + "_" + Math.abs(row));
-        hexTab.selectRow(Math.abs(row));
+        if (row >= 0)
+            hexTab.selectRow(row);
     }
 
     /**
@@ -1448,5 +1451,9 @@ public class ChartArm extends JFreeChart {
 
     public XYPlot getPlotTed_s5k() {
         return plotTed_s5k;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
     }
 }
