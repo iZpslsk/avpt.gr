@@ -1,6 +1,7 @@
 package avpt.gr.chart_dataset;
 
 import avpt.gr.graph.DualColor;
+import avpt.gr.graph.DualPaint;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -29,7 +30,8 @@ public class TaskAlsn extends SeriesTasks {
     public static final Color COLOR_ALSN_GREEN = new Color(0x136417);
     private static final Color YELLOW = new Color(0xD4CC0B);
     public static final Color COLOR_ALSN_YELLOW = YELLOW;
-    public static final Paint COLOR_ALSN_REDYELLOW = new DualColor(YELLOW, new Color(0xA90F14));
+//    public static final Paint COLOR_ALSN_REDYELLOW = new DualColor(YELLOW, new Color(0xA90F14));
+    public static final Paint COLOR_ALSN_REDYELLOW = new DualPaint(YELLOW, new Color(0xA90F14));
     public static final Color COLOR_ALSN_RED = new Color(0xA51217);
     public static final GradientPaint COLOR_ALSN_YELLOW_FLASH = new GradientPaint(
             0f, 0f, new Color(0xA0A0A0), 0f, 0f, new Color(0xD4CC0B));

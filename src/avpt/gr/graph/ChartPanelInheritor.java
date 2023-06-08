@@ -540,9 +540,9 @@ public class ChartPanelInheritor extends ChartPanel {
         else if (ALSN_CLUB_LABEL.equals(title))
             return "АЛСН-КЛУБ ";
         else if (MAIN_CONTROL_LABEL.equals(title))
-            return "Главная рукятка контроллера ";
+            return "Главная рукоятка контроллера ";
         else if (REV_CONTROL_LABEL.equals(title))
-            return "Реверсивная рукятка контроллера ";
+            return "Реверсивная рукоятка контроллера ";
         else if (SCHEMA_LABEL.equals(title))
             return "Состояние силовой схемы ";
         else if (CONSUMPTION_LABEL.equals(title))
@@ -673,20 +673,24 @@ public class ChartPanelInheritor extends ChartPanel {
 
                                 // если кж
                                 if (!isAsim && val == TaskAlsn.ALSN_REDYELLOW && title.equals(ALSN_LABEL)) {
-                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
-                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+//                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
+//                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+                                    paint = new DualPaint(Color.YELLOW, Color.RED);
                                 }
                                 if (isAsim && val == TaskAlsn.ALSN_REDYELLOW_ASIM && title.equals(ALSN_LABEL)) {
-                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
-                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+//                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
+//                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+                                    paint = new DualPaint(Color.YELLOW, Color.RED);
                                 }
                                 if (val == TaskAlsnClub.ALSN_REDYELLOW && title.equals(ALSN_CLUB_LABEL)) {
-                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
-                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+//                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
+//                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+                                    paint = new DualPaint(Color.YELLOW, Color.RED);
                                 }
                                 if (val == TaskAlsnBr.ALSN_REDYELLOW && (title.equals(ALSN_BR_LABEL) || title.equals(ALSN_BR_VL80_LABEL))) {
-                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
-                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+//                                    paint = new GradientPaint(pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur - sizeSqr,
+//                                            Color.YELLOW, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur, Color.RED);
+                                    paint = new DualPaint(Color.YELLOW, Color.RED);
                                 }
                                 g2.setPaint(paint);
                                 g2.fill(new Rectangle2D.Double(

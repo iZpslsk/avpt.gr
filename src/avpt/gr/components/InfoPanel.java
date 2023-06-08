@@ -8,6 +8,7 @@ import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
 import avpt.gr.graph.ChartArm;
 import avpt.gr.graph.ChartPanelInheritor;
+import avpt.gr.graph.DualPaint;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
@@ -330,16 +331,20 @@ public class InfoPanel extends JPanel {
                                     boolean isAsim = train != null && train.isAsim();
                                     // если кж
                                     if (!isAsim && val == TaskAlsn.ALSN_REDYELLOW && title.equals(ALSN_LABEL)) {
-                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+//                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+                                        paint = new DualPaint(Color.YELLOW, Color.RED);
                                     }
                                     if (isAsim && val == TaskAlsn.ALSN_REDYELLOW_ASIM && title.equals(ALSN_LABEL)) {
-                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+//                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+                                        paint = new DualPaint(Color.YELLOW, Color.RED);
                                     }
                                     if (val == TaskAlsnClub.ALSN_REDYELLOW && title.equals(ALSN_CLUB_LABEL)) {
-                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+//                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+                                        paint = new DualPaint(Color.YELLOW, Color.RED);
                                     }
                                     if (val == TaskAlsnBr.ALSN_REDYELLOW && (title.equals(ALSN_BR_LABEL) || title.equals(ALSN_BR_VL80_LABEL))) {
-                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+//                                        paint = new GradientPaint(dSqr, hh - sizeSqr, Color.YELLOW, dSqr, hh, Color.RED);
+                                        paint = new DualPaint(Color.YELLOW, Color.RED);
                                     }
                                     g2.setPaint(paint);
                                     g2.fill(new Rectangle2D.Double(dSqr, hh - sizeSqr, sizeSqr, sizeSqr));
