@@ -26,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Pattern;
 
 import static avpt.gr.common.UtilsArmG.formatDate;
 import static avpt.gr.common.UtilsArmG.formatDateTime;
@@ -466,8 +467,11 @@ public class InfoTrainPan extends JEditorPane {
         @Override
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                stack.push(getText());
-                if (btnBack != null && stack.size() > 0) btnBack.setEnabled(true);
+                // т.е. в конце строки не число (индекс)
+                if (!Pattern.compile("\\d+$").matcher(e.getDescription()).find())
+                    stack.push(getText());
+                if (btnBack != null && stack.size() > 0)
+                    btnBack.setEnabled(true);
 
                 if (e.getDescription().equals(LINK_WAGS))
                     showWags();
