@@ -337,7 +337,7 @@ public class ChartPanelInheritor extends ChartPanel {
     private void doZoomByCrosshair(Point pnt, int rotation) {
         rotation = (rotation > 0) ? 10 : -10;
         setPosCrosshair((int)pnt.getX(), (int)pnt.getY());
-        chartArm.doZoom(rotation);
+        chartArm.doZoom(rotation, scrollBar);
 //        CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
 //        ValueAxis valueAxis = cdPlot.getDomainAxis();
 //        double result = valueAxis.getRange().getUpperBound() - valueAxis.getRange().getLowerBound();
@@ -558,6 +558,10 @@ public class ChartPanelInheritor extends ChartPanel {
             return title;
     }
 
+    private int getWd(Graphics2D g2, String str, int curWd) {
+        return Math.max(curWd, (int)descriptFont.getStringBounds(str, g2.getFontRenderContext()).getWidth());
+    }
+
     /**
      * рисуем информацию на позиции курсора мыши
      * @param x - crosshair x
@@ -572,19 +576,29 @@ public class ChartPanelInheritor extends ChartPanel {
             String title = subplot.getRangeAxis().getLabel(); // текст заголовока;
             g2.setFont(commonFont);
             g2.setPaint(new Color(0xD4D5D4));
-
+            int wd = 0;	// максималная ширина строки description
             int hh = (int)commonFont.getStringBounds(chartDataset.getDateText((int)x), g2.getFontRenderContext()).getHeight();
             int hd = hh;	// hd - высота строки
             if (!TRAIN_LABEL.equals(title)) {
-                g2.drawString(chartDataset.getDateText((int)x), pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                String str = chartDataset.getDateText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
-                g2.drawString(chartDataset.getTimeText((int)x), pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                str = chartDataset.getTimeText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
-                g2.drawString(chartDataset.getRailCoordinateText((int)x), pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                str = chartDataset.getRailCoordinateText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
-                g2.drawString(chartDataset.getLatitudeText((int)x), pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                str = chartDataset.getLatitudeText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
-                g2.drawString(chartDataset.getLongitudeText((int)x), pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                str = chartDataset.getLongitudeText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
             } else
                 drawTrainInfoCrosshair(g2, x, pnt);
@@ -599,7 +613,7 @@ public class ChartPanelInheritor extends ChartPanel {
             g2.setColor(new Color(0xFFEBCD)); // цвет шрифта заголовка
             g2.setFont(titleFont);
 
-            int wd = 0;	// максималная ширина строки description
+//            int wd = 0;	// максималная ширина строки description
             int max_h = 0;
             final int sizeSqr = 10; // размер квадратика перед title
             XYDataset ds = subplot.getDataset(0);

@@ -11,8 +11,8 @@ import javax.swing.event.ChangeListener;
  */
 public class ScrollBarArm extends JScrollBar {
 
-    private UtilsArmG.MutableDouble boundUpper;
-    private ChartArm chartArm;
+    private final UtilsArmG.MutableDouble boundUpper;
+    private final ChartArm chartArm;
 
     public ScrollBarArm(final ChartArm chartArm) {
         super(JScrollBar.HORIZONTAL);
@@ -20,7 +20,7 @@ public class ScrollBarArm extends JScrollBar {
         boundUpper = chartArm.getBoundUpper();
         boundUpper.set(chartArm.getDomainAxis().getUpperBound());
 //        this.boundUpper = chartArm.getDomainAxis().getUpperBound();
-        setMaximum(chartArm.getSecondCoordinate());
+        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get()));
 
         getModel().addChangeListener(new ChangeListener() {
             @Override
@@ -37,9 +37,15 @@ public class ScrollBarArm extends JScrollBar {
     public void setScroll(ScrollBarArm scroll) {
         double x = scroll.getValue();
         int index = chartArm.getChartDataset().getArrTrains().getIndexFromX(chartArm.getChartDataset().getArrBlock32(), x);
-        if (chartArm != null) chartArm.setXMarkerTrainLabel(index, x);
-        else return;
+        chartArm.setXMarkerTrainLabel(index, x);
         if (chartArm.getDomainAxis() != null) chartArm.getDomainAxis().setRange(0 + x, boundUpper.get() + x);
+    }
+
+    /**
+     * изменение максимального положения курсора
+     */
+    public void changeMaximumSize() {
+        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get()));
     }
 
 }

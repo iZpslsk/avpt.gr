@@ -29,6 +29,7 @@ import org.threeten.bp.LocalDateTime;
 import avpt.gr.train.ArrTrains;
 import avpt.gr.train.Train;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.*;
 import static avpt.gr.common.WeightBlocks.*;
@@ -942,7 +943,7 @@ public class ChartArm extends JFreeChart {
     public void doZoomByCursor(ScrollBarArm scrollBar, int xMarker, int step, int cnt) {
         double d1 = domainAxis.getRange().getUpperBound() - domainAxis.getRange().getLowerBound();
         for (int i = 0; i < cnt; i++)
-            doZoom(step);
+            doZoom(step, scrollBar);
         double d2 = domainAxis.getRange().getUpperBound() - domainAxis.getRange().getLowerBound();
         double percent = (d1 - d2) * 100 / d1;
         double dmark = xMarker - domainAxis.getRange().getLowerBound();
@@ -953,7 +954,7 @@ public class ChartArm extends JFreeChart {
 
     public void doZoomByCursor(ScrollBarArm scrollBar, int xMarker, double duration) {
         double duration_old = domainAxis.getRange().getUpperBound() - domainAxis.getRange().getLowerBound();
-        doZoom(duration);
+        doZoom(duration, scrollBar);
         double percent = (duration_old - duration) * 100 / duration_old;
         double dmark = xMarker - domainAxis.getRange().getLowerBound();
         double dmarkproc = percent * dmark / 100;
@@ -964,22 +965,24 @@ public class ChartArm extends JFreeChart {
      * изменение масштаба относительно начала координат
      * @param step - шаг увеличения/уменьшения
      */
-    public void doZoom(final int step) {
+    public void doZoom(final int step, JScrollBar scrollBar) {
         double lower = domainAxis.getRange().getLowerBound();
         double upper = domainAxis.getRange().getUpperBound();
         upper += (upper - lower) / step;
         final double duration = upper - lower;
         if (duration < minDuration || duration > maxDuration) return;   // ограничения
         boundUpper.set(duration);
+        ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(lower, upper);
         setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
     }
 
-    private void doZoom (double duration) {
+    private void doZoom (double duration, JScrollBar scrollBar) {
         double upper = domainAxis.getRange().getLowerBound() + duration;
         if (duration < minDuration) duration = minDuration;
         if (duration > maxDuration) duration = maxDuration;
         boundUpper.set(duration);
+        ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(domainAxis.getRange().getLowerBound(), upper);
         isTextAnnotationProfile = false;
         setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
