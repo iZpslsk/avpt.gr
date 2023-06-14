@@ -13,6 +13,7 @@ public class ScrollBarArm extends JScrollBar {
 
     private final UtilsArmG.MutableDouble boundUpper;
     private final ChartArm chartArm;
+    private final double RIGHT_SPACE = 0.02;
 
     public ScrollBarArm(final ChartArm chartArm) {
         super(JScrollBar.HORIZONTAL);
@@ -20,7 +21,7 @@ public class ScrollBarArm extends JScrollBar {
         boundUpper = chartArm.getBoundUpper();
         boundUpper.set(chartArm.getDomainAxis().getUpperBound());
 //        this.boundUpper = chartArm.getDomainAxis().getUpperBound();
-        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get()));
+        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get() - boundUpper.get() * RIGHT_SPACE));
 
         getModel().addChangeListener(new ChangeListener() {
             @Override
@@ -45,7 +46,7 @@ public class ScrollBarArm extends JScrollBar {
      * изменение максимального положения курсора
      */
     public void changeMaximumSize() {
-        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get()));
+        setMaximum(chartArm.getSecondCoordinate() - (int)Math.round(boundUpper.get() - boundUpper.get() * RIGHT_SPACE));
     }
 
 }

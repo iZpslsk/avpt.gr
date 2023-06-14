@@ -413,14 +413,21 @@ public class ChartPanelInheritor extends ChartPanel {
         Train train = chartArm.getChartDataset().getArrTrains().getTrain(
                 chartArm.getChartDataset().getArrBlock32(), x);
         if (train == null) x = Double.NaN;
-        if (key == LineKeys.PROFILE)
-            return valToDescript(ser.getDescription(), Profiles.getSlopeProfile(chartArm, x));
-        else if (key == LineKeys.PROFILE_DIRECT)
-            return  valToDescript(ser.getDescription(), Profiles.getLenProfile(chartArm, x));
-        else if (key == LineKeys.SPEED_MAX)
-            return valToDescript(ser.getDescription(), Limits.getMapLimit(chartArm, (int)x));
-        else
-            return valToDescript(ser.getDescription(), val);
+        switch (key) {
+            case PROFILE: return valToDescript(ser.getDescription(), Profiles.getSlopeProfile(chartArm, x));
+            case PROFILE_DIRECT: return valToDescript(ser.getDescription(), Profiles.getLenProfile(chartArm, x));
+            case SPEED_MAX: return valToDescript(ser.getDescription(), Limits.getMapLimit(chartArm, (int)x));
+            default: return valToDescript(ser.getDescription(), val);
+        }
+
+//        if (key == LineKeys.PROFILE)
+//            return valToDescript(ser.getDescription(), Profiles.getSlopeProfile(chartArm, x));
+//        else if (key == LineKeys.PROFILE_DIRECT)
+//            return  valToDescript(ser.getDescription(), Profiles.getLenProfile(chartArm, x));
+//        else if (key == LineKeys.SPEED_MAX)
+//            return valToDescript(ser.getDescription(), Limits.getMapLimit(chartArm, (int)x));
+//        else
+//            return valToDescript(ser.getDescription(), val);
     }
 
     /**
