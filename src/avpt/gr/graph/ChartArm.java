@@ -1051,6 +1051,7 @@ public class ChartArm extends JFreeChart {
         if (mapVisible.isEmpty()) return;
         for (Object ob : plotCombine.getSubplots()) {
             XYPlot subplot = (XYPlot) ob;
+            if (subplot.getRangeAxis().getLabel().equals(TRAIN_LABEL)) continue;
             XYDataset ds = subplot.getDataset(0);
             XYItemRenderer rend = subplot.getRenderer();
             WeightBlocks.setWeightDef(subplot);
