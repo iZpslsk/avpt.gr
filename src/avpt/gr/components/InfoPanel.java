@@ -468,6 +468,7 @@ public class InfoPanel extends JPanel {
                 XYDataset ds = subplot.getDataset(0);
                 XYItemRenderer rend = subplot.getRenderer();
                 double maxY = 0;
+                double minY = 0;
                 for (int i = 0; i < subplot.getSeriesCount(); i++) {
                     if (ds instanceof XYSeriesCollection) {
                         XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
@@ -485,14 +486,21 @@ public class InfoPanel extends JPanel {
                         }
                         if (rend.isSeriesVisible(i)) {
                             maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;
+                            minY = !Double.isNaN(ser.getMinY()) ? Math.min(ser.getMinY(), minY) : 0;
                         }
                     }
                 }
-                if (maxY > 0) {
+                if (maxY != 0 || minY != 0) {
                     ValueAxis curRange = subplot.getRangeAxis();
-                    Range range = curRange.getRange();
-                    curRange.setRange(range.getLowerBound(), maxY + 3);
+                    //        Range range = curRange.getRange();
+                    //        System.out.println(range.getLowerBound());
+                    curRange.setRange(minY, maxY);
                 }
+//                if (maxY > 0) {
+//                    ValueAxis curRange = subplot.getRangeAxis();
+//                    Range range = curRange.getRange();
+//                    curRange.setRange(range.getLowerBound(), maxY + 3);
+//                }
             }
         }
     }

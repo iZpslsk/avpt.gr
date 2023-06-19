@@ -1056,6 +1056,7 @@ public class ChartArm extends JFreeChart {
             XYItemRenderer rend = subplot.getRenderer();
             WeightBlocks.setWeightDef(subplot);
             double maxY = 0;
+            double minY = 0;
             for (int i = 0; i < subplot.getSeriesCount(); i++) {
                 if (ds instanceof XYSeriesCollection) {
                     // сохраняем текущую шкалу
@@ -1073,16 +1074,25 @@ public class ChartArm extends JFreeChart {
                         rend.setSeriesVisible(i, isView, true);
                         setLimMap(subplot, key, !rend.isSeriesVisible(i));
                     }
+//                    if (rend.isSeriesVisible(i)) {
+//                        maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;
+//                    }
                     if (rend.isSeriesVisible(i)) {
                         maxY = !Double.isNaN(ser.getMaxY()) ? Math.max(ser.getMaxY(), maxY) : 0;
+                        minY = !Double.isNaN(ser.getMinY()) ? Math.min(ser.getMinY(), minY) : 0;
                     }
                 }
             }
-            if (maxY > 0) {
+            if (maxY != 0 || minY != 0) {
                 ValueAxis curRange = subplot.getRangeAxis();
-                Range range = curRange.getRange();
-                curRange.setRange(range.getLowerBound(), maxY + 3);
+//                Range range = curRange.getRange();
+                curRange.setRange(minY, maxY);
             }
+//            if (maxY > 0) {
+//                ValueAxis curRange = subplot.getRangeAxis();
+//                Range range = curRange.getRange();
+//                curRange.setRange(range.getLowerBound(), maxY + 3);
+//            }
         }
         WeightBlocks.setModified(true);
         SeriesLines.setMapVisible(new HashMap<String, Boolean>(SeriesLines.mapDefVisible));
