@@ -371,6 +371,11 @@ public class CreateInsertSQLite {
             name = name + "_" + major + "_" + minor + ".db";
             String baseName = getFullBaseName(name);
             String url = "jdbc:sqlite:" + baseName;
+            try {
+                Class.forName("org.sqlite.JDBC");
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
             conn = DriverManager.getConnection(url);
             conn.setAutoCommit(false);
             return true;

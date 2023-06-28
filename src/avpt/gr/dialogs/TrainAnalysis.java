@@ -82,7 +82,7 @@ public class TrainAnalysis extends JDialog {
         exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close_16.png");
         viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
         viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
-        viewDefAction = new ViewDefAction("Восстановить стандртный вид", "/avpt/gr/images/menu/reload16.png");
+        viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
         showInfoTrainsAction = new ShowInfoTrainsAction("Отчеты", "/avpt/gr/images/menu/note_16.png");
         helpAction = new HelpAction("Помощь...", "/avpt/gr/images/menu/help16.png");
         aboutAction = new AboutAction("О программе...", "/avpt/gr/images/menu/info16.png");
