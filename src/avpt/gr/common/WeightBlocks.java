@@ -13,12 +13,12 @@ public class WeightBlocks {
     public final static int W_LINE = 100;
     public final static int W_MAP = 70 * W_LINE / 100;
     public final static int W_SIGNAL = 70 * W_LINE / 100;
-    public final static int W_GANTT = 5 * W_LINE / 100;
+    public final static int W_GANTT = 10 * W_LINE / 100;
     public final static int W_GANTT_UATL = 15 * W_LINE / 100;
     public final static int W_PROF = 20 * W_LINE / 100;
     public final static int W_POS = 20 * W_LINE / 100;
     public final static int W_KEY = 200 * W_LINE / 100;
-    public final static int W_LINK = 7 * W_LINE / 100;;
+    public final static int W_LINK = 10 * W_LINE / 100;;
     private final static int EMPTY = 0;
     // высота блоков линий
     private static int weight_train = W_TRAIN;
