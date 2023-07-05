@@ -156,7 +156,7 @@ public class LoadAnimate extends JDialog {
         @Override
         protected void done() {
             if (load != null) load.dispose();
-            if (owner != null) owner.getOwner().setVisible(isVisible);
+        //    if (owner != null) owner.getOwner().setVisible(isVisible);
         }
     }
 
