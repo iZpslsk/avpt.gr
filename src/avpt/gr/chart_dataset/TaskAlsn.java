@@ -1,6 +1,5 @@
 package avpt.gr.chart_dataset;
 
-import avpt.gr.graph.DualColor;
 import avpt.gr.graph.DualPaint;
 
 import java.awt.*;
