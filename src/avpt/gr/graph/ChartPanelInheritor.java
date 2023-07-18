@@ -107,7 +107,7 @@ public class ChartPanelInheritor extends ChartPanel {
                 int rotation = e.getWheelRotation();
                 if (rotation == 0) return;
                 // высота шкалы
-                if (e.isControlDown() && !e.isShiftDown()) {
+                if (e.isControlDown() && !e.isAltDown()) {
                     XYDataset ds = curSubplot.getDataset(0);
                     if (ds instanceof XYSeriesCollection) {
                         String title = curSubplot.getRangeAxis().getLabel();
@@ -134,7 +134,7 @@ public class ChartPanelInheritor extends ChartPanel {
                     WeightBlocks.setModified(true);
                 }
                 // размер шкалы
-                else if (!e.isControlDown() && e.isShiftDown()) {
+                else if (!e.isControlDown() && e.isAltDown()) {
                     setSizeScale(rotation);
                 }
                 else // масштаб
