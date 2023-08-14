@@ -1,7 +1,7 @@
 package avpt.gr.components;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.chart_dataset.*;
 import avpt.gr.chart_dataset.keysEnum.LineKeys;
 import avpt.gr.common.UtilsArmG;
@@ -13,7 +13,6 @@ import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.CombinedDomainXYPlot;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYItemRenderer;
-import org.jfree.data.Range;
 import org.jfree.data.gantt.XYTaskDataset;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -151,19 +150,19 @@ public class InfoPanel extends JPanel {
         g2.drawString(descriptionTime + UtilsArmG.getDurationTime((long)(endX - startX)), shiftHorCur, hh);
         hh += hd;
         int distance = 0;
-        Block32 block32_prev = null;
+        Block32_gp block32_gp_prev = null;
         for (int i = indxStart + 1; i <= indxEnd; i++) {
-            Block32 block32 = arrBlock32.get(i - 1);
-            if (block32 == null) continue;
-            if (block32_prev != null) {
-                int prevCoordinate = block32_prev.getCoordinate();
-                int curCoordinate = block32.getCoordinate();
+            Block32_gp block32_gp = arrBlock32.get(i - 1);
+            if (block32_gp == null) continue;
+            if (block32_gp_prev != null) {
+                int prevCoordinate = block32_gp_prev.getCoordinate();
+                int curCoordinate = block32_gp.getCoordinate();
                 int d = curCoordinate - prevCoordinate;
                 if (d > 0 && d < 100) {
                     distance += d;
                 }
             }
-            block32_prev = block32;
+            block32_gp_prev = block32_gp;
         }
         g2.drawString(descriptionDistance + distance / 1000.0 + "км", shiftHorCur, hh);
 

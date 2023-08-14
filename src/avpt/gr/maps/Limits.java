@@ -1,7 +1,7 @@
 package avpt.gr.maps;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.overall.Block32_21_9;
 import avpt.gr.graph.ChartArm;
 import org.jfree.chart.annotations.XYAnnotation;
@@ -15,6 +15,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.graph.ChartArm.SPEED_LABEL;
 
 
@@ -94,16 +95,16 @@ public class Limits {
 
             if (arrBlock32.isG())
                 if (arrBlock32.get(i).getId() == 0x21) {
-                    int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                    int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                     if (subId == 0x09) {
-                        Block32 block32 = arrBlock32.get(i);
-                        last_second = block32.getSecond(); // последняя секунда
-                        Block32_21_9 block32_21_9 = new Block32_21_9(block32.getValues());
+                        Block32_gp block32_gp = arrBlock32.get(i);
+                        last_second = block32_gp.getSecond(); // последняя секунда
+                        Block32_21_9 block32_21_9 = new Block32_21_9(block32_gp.getValues());
                         last_coordinate = block32_21_9.getCoordinate();
                         int [] arrId = block32_21_9.getArrId();
 
                         if (Limits.Limit.isLimit(arrId)) {
-                            limits.add(new Limits.Limit(block32.getSecond(),
+                            limits.add(new Limits.Limit(block32_gp.getSecond(),
                                     block32_21_9.getLimSpeed(),
                                     block32_21_9.getLenLimit(),
                                     block32_21_9.getCoordinate(), i));

@@ -1,7 +1,7 @@
 package avpt.gr.maps;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.asim.Block32_C4_0;
 import avpt.gr.blocks32.overall.Block32_21_9;
 import avpt.gr.graph.ChartArm;
@@ -13,6 +13,7 @@ import org.jfree.chart.plot.XYPlot;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.common.UtilsArmG.profNameFont;
 import static avpt.gr.graph.ChartArm.PROF_LABEL;
 
@@ -85,8 +86,8 @@ public class Profiles {
     }
 
     public Profiles(ArrBlock32 arrBlock32) {
-        Block32 block32_prev = null;
-        Block32 block32_cur = null;
+        Block32_gp block32_gp_prev = null;
+        Block32_gp block32_gp_cur = null;
        // Limits.Limit limit = null;
         Profiles.Profile profile = null;
 
@@ -95,17 +96,17 @@ public class Profiles {
         for (int i = 0; i < arrBlock32.size(); i++) {
 
             if (arrBlock32.get(i).getId() == 0xC4) {
-                int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (subId == 0x00) {
-                    Block32 block32 = arrBlock32.get(i);
-                    last_second = block32.getSecond(); // последняя секунда
-                    Block32_C4_0 block32_c4_0 = new Block32_C4_0(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    last_second = block32_gp.getSecond(); // последняя секунда
+                    Block32_C4_0 block32_c4_0 = new Block32_C4_0(block32_gp.getValues());
                     last_coordinate = block32_c4_0.getCoordinate();
                     int [] arrId = block32_c4_0.getArrId();
 
                     if (Profiles.Profile.isProfile(arrId)) {
                         prev_prof = cur_prof;
-                        cur_prof = new Profiles.Profile(block32.getSecond(),
+                        cur_prof = new Profiles.Profile(block32_gp.getSecond(),
                                 block32_c4_0.getSlope(),
                                 block32_c4_0.getCoordinate());
                         if (prev_prof != null) {
@@ -118,17 +119,17 @@ public class Profiles {
             }
 
             if (arrBlock32.get(i).getId() == 0x21) {
-                int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (subId == 0x09) {
-                    Block32 block32 = arrBlock32.get(i);
-                    last_second = block32.getSecond(); // последняя секунда
-                    Block32_21_9 block32_21_9 = new Block32_21_9(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    last_second = block32_gp.getSecond(); // последняя секунда
+                    Block32_21_9 block32_21_9 = new Block32_21_9(block32_gp.getValues());
                     last_coordinate = block32_21_9.getCoordinate();
                     int [] arrId = block32_21_9.getArrId();
 
                     if (Profiles.Profile.isProfile(arrId)) {
                         prev_prof = cur_prof;
-                        cur_prof = new Profiles.Profile(block32.getSecond(),
+                        cur_prof = new Profiles.Profile(block32_gp.getSecond(),
                                 block32_21_9.getSlope(),
                                 block32_21_9.getCoordinate());
                         if (prev_prof != null) {

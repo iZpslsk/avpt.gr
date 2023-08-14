@@ -14,12 +14,13 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.common.UtilsArmG.iteratorBinarySearch;
 import static avpt.gr.train.ArrTrains.*;
 
 public class ArrBlock32 {
 
-    private final ArrayList<Block32> arrayList = new ArrayList<Block32>();          // массив элементов Block32
+    private final ArrayList<Block32_gp> arrayList = new ArrayList<Block32_gp>();          // массив элементов Block32
     private MappedByteBuffer buf = null;            		//
     private int len;                                        // длина channel
     private final boolean isShift;								// сдвижка
@@ -67,7 +68,7 @@ public class ArrBlock32 {
     private void fillArrayList() {
         if (buf == null) return;
         buf.position(0);
-        byte[] b = new byte[Block32.SIZE_BLOCK];
+        byte[] b = new byte[Block32_gp.SIZE_BLOCK];
         long cnt_shift = 0;
         int cnt_asim = 0;
         int cnt_p = 0;
@@ -75,32 +76,32 @@ public class ArrBlock32 {
         int cnt_g = 0;
         int cnt_everything = 0;
         while (buf.hasRemaining()) {
-            if ((buf.position() + Block32.SIZE_BLOCK) > len)
+            if ((buf.position() + Block32_gp.SIZE_BLOCK) > len)
                 buf.position(len);
             else
                 buf.get(b);
             
-            Block32 block32 = new Block32(b);
-            if (!isShift || block32.crcTruth()) {
+            Block32_gp block32_gp = new Block32_gp(b);
+            if (!isShift || block32_gp.crcTruth()) {
                 cnt_shift = 0;
-                if ((block32.getId() >= 0x10 && block32.getId() <= 0x1F) || // g
-                    (block32.getId() == 0x21) ||
-                    (block32.getId() >= 0x50 && block32.getId() <= 0x5F) || // g
-                    (block32.getId() == 0x61) ||
-                    (block32.getId() >= 0xC0 && block32.getId() <= 0xC7)) {  // asim
-                    addIdToSetId(block32);
-                    arrayList.add(block32);
+                if ((block32_gp.getId() >= 0x10 && block32_gp.getId() <= 0x1F) || // g
+                    (block32_gp.getId() == 0x21) ||
+                    (block32_gp.getId() >= 0x50 && block32_gp.getId() <= 0x5F) || // g
+                    (block32_gp.getId() == 0x61) ||
+                    (block32_gp.getId() >= 0xC0 && block32_gp.getId() <= 0xC7)) {  // asim
+                    addIdToSetId(block32_gp);
+                    arrayList.add(block32_gp);
                 }
 
-                if (block32.getId() != 0x21) cnt_everything++; // игнориоуем 0x21 посылку
-                if ((block32.getId() >= 0x10 && block32.getId() <= 0x1F) ||
-                    (block32.getId() >= 0x50 && block32.getId() <= 0x5F)) cnt_g++;   // g
-                if (block32.getId() >= 0xC0 && block32.getId() <= 0xC7) cnt_asim++; // asim
+                if (block32_gp.getId() != 0x21) cnt_everything++; // игнориоуем 0x21 посылку
+                if ((block32_gp.getId() >= 0x10 && block32_gp.getId() <= 0x1F) ||
+                    (block32_gp.getId() >= 0x50 && block32_gp.getId() <= 0x5F)) cnt_g++;   // g
+                if (block32_gp.getId() >= 0xC0 && block32_gp.getId() <= 0xC7) cnt_asim++; // asim
 //                else cnt_not_asim++;
             }
             else {
                 if (++cnt_shift < 3200000)
-                    buf.position(buf.position() - Block32.SIZE_BLOCK + 1); // сдвижка
+                    buf.position(buf.position() - Block32_gp.SIZE_BLOCK + 1); // сдвижка
             }
         }
         double percent_asim = (double) cnt_asim / (cnt_everything) * 100.0;
@@ -116,7 +117,7 @@ public class ArrBlock32 {
      * @param nBl индекс посылки
      * @return  32-байтовая посылка
      */
-    public Block32 get(int nBl) {
+    public Block32_gp get(int nBl) {
     	if (nBl >= 0 && nBl < arrayList.size())
     		return arrayList.get(nBl);
     	else
@@ -147,11 +148,11 @@ public class ArrBlock32 {
 
     /**
      * поиск индекса по блоку Block32
-     * @param block32 -
+     * @param block32_gp -
      * @return индекс массива arrBlock
      */
-    public int getIndexByBlock32(Block32 block32) {
-        return arrayList.indexOf(block32);
+    public int getIndexByBlock32(Block32_gp block32_gp) {
+        return arrayList.indexOf(block32_gp);
     }
     
     /**
@@ -178,7 +179,7 @@ public class ArrBlock32 {
         do {
             --nBl32;
             if (isTrue(idType))
-                curSubType = Block32.getSubId(arrayList.get(nBl32).getId(), arrayList.get(nBl32).getValues());
+                curSubType = getSubId(arrayList.get(nBl32).getId(), arrayList.get(nBl32).getValues());
             if (maxCnt > 0) cnt++;
         }
         while (nBl32 > 0 && (arrayList.get(nBl32).getId() != idType || curSubType != subType) && cnt <= maxCnt);
@@ -206,7 +207,7 @@ public class ArrBlock32 {
         do {
             ++nBl32;
             if (isTrue(idType))
-                curSubType = Block32.getSubId(arrayList.get(nBl32).getId(), arrayList.get(nBl32).getValues());
+                curSubType = getSubId(arrayList.get(nBl32).getId(), arrayList.get(nBl32).getValues());
             if (maxCnt > 0) cnt++;
         }
         while (nBl32 < arrayList.size() - 1 && (arrayList.get(nBl32).getId() != idType || curSubType != subType) && cnt <= maxCnt);
@@ -244,14 +245,14 @@ public class ArrBlock32 {
      * @return индекс массива arrBlock
      */
     public int searchIndexBySecond(int second, int low, int high) {
-        byte[] b = new byte[Block32.SIZE_BLOCK];
-        Block32 bl32 = new Block32(b);
+        byte[] b = new byte[Block32_gp.SIZE_BLOCK];
+        Block32_gp bl32 = new Block32_gp(b);
         bl32.setSecond(second);
         return iteratorBinarySearch(arrayList, bl32, low, high,
     	        new Comparator() {
     				@Override
     				public int compare(Object arg0, Object arg1) {
-    					return ((Block32)arg0).getSecond().compareTo(((Block32)arg1).getSecond());
+    					return ((Block32_gp)arg0).getSecond().compareTo(((Block32_gp)arg1).getSecond());
     				}
             	});
     }
@@ -264,14 +265,14 @@ public class ArrBlock32 {
      * @return индекс массива arrBlock
      */
     public int searchIndexByCoordinate(int coordinate, int low, int high) {
-        byte[] b = new byte[Block32.SIZE_BLOCK];
-        Block32 bl32 = new Block32(b);
+        byte[] b = new byte[Block32_gp.SIZE_BLOCK];
+        Block32_gp bl32 = new Block32_gp(b);
         bl32.setCoordinate(coordinate);
         return iteratorBinarySearch(arrayList, bl32, low, high,
                 new Comparator() {
                     @Override
                     public int compare(Object arg0, Object arg1) {
-                        return ((Block32)arg0).getCoordinate().compareTo(((Block32)arg1).getCoordinate());
+                        return ((Block32_gp)arg0).getCoordinate().compareTo(((Block32_gp)arg1).getCoordinate());
                     }
                 });
     }
@@ -284,16 +285,16 @@ public class ArrBlock32 {
         buf.position(0);
         final int N = 20;
         int cnt = 0;
-        byte[] b = new byte[Block32.SIZE_BLOCK];
+        byte[] b = new byte[Block32_gp.SIZE_BLOCK];
 
         while (buf.hasRemaining()) {
-            if ((buf.position() + Block32.SIZE_BLOCK) > len)
+            if ((buf.position() + Block32_gp.SIZE_BLOCK) > len)
                 buf.position(len);
             else
                 buf.get(b);            
             
-            Block32 block32 = new Block32(b);           
-            if (block32.crcTruth()) {
+            Block32_gp block32_gp = new Block32_gp(b);
+            if (block32_gp.crcTruth()) {
                 cnt++;
             }
         }
@@ -335,7 +336,7 @@ public class ArrBlock32 {
                 train.setNumLoc(block32_16_56.getTypeLoc());
             }
             if (get(n).getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(get(n).getId(), get(n).getValues());
+                int curSubId_21 = getSubId(get(n).getId(), get(n).getValues());
                 if (curSubId_21 == 0x01) {
                     if (train == null) train = new Train(n);
                     Block32_21_1 block32_21_1 = new Block32_21_1(get(n).getValues());
@@ -351,11 +352,11 @@ public class ArrBlock32 {
      * добавляем id и subId блока в множество блоков, существующих в поездке
      * первые 8 бит - id
      * следующие 8 бит - subId
-     * @param block32 - Block32
+     * @param block32_gp - Block32
      */
-    private void addIdToSetId(Block32 block32) {
-        int idBl = block32.getId();
-        int subIdBl = Block32.getSubId(idBl, block32.getValues());
+    private void addIdToSetId(Block32_gp block32_gp) {
+        int idBl = block32_gp.getId();
+        int subIdBl = getSubId(idBl, block32_gp.getValues());
         int id = (subIdBl & 0xFF) << 8 | (idBl & 0xFF);   // 0..7 - id, 8..15 - subId
         setIdBlk.add(id);
     }
@@ -367,14 +368,14 @@ public class ArrBlock32 {
 //                return block32_16_56.getTypeLoc();
 //            }
             if (isG && get(n).getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(get(n).getId(), get(n).getValues());
+                int curSubId_21 = getSubId(get(n).getId(), get(n).getValues());
                 if (curSubId_21 == 0x01) {
                     Block32_21_1 block32_21_1 = new Block32_21_1(get(n).getValues());
                     return block32_21_1.getTypeLoc();
                 }
             }
             if (isASIM && get(n).getId() == 0xC0) {
-                int curSubId_C0 = Block32.getSubId(get(n).getId(), get(n).getValues());
+                int curSubId_C0 = getSubId(get(n).getId(), get(n).getValues());
                 if (curSubId_C0 == 0x00) {
                     Block32_C0_0 block32_c0_0 = new Block32_C0_0(get(n).getValues());
                     return block32_c0_0.getTypeLoc();

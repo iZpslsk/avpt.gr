@@ -1,31 +1,23 @@
 package avpt.gr.blocks32;
 
-import org.threeten.bp.LocalDateTime;
+import java.util.Arrays;
 
-import java.util.*;
 import static avpt.gr.common.UtilsArmG.toUnsignedInt;
 
-public class Block32 {
+class Block32 {
 
-    public static final byte SIZE_VALUES = 29;  //  размер сегмента данных посылки
-    public static final int SIZE_BLOCK = 32;    //  размер посылки
-
+    static final int SIZE_BLOCK = 32;        //  размер посылки
 
     private final byte id;                                  // идентификатор типа посылки
-    private byte[] values;// = new byte[SIZE_VALUES];       // сегмент данных посылки
+    private byte[] values;                                  // данные посылки
     private final byte crc16H;                              // кс - старший байт
     private final byte crc16L;                              // кс - младший байт
     private final int crc16;                                // кс - факт
-    private int second;									    // текущая секунда
-    private LocalDateTime dateTime;                                 // текущее время
-    private int coordinate;                                 // текущая координата
-    private int km;                                         // текущий километр
-    private int pk;                                         // текущий пикет
-    private double valLimTmp;                                  // значение временного ограничения
-    private int len_prof;                                   // длина профиля
-    private int slope_prof;                                 // уклон профиля
 
-    public Block32(byte[] bytes) {
+    private int coordinate;                                 // текущая координата
+    private int second;										// текущая координата
+
+    Block32(byte[] bytes) {
         id = bytes[0];
         values = Arrays.copyOfRange(bytes, 1, SIZE_BLOCK - 2);
         crc16H = bytes[30];
@@ -34,19 +26,11 @@ public class Block32 {
     }
 
     public Integer getSecond() {
-    		return second;
+        return second;
     }
-    
+
     public void setSecond(int second) {
-    		this.second = second;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
+        this.second = second;
     }
 
     public Integer getCoordinate() {
@@ -55,46 +39,6 @@ public class Block32 {
 
     public void setCoordinate(int coordinate) {
         this.coordinate = coordinate;
-    }
-
-    public int getKm() {
-        return km;
-    }
-
-    public void setKm(int km) {
-        this.km = km;
-    }
-
-    public int getPk() {
-        return pk;
-    }
-
-    public int getLen_prof() {
-        return len_prof;
-    }
-
-    public void setLen_prof(int len_prof) {
-        this.len_prof = len_prof;
-    }
-
-    public double getSlope_prof() {
-        return slope_prof * 0.01;
-    }
-
-    public void setSlope_prof(int slope_prof) {
-        this.slope_prof = slope_prof;
-    }
-
-    public void setPk(int pk) {
-        this.pk = pk;
-    }
-
-    public double getValLimTmp() {
-        return valLimTmp;
-    }
-
-    public void setValLimTmp(double valLimTmp) {
-        this.valLimTmp = valLimTmp;
     }
 
     /**
@@ -123,17 +67,24 @@ public class Block32 {
 
     /**
      *
-     * @return  массив байт данных (знаковый)
+     * @return  знаковый массив байт данных
      */
     public byte[] getValues() {
         return values;
     }
-    
+
+    /**
+     * @return корректна ли контрольная сумма
+     */
+    boolean crcTruth() {
+        return getCrc() == crc16;
+    }
+
     /**
      * @param bytes - массив байт
      * @return расчетная контрольная сумма
      */
-    private static int getCrc16(final byte[] bytes) {
+    private int getCrc16(final byte[] bytes) {
 
         int crc = 0;
         for (byte b : bytes) {
@@ -149,50 +100,62 @@ public class Block32 {
     }
 
     /**
-     * @return корректна ли контрольная сумма
+     * получение кода типа движения для текущей посылки: 1-пасс, 2-тэп70, 3-гр, 4-манев, 7-асим
+     * @param block32 - текущая посылка
+     * @param cur_type_loc_tep - текущий тип локомотива тепловоза - получаем из посылок 0x76 или 0x78
+     *(текущих или предшествующих в результате итерации) если посылки 0x76 или 0x78 не встречаются передаем -1;
+     * @return - 1-пасс, 2-тэп70, 3-гр, 4-манев, 7-асим
      */
-    public boolean crcTruth() {
-        return getCrc() == crc16;
+    public static byte makeCodeMove(Block32 block32, int cur_type_loc_tep) {
+
+        int id = block32.getId();
+        byte[] values = block32.getValues();
+
+        if (id == 0xAA) {
+            switch (cur_type_loc_tep) {
+                case 1:
+                case 2:
+                case 3:
+                    return 2;
+                default:
+                    return 1;
+            }
+        }
+
+        switch (id) {
+            case 21:
+            case 61:
+                if ((values[0] >>> 5) == 2) return 3;   // freight
+                else return 1;                          // pass
+            case 91:
+                return 1;                               // pass
+            case 79:
+                return 2;                               // pass_t
+        }
+
+        switch ((id & 0Xf0) >>> 4) {
+            case 0x2:
+            case 0x4:
+            case 0x6:
+            case 0x9:
+                return 1;                       // pass
+            case 0x1:
+            case 0x5:
+                return 3;                       // freight
+            case 0x7:
+                switch (cur_type_loc_tep) {
+                    case 1:
+                    case 2:
+                    case 3:
+                        return 2;               // tep70
+                    default:
+                        return 4;               // freight_t
+                }
+            case 0xC:
+                return 7;                       // asim
+            default:
+                return -1;
+        }
     }
 
-    /**
-     * @param values - массив данных блока
-     * @return - подтип для блока 0x21 (0x61)
-     */
-    public static int getSubId_0x21(byte[] values) {
-        return (toUnsignedInt(values[27]) & 0x60) >>> 3 |    // hi
-               (toUnsignedInt(values[28]) & 0x60) >>> 5;     // lo
-    }
-
-    /**
-     * @param values - массив данных блока
-     * @return - подтип для блоков 0x1D или 0x21
-     */
-    public static int getSubId_0x1D(byte[] values) {
-        return toUnsignedInt(values[0])  >>> 4;
-    }
-
-    /**
-     *
-     * @param values - массив данных блока
-     * @return подтип для блокав асим
-     */
-    public static int getSubId_ASIM(byte[] values) {
-        return toUnsignedInt(values[28]);
-    }
-
-    public static int getSubId(int id, byte[] values) {
-        if (id == 0x21) return getSubId_0x21(values);
-        if (id == 0x1D) return getSubId_0x1D(values);
-        if (id == 0x2D) return getSubId_0x1D(values);
-        if (id == 0x6D) return getSubId_0x1D(values);
-        if (id == 0x9D) return getSubId_0x1D(values);
-        if (id == 0x71) return getSubId_0x1D(values);
-        if (id == 0x44) return getSubId_0x1D(values);
-        if (id >= 0xC0 && id <= 0xCF) return getSubId_ASIM(values);
-        return 0;
-    }
 }
-
-
-

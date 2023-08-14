@@ -1,7 +1,7 @@
 package avpt.gr.reports;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.asim.*;
 import avpt.gr.blocks32.overall.Block32_21_1;
 import avpt.gr.blocks32.overall.Block32_21_4;
@@ -14,6 +14,7 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalTime;
 import avpt.gr.train.Train;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.common.HelperExl_POI.getStyle;
 import static avpt.gr.common.UtilsArmG.formatDateTime;
 import static avpt.gr.common.UtilsArmG.formatTime;
@@ -24,7 +25,7 @@ public class OutConsumptionEn {
     private final XSSFSheet sheet;
     private final Train train;
     private final ArrBlock32 arrBlock32;
-    private Block32 block32;
+    private Block32_gp block32_gp;
     private final CellStyle styleRight;
     private final CellStyle styleCenter;
 
@@ -110,19 +111,19 @@ public class OutConsumptionEn {
         avpt.gr.blocks32.asim.Block32_C3_3 block32_c3_3_prev = null;
 
         for (int i = blStart; i <= blEnd; i++) {
-            block32 = arrBlock32.get(i);
+            block32_gp = arrBlock32.get(i);
 
-            if (block32.getId() == 0xC0) {
-                int curSubId = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0xC0) {
+                int curSubId = getSubId(block32_gp.getId(), block32_gp.getValues());
                 if (curSubId == 0) { // init
-                    Block32_C0_0 block32_c0_0 = new Block32_C0_0(block32.getValues());
+                    Block32_C0_0 block32_c0_0 = new Block32_C0_0(block32_gp.getValues());
                     curTypeLoc = block32_c0_0.getTypeLoc();
                 }
             }
-            if (block32.getId() == 0xC2) {
-                int curSubId = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0xC2) {
+                int curSubId = getSubId(block32_gp.getId(), block32_gp.getValues());
                 if (curSubId == 0) {
-                    Block32_C2_0 block32_c2_0 = new Block32_C2_0(block32.getValues());
+                    Block32_C2_0 block32_c2_0 = new Block32_C2_0(block32_gp.getValues());
                     localTime = block32_c2_0.getTime();
                     if (localTimePrev != null) {
                         cur_second += Duration.between(localTimePrev, localTime).getSeconds();
@@ -135,15 +136,15 @@ public class OutConsumptionEn {
                 }
             }
 
-            if (block32.getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0x21) {
+                int curSubId_21 = getSubId(block32_gp.getId(), block32_gp.getValues());
                 switch (curSubId_21) {
                     case 0x01:
-                        Block32_21_1 block32_21_1 = new Block32_21_1(block32.getValues());
+                        Block32_21_1 block32_21_1 = new Block32_21_1(block32_gp.getValues());
                         curTypeLoc = block32_21_1.getTypeLoc();
                         break;
                     case 0x04:
-                        Block32_21_4 block32_21_4 = new Block32_21_4(block32.getValues());
+                        Block32_21_4 block32_21_4 = new Block32_21_4(block32_gp.getValues());
                         localTime = UtilsArmG.getTime(block32_21_4.getSecBeginDay());
                         if (localTimePrev != null) {
                             cur_second += Duration.between(localTimePrev, localTime).getSeconds();
@@ -157,7 +158,7 @@ public class OutConsumptionEn {
             }
             int typeLoc = train != null ? train.getTypeLoc() : curTypeLoc;
             if (typeLoc == S5K) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x57: // расход А
                         avpt.gr.blocks32.s5k.Block32_57 block32_57 = new avpt.gr.blocks32.s5k.Block32_57(arrBlock32.get(i).getValues());
                         if (block32_57_s5k_prev != null) {
@@ -201,7 +202,7 @@ public class OutConsumptionEn {
                 }
             }
             if (typeLoc == S5K_2) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x57: // расход А
                         avpt.gr.blocks32.s5k_2.Block32_57 block32_57 = new avpt.gr.blocks32.s5k_2.Block32_57(arrBlock32.get(i).getValues());
                         if (block32_57_s5k_2_prev != null) {
@@ -245,7 +246,7 @@ public class OutConsumptionEn {
                 }
             }
             if (typeLoc == S5) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x57: // расход А
                         avpt.gr.blocks32.s5.Block32_57 block32_57 = new avpt.gr.blocks32.s5.Block32_57(arrBlock32.get(i).getValues());
                         if (block32_57_s5_prev != null) {
@@ -290,7 +291,7 @@ public class OutConsumptionEn {
             }
 
             if (typeLoc == S4K) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x57: // расход А
                         avpt.gr.blocks32.s4k.Block32_57 block32_57 = new avpt.gr.blocks32.s4k.Block32_57(arrBlock32.get(i).getValues());
                         if (block32_57_s4k_prev != null) {
@@ -326,7 +327,7 @@ public class OutConsumptionEn {
                 }
             }
 
-            if (typeLoc == VL10 && block32.getId() == 0x13) {
+            if (typeLoc == VL10 && block32_gp.getId() == 0x13) {
                 avpt.gr.blocks32.vl10.Block32_13 block32_13 = new avpt.gr.blocks32.vl10.Block32_13(arrBlock32.get(i).getValues());
                 if (block32_13_prev != null) {
                     act += ChartArrays.getDiffEnCnt(block32_13_prev.getEnergy(), block32_13.getEnergy());
@@ -334,7 +335,7 @@ public class OutConsumptionEn {
                 }
                 block32_13_prev = block32_13;
             }
-            if (typeLoc == VL80 && block32.getId() == 0x59) {
+            if (typeLoc == VL80 && block32_gp.getId() == 0x59) {
                 avpt.gr.blocks32.vl80.Block32_59 block32_59 = new avpt.gr.blocks32.vl80.Block32_59(arrBlock32.get(i).getValues());
                 if (block32_59_vl80_prev != null) {
                     act1 += ChartArrays.getDiffEnCnt(block32_59_vl80_prev.getEnergyAct_s1(), block32_59.getEnergyAct_s1());
@@ -346,12 +347,12 @@ public class OutConsumptionEn {
             }
 
 
-            if (block32.getId() == 0xC0) {
+            if (block32_gp.getId() == 0xC0) {
                 Block32_C0_0 block32_c0_0 = new Block32_C0_0(arrBlock32.get(i).getValues());
                 acdc_asim = block32_c0_0.getTypeACDC();
             }
-            if (block32.getId() == 0xC3) {
-                int curSubId = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0xC3) {
+                int curSubId = getSubId(block32_gp.getId(), block32_gp.getValues());
                 switch (curSubId){
                     case 1:
                         Block32_C3_0 block32_c3_0 = new Block32_C3_0(arrBlock32.get(i).getValues());
@@ -459,7 +460,7 @@ public class OutConsumptionEn {
             ExcelReports.toCell(sheet, row, col++, react4, styleRight);
             ExcelReports.toCell(sheet, row, col++, react4_rec, styleRight);
         }
-        ExcelReports.toCell(sheet, row, col++, (double)block32.getKm(),  styleRight);
-        ExcelReports.toCell(sheet, row, col, (double)block32.getPk(),  styleRight);
+        ExcelReports.toCell(sheet, row, col++, (double) block32_gp.getKm(),  styleRight);
+        ExcelReports.toCell(sheet, row, col, (double) block32_gp.getPk(),  styleRight);
     }
 }

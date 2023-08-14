@@ -1,7 +1,7 @@
 package avpt.gr.maps;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.asim.Block32_C5_0;
 import avpt.gr.blocks32.asim.Block32_C5_1;
 import avpt.gr.blocks32.overall.Block32_1D_9;
@@ -16,6 +16,9 @@ import avpt.gr.train.Train;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+
+import static avpt.gr.blocks32.SubIdGr.getSubId;
+//import static avpt.gr.blocks32.SubIdGr.getSubId_ASIM;
 import static avpt.gr.chart_dataset.ChartArrays.LINE_MAP;
 import static avpt.gr.common.UtilsArmG.stationNameFont;
 
@@ -142,7 +145,7 @@ public class Stations {
         for (int i = 0; i < arrBlock32.size(); i++) {
 
             if (arrBlock32.get(i).getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int curSubId_21 = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (curSubId_21 == 0x04) {
                     Block32_21_4 block32_21_4 = new Block32_21_4(arrBlock32.get(i).getValues());
 
@@ -155,13 +158,14 @@ public class Stations {
 
             // asim
             if (arrBlock32.get(i).getId()  == 0xC5) {
-                int subId = Block32.getSubId_ASIM(arrBlock32.get(i).getValues());
-                Block32 block32 = arrBlock32.get(i);
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+//                int subId = getSubId_ASIM(arrBlock32.get(i).getValues());
+                Block32_gp block32_gp = arrBlock32.get(i);
                 if (subId == 0) {
-                    Block32_C5_0 block32_c5_0 = new Block32_C5_0(block32.getValues());
+                    Block32_C5_0 block32_c5_0 = new Block32_C5_0(block32_gp.getValues());
                     Station station =
                             new Station(index_station,
-                                    block32.getSecond(),
+                                    block32_gp.getSecond(),
                                     block32_c5_0.getStationId(),
                                     block32_c5_0.getECP(),
                                     block32_c5_0.getTypeStation(),
@@ -179,7 +183,7 @@ public class Stations {
 
                 }
                 if (subId == 1) {
-                    Block32_C5_1 block32_c5_1 = new Block32_C5_1(block32.getValues());
+                    Block32_C5_1 block32_c5_1 = new Block32_C5_1(block32_gp.getValues());
                     if (stations.size() > 0 && block32_c5_1.getStationId() == stations.get(stations.size() - 1).getId()) {
                         stations.get(stations.size() - 1).setNameStation(block32_c5_1.getNameStation());
                     }
@@ -188,13 +192,13 @@ public class Stations {
             }
 
             if (arrBlock32.get(i).getId() == 0x1D) {
-                int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (subId == 0x09) {
-                    Block32 block32 = arrBlock32.get(i);
-                    Block32_1D_9 block32_1D_9 = new Block32_1D_9(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    Block32_1D_9 block32_1D_9 = new Block32_1D_9(block32_gp.getValues());
                     Station station =
                             new Station(index_station,
-                                    block32.getSecond(),
+                                    block32_gp.getSecond(),
                                     block32_1D_9.getStationId(),
                                     block32_1D_9.getECP(),
                                     block32_1D_9.getTypeStation(),
@@ -211,8 +215,8 @@ public class Stations {
                     index_station++;
                 }
                 if (subId == 0x0A) {
-                    Block32 block32 = arrBlock32.get(i);
-                    Block32_1D_A block32_1D_A = new Block32_1D_A(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    Block32_1D_A block32_1D_A = new Block32_1D_A(block32_gp.getValues());
                     if (stations.size() > 0 && block32_1D_A.getStationId() == stations.get(stations.size() - 1).getId()) {
                         stations.get(stations.size() - 1).setNameStation(block32_1D_A.getNameStation());
                     }

@@ -1,7 +1,6 @@
 package avpt.gr.train;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
 import avpt.gr.blocks32.asim.Block32_C0_0;
 import avpt.gr.blocks32.asim.Block32_C2_0;
 import avpt.gr.blocks32.overall.*;
@@ -18,6 +17,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 
 public class ArrTrains {
 
@@ -343,14 +344,14 @@ public class ArrTrains {
             //if (train_prev.getBlEnd() == -1) {
             while (n > train_prev.getBlStart() && curSpeed < 2) {
                 if (arrBlock32.get(n).getId() == 0x21) {
-                    int curSubId_21 = Block32.getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
+                    int curSubId_21 = getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
                     if (curSubId_21 == 0x04) {
                         Block32_21_4 block32_21_4 = new Block32_21_4(arrBlock32.get(n).getValues());
                         curSpeed = block32_21_4.getSpeed();
                     }
                 }
                 if (arrBlock32.get(n).getId() == 0xC2) {
-                    int curSubId = Block32.getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
+                    int curSubId = getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
                     if (curSubId == 0x00) {
                         Block32_C2_0 block32_c2_0 = new Block32_C2_0(arrBlock32.get(n).getValues());
                         curSpeed = block32_c2_0.getSpeed();
@@ -373,14 +374,14 @@ public class ArrTrains {
         if (lastTrain.getBlEnd() == -1) {
             while (n > lastTrain.getBlStart() && (curSpeed == 0)) {
                 if (arrBlock32.get(n).getId() == 0x21) {
-                    int curSubId_21 = Block32.getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
+                    int curSubId_21 = getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
                     if (curSubId_21 == 0x04) {
                         Block32_21_4 block32_21_4 = new Block32_21_4(arrBlock32.get(n).getValues());
                         curSpeed = block32_21_4.getSpeed();
                     }
                 }
                 if (arrBlock32.get(n).getId() == 0xC2) {
-                    int curSubId = Block32.getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
+                    int curSubId = getSubId(arrBlock32.get(n).getId(), arrBlock32.get(n).getValues());
                     if (curSubId == 0x00) {
                         Block32_C2_0 block32_c2_0 = new Block32_C2_0(arrBlock32.get(n).getValues());
                         curSpeed = block32_c2_0.getSpeed();
@@ -612,7 +613,7 @@ public class ArrTrains {
         for (int i = train.getBlStart() + 1; i <= train.getBlEnd(); i++) {
 
             if (arrBlock32.get(i).getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int curSubId_21 = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
 
                 if (curSubId_21 == 0x02) {
                     Block32_21_2 block32_21_2 = new Block32_21_2(arrBlock32.get(i).getValues());
@@ -673,7 +674,7 @@ public class ArrTrains {
             }
             // asim
             if (arrBlock32.get(i).getId() == 0xC2) {
-                int curSubId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int curSubId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (curSubId == 0x00) {
                     Block32_C2_0 block32_c2_0 = new Block32_C2_0(arrBlock32.get(i).getValues());
                     cnt++;
@@ -687,7 +688,7 @@ public class ArrTrains {
             }
 
             if (arrBlock32.get(i).getId() == 0x1D) {
-                int curSubId_1D = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int curSubId_1D = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (curSubId_1D == 0x0D) {
                     Block32_1D_D block32_1D_D = new Block32_1D_D(arrBlock32.get(i).getValues());
                     if (numSlave == 0) numSlave = block32_1D_D.getNumSlave();

@@ -1,7 +1,7 @@
 package avpt.gr.maps;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.asim.Block32_C4_0;
 import avpt.gr.blocks32.overall.Block32_21_9;
 import org.jfree.chart.annotations.*;
@@ -11,6 +11,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.chart_dataset.ChartArrays.LINE_MAP;
 
 /**
@@ -238,39 +239,39 @@ public class Objects {
     public Objects(ArrBlock32 arrBlock32) {
         for (int i = 0; i < arrBlock32.size(); i++) {
             if (arrBlock32.get(i).getId() == 0xC4) {
-                int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (subId == 0x00) {
-                    Block32 block32 = arrBlock32.get(i);
-                    Block32_C4_0 block32_c4_0 = new Block32_C4_0(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    Block32_C4_0 block32_c4_0 = new Block32_C4_0(block32_gp.getValues());
                     int [] arrId = block32_c4_0.getArrId();
                     if (Traffic_light.isTrafficLight(arrId))
-                        traffic_light.add(new Traffic_light(block32.getSecond(),
+                        traffic_light.add(new Traffic_light(block32_gp.getSecond(),
                                 block32_c4_0.getSpeed(),
                                 block32_c4_0.getTypeTrafficLight(),
                                 block32_c4_0.getCoordinate()));
 
                     if (Thermometer.isThermometer(arrId))
-                        thermometer.add(new Thermometer(block32.getSecond(),
+                        thermometer.add(new Thermometer(block32_gp.getSecond(),
                                 block32_c4_0.getCoordinate()));
 
                     if (NeutralInsert.isNeutralInsert(arrId))
-                        neutral_insert.add(new NeutralInsert(block32.getSecond(),
+                        neutral_insert.add(new NeutralInsert(block32_gp.getSecond(),
                                 block32_c4_0.getLenNeutral(),
                                 block32_c4_0.getCoordinate()));
 
                     if (Crossing.isCrossing(arrId))
-                        crossing.add(new Crossing(block32.getSecond(),
+                        crossing.add(new Crossing(block32_gp.getSecond(),
                                 block32_c4_0.getSpeed(),
                                 block32_c4_0.getCoordinate()));
 
                     if (CheckBrake.isCheckBrake(arrId))
-                        check_brake.add(new CheckBrake(block32.getSecond(),
+                        check_brake.add(new CheckBrake(block32_gp.getSecond(),
                                 block32_c4_0.getLenTryBake(),
                                 block32_c4_0.getSpeed(),
                                 block32_c4_0.getCoordinate()));
 
                     if (Landslide.isLandslide(arrId))
-                        landslide.add(new Landslide(block32.getSecond(),
+                        landslide.add(new Landslide(block32_gp.getSecond(),
                                 block32_c4_0.getLenDanger(),
                                 block32_c4_0.getCoordinate()));
 
@@ -278,40 +279,40 @@ public class Objects {
             }
 
             if (arrBlock32.get(i).getId() == 0x21) {
-                int subId = Block32.getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
+                int subId = getSubId(arrBlock32.get(i).getId(), arrBlock32.get(i).getValues());
                 if (subId == 0x09) {
-                    Block32 block32 = arrBlock32.get(i);
-                    Block32_21_9 block32_21_9 = new Block32_21_9(block32.getValues());
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    Block32_21_9 block32_21_9 = new Block32_21_9(block32_gp.getValues());
                     int [] arrId = block32_21_9.getArrId();
 
                     if (Traffic_light.isTrafficLight(arrId))
-                        traffic_light.add(new Traffic_light(block32.getSecond(),
+                        traffic_light.add(new Traffic_light(block32_gp.getSecond(),
                                     block32_21_9.getSpeed(),
                                     block32_21_9.getTypeTrafficLight(),
                                     block32_21_9.getCoordinate()));
 
                     if (Thermometer.isThermometer(arrId))
-                        thermometer.add(new Thermometer(block32.getSecond(),
+                        thermometer.add(new Thermometer(block32_gp.getSecond(),
                                 block32_21_9.getCoordinate()));
 
                     if (NeutralInsert.isNeutralInsert(arrId))
-                        neutral_insert.add(new NeutralInsert(block32.getSecond(),
+                        neutral_insert.add(new NeutralInsert(block32_gp.getSecond(),
                                 block32_21_9.getLenNeutral(),
                                 block32_21_9.getCoordinate()));
 
                     if (Crossing.isCrossing(arrId))
-                        crossing.add(new Crossing(block32.getSecond(),
+                        crossing.add(new Crossing(block32_gp.getSecond(),
                                 block32_21_9.getSpeed(),
                                 block32_21_9.getCoordinate()));
 
                     if (CheckBrake.isCheckBrake(arrId))
-                        check_brake.add(new CheckBrake(block32.getSecond(),
+                        check_brake.add(new CheckBrake(block32_gp.getSecond(),
                                 block32_21_9.getLenTryBake(),
                                 block32_21_9.getSpeed(),
                                 block32_21_9.getCoordinate()));
 
                     if (Landslide.isLandslide(arrId))
-                        landslide.add(new Landslide(block32.getSecond(),
+                        landslide.add(new Landslide(block32_gp.getSecond(),
                                 block32_21_9.getLenDanger(),
                                 block32_21_9.getCoordinate()));
                 }

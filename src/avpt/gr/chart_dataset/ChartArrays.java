@@ -1,7 +1,6 @@
 package avpt.gr.chart_dataset;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
 import avpt.gr.blocks32.asim.*;
 import avpt.gr.blocks32.overall.*;
 import avpt.gr.common.UtilsArmG;
@@ -14,6 +13,7 @@ import avpt.gr.train.Train;
 
 import java.util.ArrayList;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.train.Train.*;
 
 /**
@@ -198,7 +198,7 @@ public class ChartArrays {
         switch (arrBlock32.get(index).getId()) {
             case 0x61:
             case 0x21: {
-                    int curSubId_21 = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                    int curSubId_21 = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                     switch (curSubId_21) {
                         case 0x01:
                             Block32_21_1 block32_21_1 = new Block32_21_1(arrBlock32.get(index).getValues());
@@ -439,7 +439,7 @@ public class ChartArrays {
 
             case 0x1D: {
                 curTypeMove = ArrTrains.CODE_MOVE_G;
-                int curSubId_1D = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId_1D = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 switch (curSubId_1D) {
                     case 0x04:
                         Block32_1D_4 block32_1D_4 = new Block32_1D_4(arrBlock32.get(index).getValues());
@@ -500,7 +500,7 @@ public class ChartArrays {
 
             case 0xC0: {
                 curTypeMove = ArrTrains.CODE_MOVE_ASIM;
-                int curSubId = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 if (curSubId == 0) {
                     Block32_C0_0 block32_C0_0 = new Block32_C0_0(arrBlock32.get(index).getValues());
                     curDateTime_21 = block32_C0_0.getDateTime();
@@ -525,7 +525,7 @@ public class ChartArrays {
 
             case 0xC2: {
                 curTypeMove = ArrTrains.CODE_MOVE_ASIM;
-                int curSubId = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 if (curSubId == 0) {
                     Block32_C2_0 block32_C2_0 = new Block32_C2_0(arrBlock32.get(index).getValues());
                     arrTrains.addMainAsim(block32_C2_0);
@@ -560,7 +560,7 @@ public class ChartArrays {
 
             case 0xC3: {
                 curTypeMove = ArrTrains.CODE_MOVE_ASIM;
-                int curSubId = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 if (curSubId == 1) {
                     Block32_C3_0 block32_c3_0 = new Block32_C3_0(arrBlock32.get(index).getValues());
                     // расход энергии 1 секция
@@ -646,7 +646,7 @@ public class ChartArrays {
 
             case 0xC4: {
                 curTypeMove = ArrTrains.CODE_MOVE_ASIM;
-                int curSubId = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 if (curSubId == 0) {
                     Block32_C4_0 block32_c4_0 = new Block32_C4_0(arrBlock32.get(index).getValues());
                     listLines.add(listLines.getListProfile(), second_coordinate, profile, -1);
@@ -702,7 +702,7 @@ public class ChartArrays {
 
             case 0xC5: {
                 curTypeMove = ArrTrains.CODE_MOVE_ASIM;
-                int curSubId = Block32.getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
+                int curSubId = getSubId(arrBlock32.get(index).getId(), arrBlock32.get(index).getValues());
                 if (curSubId == 0) {    // информация о станциях
                     arrObjects = new int[2]; // станция
                     arrObjects[0] = 8;

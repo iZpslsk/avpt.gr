@@ -1,7 +1,7 @@
 package avpt.gr.reports;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
+import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.overall.*;
 import avpt.gr.chart_dataset.ChartArrays;
 import avpt.gr.common.UtilsArmG;
@@ -18,6 +18,7 @@ import avpt.gr.train.Train;
 
 import java.util.ArrayList;
 
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 import static avpt.gr.chart_dataset.TaskAlsn.*;
 import static avpt.gr.chart_dataset.TaskAutoDrive.*;
 import static avpt.gr.common.HelperExl_POI.getStyle;
@@ -171,13 +172,13 @@ public class OutLoadVSC {
 
 
         for (int i = blStart; i <= blEnd; i++) {
-            Block32 block32 = arrBlock32.get(i);
+            Block32_gp block32_gp = arrBlock32.get(i);
 
-            if (block32.getId() == 0x21) {
-                int curSubId_21 = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0x21) {
+                int curSubId_21 = getSubId(block32_gp.getId(), block32_gp.getValues());
                 switch (curSubId_21) {
                     case 0x01:
-                        Block32_21_1 block32_21_1 = new Block32_21_1(block32.getValues());
+                        Block32_21_1 block32_21_1 = new Block32_21_1(block32_gp.getValues());
                         localDate = block32_21_1.getDate();
                         curTypeLoc = block32_21_1.getTypeLoc();
                         curNumTrain = block32_21_1.getNumTrain();
@@ -185,7 +186,7 @@ public class OutLoadVSC {
                         curCntWags = block32_21_1.getNumWags();
                         break;
                     case 0x04:
-                        Block32_21_4 block32_21_4 = new Block32_21_4(block32.getValues());
+                        Block32_21_4 block32_21_4 = new Block32_21_4(block32_gp.getValues());
                         localTime = UtilsArmG.getTime(block32_21_4.getSecBeginDay());
                         tc = block32_21_4.getPressTC();
                         ur = block32_21_4.getPressUR();
@@ -233,7 +234,7 @@ public class OutLoadVSC {
                             ExcelReports.toCell(sheet, row, 13, cur_second, styleRight);
                             ExcelReports.toCell(sheet, row, 14, speed, styleRight);
                             ExcelReports.toCell(sheet, row, 15, cur_lim, styleRight);
-                            ExcelReports.toCell(sheet, row, 16, block32.getValLimTmp(), styleRight);
+                            ExcelReports.toCell(sheet, row, 16, block32_gp.getValLimTmp(), styleRight);
                             ExcelReports.toCell(sheet, row, 17, Math.round(ks1), styleRight);
                             ExcelReports.toCell(sheet, row, 18, act1, styleRight);
                             ExcelReports.toCell(sheet, row, 19, act2, styleRight);
@@ -284,7 +285,7 @@ public class OutLoadVSC {
                         localTimePrev = localTime;
                         break;
                     case 0x09:
-                        Block32_21_9 block32_21_9 = new Block32_21_9(block32.getValues());
+                        Block32_21_9 block32_21_9 = new Block32_21_9(block32_gp.getValues());
                         int [] arrId = block32_21_9.getArrId();
                         if (Limits.Limit.isLimit(arrId)) {
                             cur_lim = block32_21_9.getLimSpeed();
@@ -309,25 +310,25 @@ public class OutLoadVSC {
                         }
                         break;
                     case 0x0E:
-                        Block32_21_E block32_21_E = new Block32_21_E(block32.getValues());
+                        Block32_21_E block32_21_E = new Block32_21_E(block32_gp.getValues());
                         lat = block32_21_E.getLatitude();
                         lon = block32_21_E.getLongitude();
                         break;
                 }
             }
 
-            if (block32.getId() == 0x1D) {
-                int subId = Block32.getSubId(block32.getId(), block32.getValues());
+            if (block32_gp.getId() == 0x1D) {
+                int subId = getSubId(block32_gp.getId(), block32_gp.getValues());
                 //if (subId == 0x09) {
                 switch (subId) {
                     case 0x09:
-                        Block32_1D_9 block32_1D_9 = new Block32_1D_9(block32.getValues());
+                        Block32_1D_9 block32_1D_9 = new Block32_1D_9(block32_gp.getValues());
                         int idStation =block32_1D_9.getStationId();
                         final int CNT = 20;
                         for (int j = i + 1; j < i + CNT; j++) {
                             if (j >= arrBlock32.size()) break;
                             byte[] values = arrBlock32.get(j).getValues();
-                            subId = Block32.getSubId(arrBlock32.get(j).getId(), values);
+                            subId = getSubId(arrBlock32.get(j).getId(), values);
                             if (subId == 0x0A) {
                                 Block32_1D_A block32_1D_A = new Block32_1D_A(values);
                                 if (block32_1D_A.getStationId() == idStation) {
@@ -338,7 +339,7 @@ public class OutLoadVSC {
                         }
                         break;
                     case 0x0D:
-                        Block32_1D_D block32_1D_D = new Block32_1D_D(block32.getValues());
+                        Block32_1D_D block32_1D_D = new Block32_1D_D(block32_gp.getValues());
                         is_main_link = block32_1D_D.getLinkVEBR(); //
                         is_add_link = block32_1D_D.getLinkAdditional();
                         is_modem_on = block32_1D_D.getAdditionalChenOn();
@@ -350,7 +351,7 @@ public class OutLoadVSC {
 
             int typeLoc = train != null ? train.getTypeLoc() : curTypeLoc;
             if (typeLoc == S5K) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x52:
                         avpt.gr.blocks32.s5k.Block32_52 block32_52 = new avpt.gr.blocks32.s5k.Block32_52(arrBlock32.get(i).getValues());
                         amperageAnchor1_s1 = block32_52.getAmperageAnchor1_s1();
@@ -403,7 +404,7 @@ public class OutLoadVSC {
                 }
             }
             else if (typeLoc == S5K_2) {
-                switch (block32.getId()){
+                switch (block32_gp.getId()){
                     case 0x53:
                         avpt.gr.blocks32.s5k_2.Block32_53 block32_53_2 = new avpt.gr.blocks32.s5k_2.Block32_53(arrBlock32.get(i).getValues());
                         power = (short)block32_53_2.getCommonPower();
@@ -445,7 +446,7 @@ public class OutLoadVSC {
                 }
             }
 
-            if (block32.getId() == 0x16 || block32.getId() == 0x56) {
+            if (block32_gp.getId() == 0x16 || block32_gp.getId() == 0x56) {
                 avpt.gr.blocks32.overall.Block32_16_56 block32_16_56 = new avpt.gr.blocks32.overall.Block32_16_56(arrBlock32.get(i).getValues());
                 curNumLoc = block32_16_56.getLocNum();
             }

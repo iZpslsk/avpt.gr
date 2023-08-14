@@ -1,11 +1,12 @@
 package avpt.gr.components.hex_tab;
 
 import avpt.gr.blocks32.ArrBlock32;
-import avpt.gr.blocks32.Block32;
 
 import javax.swing.table.AbstractTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static avpt.gr.blocks32.SubIdGr.getSubId;
 
 interface CurIdListener {
     void setCurId(int id, int subId);
@@ -51,7 +52,7 @@ class TableModel extends AbstractTableModel implements ActionListener {
         i += startBl;
         int curId = blocks.get(i).getId();
         int curSubId = 0;
-        curSubId = Block32.getSubId(curId, blocks.get(i).getValues());
+        curSubId = getSubId(curId, blocks.get(i).getValues());
         if (curSubId > 0) subId = String.format("_%X", curSubId);
         curIdListener.setCurId(curId, curSubId); // передача id и subId в балбицу
         switch(col) {
