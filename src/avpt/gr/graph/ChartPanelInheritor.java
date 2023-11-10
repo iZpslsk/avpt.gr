@@ -845,7 +845,7 @@ public class ChartPanelInheritor extends ChartPanel {
 
         g2.setFont(trainFont);
         int hh = (int)trainFont.getStringBounds("", g2.getFontRenderContext()).getHeight();
-        int hd = hh - hh / 3;	// hd - высота строки
+        int hd = hh - hh / 5;	// hd - высота строки
        // Train avpt.gr.train = getTrain(x);
         Train train = chartArm.getChartDataset().getArrTrains().getTrain(
                 chartArm.getChartDataset().getArrBlock32(), x);
