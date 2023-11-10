@@ -156,7 +156,7 @@ public class PackWorkerFileReader  extends SwingWorker<String, Integer>  {
             packDialog.setBtnEnabled(PackDialog.BTN_STOP, false);
             packDialog.setEnabledTable(true);
             packDialog.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-            JOptionPane.showMessageDialog(packDialog, "Обработка завершена!", "АРМ ТМ", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(packDialog, "Обработка завершена!", "АРМ грузового движения", JOptionPane.INFORMATION_MESSAGE);
         }
         packDialog.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
     }
