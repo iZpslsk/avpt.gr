@@ -19,6 +19,8 @@ dist/
 # Package files
 *.jar
 
+*.iml
+
 # Maven
 target/
 dist/
@@ -47,3 +49,7 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+
+*.7z
+*.zip
+*.rar
