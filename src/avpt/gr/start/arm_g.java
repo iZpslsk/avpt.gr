@@ -36,48 +36,6 @@ public class arm_g {
 
         if (args.length > 4 && args[0].equalsIgnoreCase("-sendToPgSQL")) {
             Db.toBase(args, true);
-//            Db.toPgSql(args, true);
-//            final String fileName = args[1];
-//            try {
-//                UtilsArmG.checkSizeFile(fileName);
-//            } catch (IOException e) {
-//                UtilsArmG.outWriteAndExit(300, e.getMessage(), fileName, true);
-//            }
-//            int codeRoad = Integer.parseInt(args[2]);
-//            int codeDepo = Integer.parseInt(args[3]);
-//            String connectionString = args[4];
-//            long guidFile = -1;
-//            if (args.length > 5)
-//                guidFile = Long.parseLong(args[5]);
-//
-//            ArrBlock32 arrBlock32 = null;
-//            try {
-//                arrBlock32 = new ArrBlock32(fileName, true);
-//            } catch (IOException e) {
-//                UtilsArmG.outWriteAndExit(301, e.getMessage(), fileName, true);
-//            }
-//            ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
-//            ArrTrains trains = chartDataset.getArrTrains();
-//
-//            Db db = new Db(trains);
-//            String messMilliseconds = "";
-//            long msToBaseStart = System.currentTimeMillis();
-//            try {
-//                if (db.doConnect(connectionString))
-//                    messMilliseconds = db.insertToBase(arrBlock32, codeRoad, codeDepo, guidFile);
-//                else {
-//                    UtilsArmG.outWriteAndExit(302, "нет соединения с сервером", fileName, true);
-//                }
-//            }
-//            catch (SQLException e) {
-//                int errCode = parseToInt(e.getSQLState(), 303);
-//                UtilsArmG.outWriteAndExit(errCode, e.getMessage(), fileName, true);
-//            }
-//            catch (ClassNotFoundException e) {
-//                UtilsArmG.outWriteAndExit(302, e.getMessage(), fileName, true);
-//            }
-//            long msToBase = System.currentTimeMillis() - msToBaseStart;
-//            UtilsArmG.outWriteAndExit(0,"успешно\n\n" + messMilliseconds + "Insert to base:    " + msToBase + " ms\n", fileName, true);
         }
         else if (args.length > 1 && args[0].equalsIgnoreCase("-w")) {
             final String fileName = args[1];
