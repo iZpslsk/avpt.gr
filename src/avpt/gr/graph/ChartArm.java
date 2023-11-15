@@ -355,6 +355,7 @@ public class ChartArm extends JFreeChart {
             plot.getRangeAxis().setTickMarksVisible(false);
             plot.getRangeAxis().setTickLabelsVisible(false);
             plot.getRangeAxis().setVisible(false);
+            objects.addAnnotationsCorrectCoordinate(plot);
         }
 
         if (title.equals(SPEED_LABEL)) {

@@ -860,7 +860,7 @@ public class ChartPanelInheritor extends ChartPanel {
 
         g2.setColor(colorCaption);
         int shift = (int) descriptFont.getStringBounds(TRAIN_LABEL, g2.getFontRenderContext()).getWidth();
-        g2.drawString("№" + train.getNumTrainStr(), pnt.x - shiftHorCur + shift, pnt.y + hh - shiftVertCur);
+        g2.drawString(" №" + train.getNumTrainStr(), pnt.x - shiftHorCur + shift, pnt.y + hh - shiftVertCur);
         hh += hd;
 
         g2.setColor(colorValue);

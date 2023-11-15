@@ -3,8 +3,10 @@ package avpt.gr.maps;
 import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.blocks32.Block32_gp;
 import avpt.gr.blocks32.asim.Block32_C4_0;
+import avpt.gr.blocks32.overall.Block32_21_4;
 import avpt.gr.blocks32.overall.Block32_21_9;
 import org.jfree.chart.annotations.*;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
 
 import javax.swing.*;
@@ -25,14 +27,18 @@ public class Objects {
     private final ImageIcon iconCrossing = new ImageIcon(getClass().getResource("/avpt/gr/images/map/crossing.png"));
     private final ImageIcon iconBrake = new ImageIcon(getClass().getResource("/avpt/gr/images/map/brake.png"));
     private final ImageIcon iconLandslide = new ImageIcon((getClass().getResource("/avpt/gr/images/map/landslide.png")));
+    private final ImageIcon iconMarkerPink = new ImageIcon((getClass().getResource("/avpt/gr/images/map/markerPink16.png")));
+    private final ImageIcon iconMarkerChartre = new ImageIcon((getClass().getResource("/avpt/gr/images/map/markerChartre16.png")));
     private ArrayList<Traffic_light> traffic_light = new ArrayList<Traffic_light>();
     private ArrayList<Thermometer> thermometer = new ArrayList<Thermometer>();
     private ArrayList<NeutralInsert> neutral_insert = new ArrayList<NeutralInsert>();
     private ArrayList<Crossing> crossing = new ArrayList<Crossing>();
     private ArrayList<CheckBrake> check_brake = new ArrayList<CheckBrake>();
     private ArrayList<Landslide> landslide = new ArrayList<Landslide>();
-//    private ArrayList<LimitMap> limit_map = new ArrayList<LimitMap>();
+    private ArrayList<CorrectCoordinate> correct_coordinate = new ArrayList<CorrectCoordinate>();
 
+   // private int prev_coordinate = -1;
+    private Block32_gp prev_block32_gp = null;
 
     // Проверка тормозов
     public static class CheckBrake {
@@ -232,6 +238,38 @@ public class Objects {
         }
     }
 
+    public static class CorrectCoordinate {
+        int second;
+        long coordinate;
+        // корректировка координат - true, скачек координат - false
+        boolean correct;
+
+        public CorrectCoordinate(int second, long coordinate, boolean correct) {
+            this.second = second;
+            this.coordinate = coordinate;
+            this.correct = correct;
+        }
+
+        public int getSecond() {
+            return second;
+        }
+
+        public long getCoordinate() {
+            return coordinate;
+        }
+
+        public boolean isCorrect() {
+            return correct;
+        }
+
+        //        public static boolean isCorrectCoordinate(int [] arrId) {
+//            for (int i = 0; i < arrId.length; i++) {
+//                if (arrId[i] == 50) return true;
+//            }
+//            return false;
+//        }
+    }
+
     /**
      * в конструкторе заполняем список путевых объектов
      * @param arrBlock32 - массив ArrBlock32
@@ -316,6 +354,28 @@ public class Objects {
                                 block32_21_9.getLenDanger(),
                                 block32_21_9.getCoordinate()));
                 }
+                if (subId == 0x04) {
+                    Block32_gp block32_gp = arrBlock32.get(i);
+                    Block32_21_4 block32_21_4 = new Block32_21_4(block32_gp.getValues());
+                    if (block32_21_4.getCorrectCoordinate() > 0) { // корректировка
+                        correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), true));
+                    } // скачок
+                    else if (prev_block32_gp != null) {
+                        int d_km = Math.abs(block32_gp.getKm() - prev_block32_gp.getKm());
+                        int d_pk = block32_gp.getPk() - prev_block32_gp.getPk();
+                        // исключаем повтор на следующей секунде
+                        if (!correct_coordinate.isEmpty() && (block32_gp.getSecond() - correct_coordinate.get(correct_coordinate.size() - 1).getSecond() > 1)) {
+                            if (d_km == 0 && Math.abs(d_pk) > 1) {
+                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+                            } else if (d_km == 1 && d_pk + (prev_block32_gp.getPk()) > 1) {
+                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+                            } else if (d_km > 1) {
+                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+                            }
+                        }
+                    }
+                    prev_block32_gp = block32_gp;
+                }
             }
         }
     }
@@ -380,6 +440,17 @@ public class Objects {
             XYAnnotation b = new XYLineAnnotation(landslide.get(i).getSecond(), LINE_MAP, landslide.get(i).getSecond(), Y,
                     new BasicStroke(0.2f, BasicStroke.CAP_BUTT, BasicStroke.JOIN_MITER), Color.WHITE);
             plot.addAnnotation(b);
+        }
+    }
+
+    public void addAnnotationsCorrectCoordinate(XYPlot plot) {
+        for (int i = 0; i < correct_coordinate.size(); i++) {
+            XYAnnotation a = null;
+            if (correct_coordinate.get(i).isCorrect())
+                a = new XYImageAnnotation(correct_coordinate.get(i).getSecond(), 4, iconMarkerChartre.getImage());
+            else
+                a = new XYImageAnnotation(correct_coordinate.get(i).getSecond(), 4, iconMarkerPink.getImage());
+            plot.addAnnotation(a);
         }
     }
 
