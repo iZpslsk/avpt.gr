@@ -8,6 +8,8 @@ import avpt.gr.blocks32.overall.Block32_21_9;
 import org.jfree.chart.annotations.*;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.XYPlot;
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDateTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -361,18 +363,24 @@ public class Objects {
                         correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), true));
                     } // скачок
                     else if (prev_block32_gp != null) {
-                        int d_km = Math.abs(block32_gp.getKm() - prev_block32_gp.getKm());
-                        int d_pk = block32_gp.getPk() - prev_block32_gp.getPk();
-                        // исключаем повтор на следующей секунде
-                        if (!correct_coordinate.isEmpty() && (block32_gp.getSecond() - correct_coordinate.get(correct_coordinate.size() - 1).getSecond() > 1)) {
-                            if (d_km == 0 && Math.abs(d_pk) > 1) {
-                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
-                            } else if (d_km == 1 && d_pk + (prev_block32_gp.getPk()) > 1) {
-                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
-                            } else if (d_km > 1) {
-                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
-                            }
+                        LocalDateTime cur = block32_gp.getDateTime();
+                        LocalDateTime pre = prev_block32_gp.getDateTime();
+                        long duration = Duration.between(pre, cur).getSeconds();
+                        if (duration > 7) {
+                            correct_coordinate.add(new CorrectCoordinate(prev_block32_gp.getSecond(), block32_gp.getCoordinate(), false));
                         }
+//                        int d_km = Math.abs(block32_gp.getKm() - prev_block32_gp.getKm());
+//                        int d_pk = block32_gp.getPk() - prev_block32_gp.getPk();
+//                        // исключаем повтор на следующей секунде
+//                        if (!correct_coordinate.isEmpty() && (block32_gp.getSecond() - correct_coordinate.get(correct_coordinate.size() - 1).getSecond() > 1)) {
+//                            if (d_km == 0 && Math.abs(d_pk) > 1) {
+//                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+//                            } else if (d_km == 1 && d_pk + (prev_block32_gp.getPk()) > 1) {
+//                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+//                            } else if (d_km > 1) {
+//                                correct_coordinate.add(new CorrectCoordinate(block32_gp.getSecond(), block32_gp.getCoordinate(), false));
+//                            }
+//                        }
                     }
                     prev_block32_gp = block32_gp;
                 }

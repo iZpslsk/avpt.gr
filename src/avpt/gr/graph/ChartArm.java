@@ -333,6 +333,7 @@ public class ChartArm extends JFreeChart {
             range.setTickLabelsVisible(false);
             range.setTickMarksVisible(false);
             range.setLabelAngle(Math.PI/2.0);
+            plot.setRangeGridlinesVisible(false);
             setAnnotationsMap(plot);
             stations.addStationsToTrains(getChartDataset().getArrTrains());
         }
