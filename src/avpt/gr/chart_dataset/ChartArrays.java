@@ -1555,7 +1555,13 @@ public class ChartArrays {
                 //
             }
                 break;
-            case Train.KZ8A:// KZ8A
+            case Train.KZ8A: {// KZ8A
+                avpt.gr.blocks32.kz8.Block32_52 block32_52 = new avpt.gr.blocks32.kz8.Block32_52(arrBlock32.get(index).getValues());
+                curTime = block32_52.getTime();
+                addSecond(isTime);
+                boolean isNewTrain = arrTrains.addCurBr(index, second_coordinate, block32_52.getTime());
+                listBlockBySeconds.add(index);
+            }
                 break;
             case S5: {// 2ЭС5
                 avpt.gr.blocks32.s5.Block32_52 block32_52 = new avpt.gr.blocks32.s5.Block32_52(arrBlock32.get(index).getValues());
