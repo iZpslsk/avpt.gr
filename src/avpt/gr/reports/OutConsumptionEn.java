@@ -125,7 +125,7 @@ public class OutConsumptionEn {
                 if (curSubId == 0) {
                     Block32_C2_0 block32_c2_0 = new Block32_C2_0(block32_gp.getValues());
                     localTime = block32_c2_0.getTime();
-                    if (localTimePrev != null) {
+                    if (localTimePrev != null && localTime != null) {
                         cur_second += Duration.between(localTimePrev, localTime).getSeconds();
                         if (localTimePrev.getMinute() != localTime.getMinute()) addToSheet(row++);
                     }
@@ -146,7 +146,7 @@ public class OutConsumptionEn {
                     case 0x04:
                         Block32_21_4 block32_21_4 = new Block32_21_4(block32_gp.getValues());
                         localTime = UtilsArmG.getTime(block32_21_4.getSecBeginDay());
-                        if (localTimePrev != null) {
+                        if (localTimePrev != null && localTime != null) {
                             cur_second += Duration.between(localTimePrev, localTime).getSeconds();
                             if (localTimePrev.getMinute() != localTime.getMinute()) addToSheet(row++);
                         }

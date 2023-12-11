@@ -365,7 +365,7 @@ public class Objects {
                     else if (prev_block32_gp != null) {
                         LocalDateTime cur = block32_gp.getDateTime();
                         LocalDateTime pre = prev_block32_gp.getDateTime();
-                        long duration = Duration.between(pre, cur).getSeconds();
+                        long duration = cur != null && pre != null ? Duration.between(pre, cur).getSeconds() : -1;
                         if (duration > 7) {
                             correct_coordinate.add(new CorrectCoordinate(prev_block32_gp.getSecond(), block32_gp.getCoordinate(), false));
                         }

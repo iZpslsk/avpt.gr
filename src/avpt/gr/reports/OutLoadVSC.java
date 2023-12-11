@@ -203,8 +203,9 @@ public class OutLoadVSC {
                         speed = block32_21_4.getSpeed();
                         int modeAuto = block32_21_4.getModeAuto();
                         int isAuto = modeAuto > 1 ? 1 : 0;
-                        if (localTimePrev != null)
-                            cur_second += Duration.between(localTimePrev, localTime).getSeconds();
+//                        if (localTimePrev != null && localTime != null)
+//                            cur_second += Duration.between(localTimePrev, localTime).getSeconds();
+                        cur_second += localTimePrev != null && localTime != null ? Duration.between(localTimePrev, localTime).getSeconds() : 0;
                         if (!localTime.equals(localTimePrev)) {
                             ExcelReports.toCell(sheet, ++row, 1, ++cnt, styleCenter);
                             if (localDate != null)

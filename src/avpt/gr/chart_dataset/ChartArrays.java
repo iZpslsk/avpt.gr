@@ -260,7 +260,7 @@ public class ChartArrays {
                             listTasks.add(listTasks.getListPneumaticUsavp(), second_coordinate, block32_21_4.getPneumaticState(), curTypeLoc, max_second_21_4);
                             cur_mode_auto = block32_21_4.getModeAuto();
                             listTasks.add(listTasks.getListAuto(), second_coordinate, cur_mode_auto, curTypeLoc, max_second_21_4);
-                            if (curTypeLoc == S5)
+                            if (curTypeLoc == S5 | curTypeLoc == KZ8A)
                                 listLines.add(listLines.getListPowerTaskAuto(), second_coordinate, block32_21_4.getPowerTaskAuto(), -1); //
                             curTime_21 = UtilsArmG.getTime(block32_21_4.getSecBeginDay());
                             break;
@@ -1561,6 +1561,17 @@ public class ChartArrays {
                 addSecond(isTime);
                 boolean isNewTrain = arrTrains.addCurBr(index, second_coordinate, block32_52.getTime());
                 listBlockBySeconds.add(index);
+
+                listLines.add(listLines.getListPowerMax(), second_coordinate, block32_52.getPowerMax(), -1); //
+                listLines.add(listLines.getListPowerMaxRec(), second_coordinate, block32_52.getPowerMaxRec(), -1); //
+
+                listLines.add(listLines.getListPressUR(), second_coordinate, block32_52.getPressUR(), -1);
+                listLines.add(listLines.getListPressTM(), second_coordinate, block32_52.getPressTM(), -1);
+                listLines.add(listLines.getListPressTC(), second_coordinate, block32_52.getPressTC(), -1);
+                listLines.add(listLines.getListPressNM(), second_coordinate, block32_52.getPressNM(), -1);
+
+                listTasks.add(listTasks.getListKkm_s5(), second_coordinate, block32_52.getKKM(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKkbt_s5(), second_coordinate, block32_52.getKKBT(), curTypeLoc, -1);
             }
                 break;
             case S5: {// 2ЭС5
@@ -1744,7 +1755,12 @@ public class ChartArrays {
                     listLines.add(listLines.getS5k_listPowerImplementation(), second_coordinate, block32_53.getPowerLocomotive(), -1); // тяги
             }
                 break;
-            case Train.KZ8A:// KZ8A
+            case Train.KZ8A: {// KZ8A
+                avpt.gr.blocks32.kz8.Block32_53 block32_53 = new avpt.gr.blocks32.kz8.Block32_53(arrBlock32.get(index).getValues());
+                listLines.add(listLines.getListVoltage(), second_coordinate, block32_53.getVoltage(), -1);
+                listLines.add(listLines.getListAmperageAnchor(), second_coordinate, block32_53.getAmperageAnchor(), -1);
+                listLines.add(listLines.getS5k_listPowerImplementation(), second_coordinate, block32_53.getPowerImplement(), -1); //
+            }
                 break;
             case S5:// 2ЭС5
                 break;
@@ -1877,7 +1893,11 @@ public class ChartArrays {
                 listLines.add(listLines.getListAmperageExcitation4_s4(), second_coordinate, block32_54.getAmperageExcitation4_s4(), -1);
             }
                 break;
-            case KZ8A:// KZ8A
+            case KZ8A: {// KZ8A
+                avpt.gr.blocks32.kz8.Block32_54 block32_54 = new avpt.gr.blocks32.kz8.Block32_54(arrBlock32.get(index).getValues());
+                listLines.add(listLines.getListSpeed_BUT(), second_coordinate, block32_54.getSpeedBoot(), -1);
+                listLines.add(listLines.getListSpeed_CLUB(), second_coordinate, block32_54.getSpeedClub(), -1);
+            }
                 break;
             case S5: {// 2ЭС5
                 avpt.gr.blocks32.s5.Block32_54 block32_54 = new avpt.gr.blocks32.s5.Block32_54(arrBlock32.get(index).getValues());

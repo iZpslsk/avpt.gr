@@ -272,4 +272,81 @@ public class Block32_52 {
     public int getKeyNine() {
         return getPushSecond(KEY_NINE);
     }
+
+    /**
+     * @return - Макс. тяга
+     */
+    public int getPowerMax() {
+        int val = toUnsignedInt(values[9]);
+        return val == 0xFF ? 0 : val * 10;
+    }
+
+    /**
+     * @return - Макс. рекуп
+     */
+    public int getPowerMaxRec() {
+        int val = toUnsignedInt(values[10]);
+        return val == 0xFF ? 0 : val * -10;
+    }
+
+    /**
+     * @return позиция контроллера
+     */
+    public int getPosition() {
+        return values[11];
+    }
+
+    /**
+     * @return Давление в УР
+     */
+    public double getPressUR() {
+        return (toUnsignedInt(values[19]) << 8 | toUnsignedInt(values[18])) * 0.0010197162129779;
+    }
+
+    /**
+     * @return давление ТЦ
+     */
+    public double getPressTC() {
+        return (toUnsignedInt(values[21]) << 8 | toUnsignedInt(values[20])) * 0.0010197162129779;
+    }
+
+    /**
+     * @return давление ТМ
+     */
+    public double getPressTM() {
+        return (toUnsignedInt(values[17]) << 8 | toUnsignedInt(values[16])) * 0.0010197162129779;
+    }
+
+    /**
+     * @return давление НМ
+     */
+    public double getPressNM() {
+        return (toUnsignedInt(values[23]) << 8 | toUnsignedInt(values[22])) * 0.0010197162129779;
+    }
+
+    /**
+     *     0xF:
+     *     0xA:
+     *     0x9:
+     *     0xC:
+     *     0x3:
+     *     0x6:
+     *     0x0:
+     * @return сигналы ККМ
+     */
+    public int getKKM() {
+        return toUnsignedInt(values[12]);
+    }
+
+    /**
+     *     1: 2
+     *     2: 3
+     *     3: 4
+     *     4: 5
+     *     5: 6
+     * @return - ККБТ
+     */
+    public int getKKBT() {
+        return toUnsignedInt(values[25]) & 0x0F;
+    }
 }

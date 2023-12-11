@@ -1388,7 +1388,8 @@ public class Train {
         if (block32_21_4_prev != null) {
             LocalTime prevTime = UtilsArmG.getTime(block32_21_4_prev.getSecBeginDay());
             LocalTime curTime =  UtilsArmG.getTime(block32_21_4.getSecBeginDay());
-            cntAlsn.incSecond((int)Duration.between(prevTime, curTime).getSeconds());
+            if (prevTime != null && curTime != null)
+                cntAlsn.incSecond((int)Duration.between(prevTime, curTime).getSeconds());
         }
     }
 

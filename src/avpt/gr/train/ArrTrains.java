@@ -784,7 +784,8 @@ public class ArrTrains {
         train.setTypeMove(getTypeMove());
         train.setAsim(train.getTypeMove() == 7);
 
-        long seconds = Duration.between(train.getDateTimeStart(), train.getDateTimeEnd()).getSeconds();
+        long seconds = train.getDateTimeStart() != null && train.getDateTimeEnd() != null ?
+                Duration.between(train.getDateTimeStart(), train.getDateTimeEnd()).getSeconds() : 0;
         second_prompt = seconds - second_auto;
       //  if (second_prompt < 0) second_prompt = 0;
         int distance = distance_auto + distance_prompt;
