@@ -1572,6 +1572,37 @@ public class ChartArrays {
                 listTasks.add(listTasks.getListKkm_kz8(), second_coordinate, block32_52.getKKM(), curTypeLoc, -1);
                 listTasks.add(listTasks.getListKkbt_kz8(), second_coordinate, block32_52.getKKBT(), curTypeLoc, -1);
                 listLines.add(listLines.getListPosition(), second_coordinate, block32_52.getPosition(), -1);
+
+                listSignals.add(listSignals.getListReadyAuto(), second_coordinate, block32_52.getReadyAuto() == 1);
+                listSignals.add(listSignals.getListInterDriver(), second_coordinate, block32_52.getInterDriver() == 1);
+                listSignals.add(listSignals.getListTm(), second_coordinate, block32_52.getTM() == 1);
+                listSignals.add(listSignals.getListGV(), second_coordinate, block32_52.getGV() == 1);
+                listSignals.add(listSignals.getListEmergencyBrake(), second_coordinate, block32_52.getEmergencyBrake() == 1);
+                listSignals.add(listSignals.getListBox(), second_coordinate, block32_52.getBox() == 1);
+                listSignals.add(listSignals.getListUzTCU(), second_coordinate, block32_52.getUzTcu() == 1);
+                listSignals.add(listSignals.getListUzWSP(), second_coordinate, block32_52.getUzWsp() == 1);
+
+                // клавиши
+                listTasks.add(listTasks.getListKeyStart(), second_coordinate, block32_52.getKeyStart(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyF1(), second_coordinate, block32_52.getKeyF1(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyEnter(), second_coordinate, block32_52.getKeyEnter(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyEsc(), second_coordinate, block32_52.getKeyEsc(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyDel(), second_coordinate, block32_52.getKeyDel(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyUp(), second_coordinate, block32_52.getKeyUp(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyDown(), second_coordinate, block32_52.getKeyDown(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyLeft(), second_coordinate, block32_52.getKeyLeft(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyRight(), second_coordinate, block32_52.getKeyRight(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyZero(), second_coordinate, block32_52.getKeyZero(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyOne(), second_coordinate, block32_52.getKeyOne(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyTwo(), second_coordinate, block32_52.getKeyTwo(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyThree(), second_coordinate, block32_52.getKeyThree(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyFour(), second_coordinate, block32_52.getKeyFour(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyFive(), second_coordinate, block32_52.getKeyFive(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeySix(), second_coordinate, block32_52.getKeySix(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeySeven(), second_coordinate, block32_52.getKeySeven(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyEight(), second_coordinate, block32_52.getKeyEight(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKeyNine(), second_coordinate, block32_52.getKeyNine(), curTypeLoc, -1);
+                //
             }
                 break;
             case S5: {// 2ЭС5

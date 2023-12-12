@@ -150,6 +150,9 @@ public class ListSignals {
     // ЭС6
     private final ListSignal listControlAuto = new ListSignal();
     private final ListSignal listWhistleEPK = new ListSignal();
+    // KZ8A
+    private final ListSignal listUzTCU = new ListSignal();
+    private final ListSignal listUzWSP = new ListSignal();
     // БХВ
     private final ListSignal listBHV_BrakeTail = new ListSignal();
     private final ListSignal listBHV_IsSlaveChan = new ListSignal();
@@ -307,6 +310,10 @@ public class ListSignals {
     // ЭС5
     public static final int KEY_CONTROL_AUTO = 450;         // управленин от автоведения
     public static final int KEY_WHISTLE_EPK = 451;          // свисток ЭПК
+    // KZ8
+    public static final int KEY_UZ_TCU = 470;         // управленин от автоведения
+    public static final int KEY_UZ_WSP = 471;          // свисток ЭПК
+
     // бхв
     public static final int KEY_BRAKE_TAIL = 500;           // торможение с хвоста
     public static final int KEY_IS_SLAVE_CHAN = 501;        // Есть доп канал (БХВ)
@@ -637,6 +644,11 @@ public class ListSignals {
                 break;
             case KEY_WHISTLE_EPK: listSignal = listWhistleEPK;
                 break;
+            // kz8a
+            case KEY_UZ_TCU: listSignal = listUzTCU;
+                break;
+            case KEY_UZ_WSP: listSignal = listUzWSP;
+                break;
 
             case KEY_BRAKE_TAIL: listSignal = listBHV_BrakeTail;
                 break;
@@ -817,6 +829,9 @@ public class ListSignals {
             // эс6
             case KEY_CONTROL_AUTO: return "упр-е от автоведения";
             case KEY_WHISTLE_EPK: return "свисток ЭПК";
+            // kz8a
+            case KEY_UZ_TCU: return "юз от TCU";
+            case KEY_UZ_WSP: return "юз от WSP";
             // БХВ
             case KEY_BRAKE_TAIL: return "торможение с хвоста";
             case KEY_IS_SLAVE_CHAN: return "есть доп канал (БХВ)";
@@ -1293,6 +1308,14 @@ public class ListSignals {
 
     public ListSignal getListWhistleEPK() {
         return listWhistleEPK;
+    }
+
+    public ListSignal getListUzTCU() {
+        return listUzTCU;
+    }
+
+    public ListSignal getListUzWSP() {
+        return listUzWSP;
     }
 
     public ListSignal getListDischargeAB() {

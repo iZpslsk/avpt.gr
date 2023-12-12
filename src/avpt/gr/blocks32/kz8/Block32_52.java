@@ -8,25 +8,25 @@ import static avpt.gr.common.UtilsArmG.toUnsignedInt;
 
 public class Block32_52 {
 
-    private static final int KEY_START = 0x4d;         //
-    private static final int KEY_F1 = 0x7e;         //
-    private static final int KEY_ENTER = 0x3a;         //
-    private static final int KEY_ESC = 0x2b;         //
-    private static final int KEY_DEL = 0x71;         //
-    private static final int KEY_UP = 0x63;         //
-    private static final int KEY_DOWN = 0x60;         //
-    private static final int KEY_LEFT = 0x61;         //
-    private static final int KEY_RIGHT = 0x6a;         //
-    private static final int KEY_ZERO = 0x70;         //
-    private static final int KEY_ONE = 0x69;         //
-    private static final int KEY_TWO = 0x72;         //
-    private static final int KEY_THREE = 0x7a;         //
-    private static final int KEY_FOUR = 0x6b;         //
-    private static final int KEY_FIVE = 0x73;         //
-    private static final int KEY_SIX = 0x74;         //
-    private static final int KEY_SEVEN = 0x6c;         //
-    private static final int KEY_EIGHT = 0x75;         //
-    private static final int KEY_NINE = 0x7d;         //
+    private static final int KEY_START = 0x01;         //
+    private static final int KEY_F1 = 0x80;         //
+    private static final int KEY_ENTER = 0x04;         //
+    private static final int KEY_ESC = 0x02;         //
+    private static final int KEY_DEL = 0x40;         //
+    private static final int KEY_UP = 0x03;         //
+    private static final int KEY_DOWN = 0x06;         //
+    private static final int KEY_LEFT = 0x05;         //
+    private static final int KEY_RIGHT = 0x07;         //
+    private static final int KEY_ZERO = 0x20;         //
+    private static final int KEY_ONE = 0x21;         //
+    private static final int KEY_TWO = 0x22;         //
+    private static final int KEY_THREE = 0x23;         //
+    private static final int KEY_FOUR = 0x24;         //
+    private static final int KEY_FIVE = 0x25;         //
+    private static final int KEY_SIX = 0x26;         //
+    private static final int KEY_SEVEN = 0x27;         //
+    private static final int KEY_EIGHT = 0x28;         //
+    private static final int KEY_NINE = 0x29;         //
 
     private final byte[] values;
 
@@ -349,4 +349,65 @@ public class Block32_52 {
     public int getKKBT() {
         return toUnsignedInt(values[13]);
     }
+
+    /**
+     * @return Готов к автоведению
+     */
+    public int getReadyAuto() {
+        return toUnsignedInt(values[8]) & 0x01;
+    }
+
+    /**
+     * @return кнопка вмешательство машиниста
+     */
+    public int getInterDriver() {
+        return (toUnsignedInt(values[8]) >>> 2) & 0x01;
+    }
+
+    /**
+     * @return срабатывание ТМ
+     */
+    public int getTM() {
+        return (toUnsignedInt(values[8]) >>> 1) & 0x01;
+    }
+
+    /**
+     * @return ГВ
+     */
+    public int getGV() {
+        return (toUnsignedInt(values[8]) >>> 3) & 0x01;
+    }
+
+    /**
+     * @return экстренное торможение
+     */
+    public int getEmergencyBrake() {
+        return (toUnsignedInt(values[8]) >>> 4) & 0x01;
+    }
+
+    /**
+     * @return боксование
+     */
+    public int getBox() {
+        return (toUnsignedInt(values[8]) >>> 5) & 0x01;
+    }
+
+    /**
+     * @return юз от tcu
+     */
+    public int getUzTcu() {
+        return (toUnsignedInt(values[8]) >>> 7) & 0x01;
+    }
+
+    /**
+     * @return юз от wsp
+     */
+    public int getUzWsp() {
+        return (toUnsignedInt(values[8]) >>> 6) & 0x01;
+    }
+
+    public int getCntSection() {
+        return toUnsignedInt(values[15]);
+    }
+
 }

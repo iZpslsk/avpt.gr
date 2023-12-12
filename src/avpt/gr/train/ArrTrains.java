@@ -283,7 +283,8 @@ public class ArrTrains {
 
         coordinate_init = block32_21_1.getCoordinate();
         statIsavprt = block32_21_1.getStatusIsavprt();
-        cntSections = block32_21_1.getCntSections();
+        if (locType != Train.KZ8A)
+            cntSections = block32_21_1.getCntSections();
         typeS = block32_21_1.getTypeS();
     }
 
@@ -741,6 +742,14 @@ public class ArrTrains {
                     if (u3 > train.getUMax()) train.setUMax(u3);
                     long u4 = (long) (block32_5D.getRmsVoltage_s4() * ChartArrays.getVoltageK_s5k());
                     if (u4 > train.getUMax()) train.setUMax(u4);
+                }
+            }
+
+            if (train.getTypeLoc() == Train.KZ8A) {
+                if (arrBlock32.get(i).getId() == 0x52) {
+                    avpt.gr.blocks32.kz8.Block32_52 block32_52 = new avpt.gr.blocks32.kz8.Block32_52(arrBlock32.get(i).getValues());
+                    if (train.getCntSection() < 1)
+                        train.setCntSection(block32_52.getCntSection());
                 }
             }
 

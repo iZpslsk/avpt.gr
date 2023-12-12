@@ -97,6 +97,9 @@ public class SeriesSignalsDiscrete extends SeriesSignals {
         addTaskSeries(KEY_CONTROL_AUTO, listSignals.getListControlAuto());
         addTaskSeries(KEY_WHISTLE_EPK, listSignals.getListWhistleEPK());
 
+        addTaskSeries(KEY_UZ_TCU, listSignals.getListUzTCU());
+        addTaskSeries(KEY_UZ_WSP, listSignals.getListUzWSP());
+
         addTaskSeries(KEY_DISCHARGE_AB, listSignals.getListDischargeAB());
     }
 
@@ -268,7 +271,10 @@ public class SeriesSignalsDiscrete extends SeriesSignals {
                 break;
             case KEY_DISCHARGE_AB: color = new Color(0xD26FFC);
                 break;
-
+            case KEY_UZ_TCU: color = new Color(0x9C1522);
+                break;
+            case KEY_UZ_WSP: color = new Color(0xA22D76);
+                break;
         }
         return color;
     }
