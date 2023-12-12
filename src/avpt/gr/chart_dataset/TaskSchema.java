@@ -30,19 +30,19 @@ public class TaskSchema extends SeriesTasks {
 
     @Override
     public String getDescript(int val, int key, int type_loc) {
-        String result = "нет";
+        String result = " нет";
         switch (val) {
             case DESTROYED:
-                result = "разобрана";
+                result = " разобрана";
                 break;
             case TRACT:
-                result = "в тяге";
+                result = " в тяге";
                 break;
             case REC:
-                result = "в рекуперации";
+                result = " в рекуперации";
                 break;
             case REOSTAT:
-                result = "реостат";
+                result = " реостат";
                 break;
         }
         return result;

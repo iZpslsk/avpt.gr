@@ -27,16 +27,16 @@ public class TaskRevControl extends SeriesTasks {
 
     @Override
     public String getDescript(int val, int key, int type_loc) {
-        String result = "нет";
+        String result = " нет";
         switch (val) {
             case POS_0:
-                result = "положение «0»";
+                result = " положение «0»";
                 break;
             case POS_FORWARD:
-                result = "положение «Вперед»";
+                result = " положение «Вперед»";
                 break;
             case POS_BACKWARD:
-                result = "положение «Назад»";
+                result = " положение «Назад»";
                 break;
         }
         return result;

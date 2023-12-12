@@ -134,6 +134,8 @@ public class ChartPanelArm extends JPanel {
         if (chartArm.getPlotPneumatic2() != null) chartArm.getPlotPneumatic2().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
         if (chartArm.getPlotPneumaticUsavp() != null) chartArm.getPlotPneumaticUsavp().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
         if (chartArm.getPlotUatl() != null) chartArm.getPlotUatl().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
+        if (chartArm.getPlotKkm_kz8() != null) chartArm.getPlotKkm_kz8().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
+        if (chartArm.getPlotKkm_s5() != null) chartArm.getPlotKkm_s5().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
         if (chartArm.getPlotKkm_s5k() != null) chartArm.getPlotKkm_s5k().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
         if (chartArm.getPlotKkm_s5k_2() != null) chartArm.getPlotKkm_s5k_2().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
         if (chartArm.getPlotKkm_vl10() != null) chartArm.getPlotKkm_vl10().getRangeAxis().setLabelFont(labelYAxisFont.deriveFont((float) size));
@@ -159,6 +161,9 @@ public class ChartPanelArm extends JPanel {
         chartArm.setPneumaticWeight(size);
         chartArm.setPneumatic2Weight(size);
         chartArm.setPneumaticUsavpWeight(size);
+        chartArm.setUatlWeight(size);
+        chartArm.setKkmWeight_kz8(size);
+        chartArm.setKkmWeight_s5(size);
         chartArm.setKkmWeight_s5k(size);
         chartArm.setKkmWeight_s5k_2(size);
         chartArm.setKkmWeight_vl10(size);

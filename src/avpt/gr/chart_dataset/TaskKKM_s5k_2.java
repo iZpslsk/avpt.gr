@@ -26,19 +26,19 @@ public class TaskKKM_s5k_2 extends SeriesTasks {
 
     @Override
     public String getDescript(int val, int key, int type_loc) {
-        String result = "нет";
+        String result = " нет";
         switch (val) {
             case KKM_I_II:
-                result = "I-II";
+                result = " I-II";
                 break;
             case KKM_III_IV:
-                result = "III-IV";
+                result = " III-IV";
                 break;
             case KKM_V_Va:
-                result = "V-Va";
+                result = " V-Va";
                 break;
             case KKM_VI:
-                result = "VI";
+                result = " VI";
                 break;
         }
         return result;

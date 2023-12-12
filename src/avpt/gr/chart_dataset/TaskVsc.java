@@ -30,16 +30,16 @@ public class TaskVsc extends SeriesTasks {
         String result = "нет";
         switch (val) {
             case VSC_OFF:
-                result = "режим ведомого ВСЦ выключен";
+                result = " режим ведомого ВСЦ выключен";
                 break;
             case VSC_ON:
-                result = "следование в виртуальной сцепке";
+                result = " следование в виртуальной сцепке";
                 break;
             case VSC_ALSN:
-                result = "переход на АЛСН";
+                result = " переход на АЛСН";
                 break;
             case VSC_NO_TRAFFIC_LIGHT:
-                result = "нет открытия светофора";
+                result = " нет открытия светофора";
                 break;
         }
         return result;

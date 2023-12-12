@@ -236,7 +236,7 @@ public class ChartArrays {
                             listLines.add(listLines.getListPressTM_USAVP(), second_coordinate, block32_21_4.getPressTM(), max_second_21_4);
                             listLines.add(listLines.getListPressUR_USAVP(), second_coordinate, block32_21_4.getPressUR(), max_second_21_4);
 
-                            if (curTypeLoc != S5 && curTypeLoc != S6) {
+                            if (curTypeLoc != S5 && curTypeLoc != S6 && curTypeLoc != KZ8A) {
                                 int pos = curTypeLoc == S5K ? block32_21_4.getPosition() * 25 : block32_21_4.getPosition();
                                 if (curTypeLoc == S5K)
                                     listLines.add(listLines.getListPositionS5k(), second_coordinate, pos, max_second_21_4);
@@ -1569,9 +1569,9 @@ public class ChartArrays {
                 listLines.add(listLines.getListPressTM(), second_coordinate, block32_52.getPressTM(), -1);
                 listLines.add(listLines.getListPressTC(), second_coordinate, block32_52.getPressTC(), -1);
                 listLines.add(listLines.getListPressNM(), second_coordinate, block32_52.getPressNM(), -1);
-
-                listTasks.add(listTasks.getListKkm_s5(), second_coordinate, block32_52.getKKM(), curTypeLoc, -1);
-                listTasks.add(listTasks.getListKkbt_s5(), second_coordinate, block32_52.getKKBT(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKkm_kz8(), second_coordinate, block32_52.getKKM(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKkbt_kz8(), second_coordinate, block32_52.getKKBT(), curTypeLoc, -1);
+                listLines.add(listLines.getListPosition(), second_coordinate, block32_52.getPosition(), -1);
             }
                 break;
             case S5: {// 2ЭС5

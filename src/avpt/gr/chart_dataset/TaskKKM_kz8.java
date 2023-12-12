@@ -3,26 +3,25 @@ package avpt.gr.chart_dataset;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class TaskKKM_s5 extends SeriesTasks {
+public class TaskKKM_kz8 extends SeriesTasks {
 
     // kkm
-    public static final int KKM_UNKNOWN = 0;
-    public static final int KKM_RELEASE = 1;          // I - отпуск
-    public static final int KKM_TRAIN = 2;            // II - поездное
-    public static final int KKM_OVERLAP_NO_SUPPLY = 4;// III - перекрыша без питания
-    public static final int KKM_OVERLAP_SUPPLY = 8;   // IV - перекрыша с питанием
-    public static final int KKM_BRAKING_SLOW = 16;     // Va - торможение с замедлением
-    public static final int KKM_BRAKING = 32;          // V - торможение служебное
-    public static final int KKM_BRAKING_EMERGENCY = 64;// VI - торможение экстренное
+    public static final int KKM_RELEASE = 0xF;          // I - отпуск
+    public static final int KKM_TRAIN = 0xA;            // II - поездное
+    public static final int KKM_OVERLAP_NO_SUPPLY = 0x9;// III - перекрыша без питания
+    public static final int KKM_OVERLAP_SUPPLY = 0xC;   // IV - перекрыша с питанием
+    public static final int KKM_BRAKING_SLOW = 0x6;     // Va - торможение с замедлением
+    public static final int KKM_BRAKING = 0x3;          // V - торможение служебное
+    public static final int KKM_BRAKING_EMERGENCY = 0x0;// VI - торможение экстренное
 
     // kkbt
-    public static final int KKBT_TRAIN = 1;            // поездное
-    public static final int KKBT_STAIR_1 = 2;          // I ступень
-    public static final int KKBT_STAIR_2 = 3;          // II ступень
-    public static final int KKBT_STAIR_3 = 4;          // III ступень
-    public static final int KKBT_STAIR_4 = 5;          // IV ступень
+    public static final int KKBT_RELEASE_TRAIN = 1;            // I - отпуск/поездн.
+    public static final int KKBT_RELEASE = 2;          // II - отпуск
+    public static final int KKBT_OVERLAP = 3;          // III - перекрыша
+    public static final int KKBT_BRAKE = 4;          // IV - тормоз
+    public static final int KKBT_BRAKE_FIX = 5;          // V - тормоз (с фиксацией)
 
-    public TaskKKM_s5(ArrayList<ArrayList<ListTasks.ItemTask>> arrTasks, boolean isColorByIndex) {
+    public TaskKKM_kz8(ArrayList<ArrayList<ListTasks.ItemTask>> arrTasks, boolean isColorByIndex) {
         super(arrTasks, isColorByIndex);
     }
 
@@ -30,7 +29,6 @@ public class TaskKKM_s5 extends SeriesTasks {
     void setPaint(int i) {
         switch (i) {
             case 0:
-                getMapPaints(0).put(KKM_UNKNOWN, Color.GRAY);
                 getMapPaints(0).put(KKM_RELEASE, new Color(0xA9A726));
                 getMapPaints(0).put(KKM_TRAIN, new Color(0x136417));
                 getMapPaints(0).put(KKM_OVERLAP_NO_SUPPLY, new Color(0x2CABC7));
@@ -40,11 +38,11 @@ public class TaskKKM_s5 extends SeriesTasks {
                 getMapPaints(0).put(KKM_BRAKING_EMERGENCY, new Color(0xFF0101));
                 break;
             case 1:
-                getMapPaints(1).put(KKBT_TRAIN, new Color(0x1B4B40));
-                getMapPaints(1).put(KKBT_STAIR_1, new Color(0xA9A726));
-                getMapPaints(1).put(KKBT_STAIR_2, new Color(0x79A926));
-                getMapPaints(1).put(KKBT_STAIR_3, new Color(0x0000FF));
-                getMapPaints(1).put(KKBT_STAIR_4, new Color(0xFF00CC));
+                getMapPaints(1).put(KKBT_RELEASE_TRAIN, new Color(0x1B4B40));
+                getMapPaints(1).put(KKBT_RELEASE, new Color(0xA9A726));
+                getMapPaints(1).put(KKBT_OVERLAP, new Color(0x79A926));
+                getMapPaints(1).put(KKBT_BRAKE, new Color(0x0000FF));
+                getMapPaints(1).put(KKBT_BRAKE_FIX, new Color(0xFF00CC));
                 break;
         }
     }
@@ -88,20 +86,20 @@ public class TaskKKM_s5 extends SeriesTasks {
     private String getDescriptKKBT(int val) {
         String result = " нет";
         switch (val) {
-            case KKBT_TRAIN:
-                result = " поездное";
+            case KKBT_RELEASE_TRAIN:
+                result = " I - отпуск/поездн.";
                 break;
-            case KKBT_STAIR_1:
-                result = " I ступень";
+            case KKBT_RELEASE:
+                result = " II - отпуск";
                 break;
-            case KKBT_STAIR_2:
-                result = " II ступень";
+            case KKBT_OVERLAP:
+                result = " III - перекрыша";
                 break;
-            case KKBT_STAIR_3:
-                result = " III ступень";
+            case KKBT_BRAKE:
+                result = " IV - тормоз";
                 break;
-            case KKBT_STAIR_4:
-                result = " IV ступень";
+            case KKBT_BRAKE_FIX:
+                result = " V - тормоз (с фиксацией)";
                 break;
         }
         return " ККБТ: " + result;

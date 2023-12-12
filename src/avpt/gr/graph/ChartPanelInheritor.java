@@ -487,6 +487,8 @@ public class ChartPanelInheritor extends ChartPanel {
             seriesTasks = chartDataset.getSeriesPneumaticUsavp();
         if (title.equals(UATL_LABEL))
             seriesTasks = chartDataset.getSeriesUatl();
+        if (title.equals(KKM_KZ8_LABEL))
+            seriesTasks = chartDataset.getSeriesKKM_kz8();
         if (title.equals(KKM_S5K_LABEL))
             seriesTasks = chartDataset.getSeriesKKM_s5k();
         if (title.equals(KKM_S5_LABEL))

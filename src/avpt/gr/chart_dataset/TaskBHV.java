@@ -64,16 +64,16 @@ public class TaskBHV extends SeriesTasks {
 
     // клапана
     private String getDescriptValve(int val) {
-        String result = "неизвестно";
+        String result = " неизвестно";
         switch (val) {
             case BHV_VALVE_CLOSE:
-                result = "закрыт";
+                result = " закрыт";
                 break;
             case BHV_VALVE_BRAKING:
-                result = "сужебного торможения открыт";
+                result = " сужебного торможения открыт";
                 break;
             case BHV_VALVE_BRAKING_EMERGENCY:
-                result = "экстренного торможения открыт";
+                result = " экстренного торможения открыт";
                 break;
         }
         return " клапан: " + result;
@@ -81,16 +81,16 @@ public class TaskBHV extends SeriesTasks {
 
     // комманды
     private String getDescriptCommand(int val) {
-        String result = "неизвестно";
+        String result = " неизвестно";
         switch (val) {
             case BHV_COMMAND_CLOSE:
-                result = "закрыть клапана";
+                result = " закрыть клапана";
                 break;
             case BHV_COMMAND_BRAKING:
-                result = "служебное торможение";
+                result = " служебное торможение";
                 break;
             case BHV_COMMAND_BRAKING_EMERGENCY:
-                result = "экстренное тормоожение";
+                result = " экстренное тормоожение";
                 break;
         }
         return " комманда: " + result;
@@ -98,19 +98,19 @@ public class TaskBHV extends SeriesTasks {
 
     // напряжение
     private String getDescriptVoltage(int val) {
-        String result = "неизвестно";
+        String result = " неизвестно";
         switch (val) {
             case BHV_VOLTAGE_11:
-                result = "11";
+                result = " 11";
                 break;
             case BHV_VOLTAGE_11_5:
-                result = "11 - 11.5";
+                result = " 11 - 11.5";
                 break;
             case BHV_VOLTAGE_12:
-                result = "12";
+                result = " 12";
                 break;
             case BHV_VOLTAGE_MORE_12:
-                result = "> 12";
+                result = " > 12";
                 break;
         }
         return " напряжение: " + result;

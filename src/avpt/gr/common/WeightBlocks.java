@@ -79,6 +79,8 @@ public class WeightBlocks {
     private static boolean visibleKkmVl10 = false;
     private static int weight_kkm_s5 = W_GANTT;
     private static boolean visibleKkmS5 = false;
+    private static int weight_kkm_kz8 = W_GANTT;
+    private static boolean visibleKkmKz8 = false;
 
     private static int weight_bhv = W_GANTT;
     private static boolean visibleBhv = false;
@@ -603,6 +605,24 @@ public class WeightBlocks {
         WeightBlocks.visibleKkmS5 = visibleKkmS5;
     }
 
+    public static int getWeight_kkm_kz8(boolean isInvert) {
+        if (isInvert) visibleKkmKz8 = !visibleKkmKz8;
+        return visibleKkmKz8 ? weight_kkm_kz8 : EMPTY;
+    }
+
+    public static void setWeight_kkm_kz8(int weight_kkm_kz8) {
+        WeightBlocks.weight_kkm_kz8 = weight_kkm_kz8;
+    }
+
+    public static boolean isVisibleKkmKz8(boolean isInvert) {
+        if (isInvert) visibleKkmKz8 = !visibleKkmKz8;
+        return visibleKkmKz8;
+    }
+
+    public static void setVisibleKkmKz8(boolean visibleKkmKz8) {
+        WeightBlocks.visibleKkmKz8 = visibleKkmKz8;
+    }
+
     public static void setVisibleKkmVl10(boolean visibleKkmVl10) {
         WeightBlocks.visibleKkmVl10 = visibleKkmVl10;
     }
@@ -920,6 +940,7 @@ public class WeightBlocks {
     //    node.putInt("weight_kkm_vl10", weight_kkm_vl10);
         node.putBoolean("visibleKkm2", visibleKkm2);
     //    node.putInt("weight_kkm_s5", weight_kkm_s5);
+        node.putBoolean("visibleKkmKz8", visibleKkmKz8);
         node.putBoolean("visibleKkmS5", visibleKkmS5);
     //    node.putInt("weight_bhv", weight_bhv);
         node.putBoolean("visibleBhv", visibleBhv);
@@ -1004,6 +1025,7 @@ public class WeightBlocks {
         visibleKkm = !is_default && node.getBoolean("visibleKkm", false);
         visibleKkm2 = !is_default && node.getBoolean("visibleKkm2", false);
         visibleKkmVl10 = !is_default && node.getBoolean("visibleKkmVl10", false);
+        visibleKkmKz8 = !is_default && node.getBoolean("visibleKkmKz8", false);
         visibleKkmS5 = !is_default && node.getBoolean("visibleKkmS5", false);
         visibleBhv = !is_default && node.getBoolean("visibleBhv", false);
         visibleMainControl = !is_default && node.getBoolean("visibleMainControl", false);
@@ -1147,6 +1169,11 @@ public class WeightBlocks {
             subplot.setWeight(EMPTY);
             setWeight_kkm_vl10(W_GANTT);
             setVisibleKkmVl10(false);
+        }
+        else if (subplot.getRangeAxis().getLabel().equals(KKM_KZ8_LABEL)) {
+            subplot.setWeight(EMPTY);
+            setWeight_kkm_kz8(W_GANTT);
+            setVisibleKkmKz8(false);
         }
         else if (subplot.getRangeAxis().getLabel().equals(KKM_S5_LABEL)) {
             subplot.setWeight(EMPTY);

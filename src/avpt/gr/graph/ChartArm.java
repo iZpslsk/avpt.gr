@@ -81,6 +81,7 @@ public class ChartArm extends JFreeChart {
     private TaskKKM_s5k seriesKKM_s5k;
     private TaskKKM_s5k_2 seriesKKM_s5k_2;
     private TaskKKM_vl10 seriesKKM_vl10;
+    private TaskKKM_kz8 seriesKKM_kz8;
     private TaskKKM_s5 seriesKKM_s5;
     private TaskVsc seriesVsc;
     private TaskCabin seriesCabin;
@@ -121,6 +122,7 @@ public class ChartArm extends JFreeChart {
     private XYPlot plotPneumaticUsavp;
     private XYPlot plotUatl;
     private XYPlot plotKkm_s5k;
+    private XYPlot plotKkm_kz8;
     private XYPlot plotKkm_s5;
     private XYPlot plotKkm_s5k_2;
     private XYPlot plotKkm_vl10;
@@ -174,6 +176,7 @@ public class ChartArm extends JFreeChart {
     public static final String PNEUMATIC_USAVP_LABEL =  "Пневм\t      ";
     public static final String UATL_LABEL =             "УАТЛ       ";
     public static final String KKM_S5K_LABEL =          "ККМ        ";
+    public static final String KKM_KZ8_LABEL =           "ККМ\t\t\t\t     ";
     public static final String KKM_S5_LABEL =           "ККМ\t\t\t      ";
     public static final String KKM_S5K_2_LABEL =        "ККМ\t\t      ";
     public static final String KKM_VL10_LABEL =         "ККМ\t       ";
@@ -224,6 +227,7 @@ public class ChartArm extends JFreeChart {
         seriesPneumaticUsavp = chartDataset.getSeriesPneumaticUsavp();
         seriesUatl = chartDataset.getSeriesUatl();
         seriesKKM_s5k = chartDataset.getSeriesKKM_s5k();
+        seriesKKM_kz8 = chartDataset.getSeriesKKM_kz8();
         seriesKKM_s5 = chartDataset.getSeriesKKM_s5();
         seriesKKM_s5k_2 = chartDataset.getSeriesKKM_s5k_2();
         seriesKKM_vl10 = chartDataset.getSeriesKKM_vl10();
@@ -269,6 +273,7 @@ public class ChartArm extends JFreeChart {
         if (seriesPneumaticUsavp != null) plotPneumaticUsavp = addTaskToPlotCombine(PNEUMATIC_USAVP_LABEL, seriesPneumaticUsavp.createDataset(), getWeight_pneumatic_usavp(false));
         if (seriesUatl != null) plotUatl = addTaskToPlotCombine(UATL_LABEL, seriesUatl.createDataset(), getWeight_uatl(false));
         if (seriesKKM_s5k != null) plotKkm_s5k = addTaskToPlotCombine(KKM_S5K_LABEL, seriesKKM_s5k.createDataset(), getWeight_kkm(false));
+        if (seriesKKM_kz8 != null) plotKkm_kz8 = addTaskToPlotCombine(KKM_KZ8_LABEL, seriesKKM_kz8.createDataset(), getWeight_kkm_kz8(false));
         if (seriesKKM_s5 != null) plotKkm_s5 = addTaskToPlotCombine(KKM_S5_LABEL, seriesKKM_s5.createDataset(), getWeight_kkm_s5(false));
         if (seriesKKM_s5k_2 != null) plotKkm_s5k_2 = addTaskToPlotCombine(KKM_S5K_2_LABEL, seriesKKM_s5k_2.createDataset(), getWeight_kkm2(false));
         if (seriesKKM_vl10 != null) plotKkm_vl10 = addTaskToPlotCombine(KKM_VL10_LABEL, seriesKKM_vl10.createDataset(), getWeight_kkm_vl10(false));
@@ -496,6 +501,9 @@ public class ChartArm extends JFreeChart {
         }
         if (title.equals(KKM_S5_LABEL)) {
             renderer = chartDataset.getSeriesKKM_s5().createRenderer();
+        }
+        if (title.equals(KKM_KZ8_LABEL)) {
+            renderer = chartDataset.getSeriesKKM_kz8().createRenderer();
         }
         if (title.equals(KKM_VL10_LABEL)) {
             renderer = chartDataset.getSeriesKKM_vl10().createRenderer();
@@ -1205,6 +1213,12 @@ public class ChartArm extends JFreeChart {
         setWeight_kkm(weight);
     }
 
+    public void setKkmWeight_kz8(int weight) {
+        if (plotKkm_kz8 == null) return;
+        plotKkm_kz8.setWeight(getWeight_kkm_kz8(false));
+        setWeight_kkm_kz8(weight);
+    }
+
     public void setKkmWeight_s5(int weight) {
         if (plotKkm_s5 == null) return;
         plotKkm_s5.setWeight(getWeight_kkm_s5(false));
@@ -1403,6 +1417,10 @@ public class ChartArm extends JFreeChart {
 
     public XYPlot getPlotUatl() {
         return plotUatl;
+    }
+
+    public XYPlot getPlotKkm_kz8() {
+        return plotKkm_kz8;
     }
 
     public XYPlot getPlotKkm_s5k() {

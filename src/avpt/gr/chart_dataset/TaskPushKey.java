@@ -32,25 +32,25 @@ public class TaskPushKey extends SeriesTasks  {
      */
     private String getTag(int key) {
         switch (key) {
-            case 0: return "'START'";
-            case 1: return "'F1'";
-            case 2: return "'Enter'";
-            case 3: return "'Esc'";
-            case 4: return "'Del'";
-            case 5: return "'Up'";
-            case 6: return "'Down'";
-            case 7: return "'Left'";
-            case 8: return "'Right'";
-            case 9: return "'0'";
-            case 10: return "'1'";
-            case 11: return "'2'";
-            case 12: return "'3'";
-            case 13: return "'4'";
-            case 14: return "'5'";
-            case 15: return "'6'";
-            case 16: return "'7'";
-            case 17: return "'8'";
-            case 18: return "'9'";
+            case 0: return " 'START'";
+            case 1: return " 'F1'";
+            case 2: return " 'Enter'";
+            case 3: return " 'Esc'";
+            case 4: return " 'Del'";
+            case 5: return " 'Up'";
+            case 6: return " 'Down'";
+            case 7: return " 'Left'";
+            case 8: return " 'Right'";
+            case 9: return " '0'";
+            case 10: return " '1'";
+            case 11: return " '2'";
+            case 12: return " '3'";
+            case 13: return " '4'";
+            case 14: return " '5'";
+            case 15: return " '6'";
+            case 16: return " '7'";
+            case 17: return " '8'";
+            case 18: return " '9'";
             default: return "";
         }
     }

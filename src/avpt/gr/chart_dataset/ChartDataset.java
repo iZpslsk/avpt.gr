@@ -40,6 +40,7 @@ public class ChartDataset {
     private TaskKKM_s5k seriesKKM_s5k;
     private TaskKKM_s5k_2 seriesKKM_s5k_2;
     private TaskKKM_vl10 seriesKKM_vl10;
+    private TaskKKM_kz8  seriesKKM_kz8;
     private TaskKKM_s5  seriesKKM_s5;
     private TaskBHV seriesBhv_valve;
     private TaskBHV seriesBhv_command;
@@ -201,6 +202,13 @@ public class ChartDataset {
         list.add(chartArrays.getListTasks().getListKkm_1());
         list.add(chartArrays.getListTasks().getListKkm_2());
         this.seriesKKM_vl10 = new TaskKKM_vl10(list, false);
+    }
+
+    public void setSeriesKKM_kz8() {
+        ArrayList<ArrayList<ListTasks.ItemTask>> list = new ArrayList<ArrayList<ListTasks.ItemTask>>();
+        list.add(chartArrays.getListTasks().getListKkm_kz8());
+        list.add(chartArrays.getListTasks().getListKkbt_kz8());
+        this.seriesKKM_kz8 = new TaskKKM_kz8(list, false);
     }
 
     public void setSeriesKKM_s5() {
@@ -506,6 +514,10 @@ public class ChartDataset {
 
     public TaskKKM_vl10 getSeriesKKM_vl10() {
         return seriesKKM_vl10;
+    }
+
+    public TaskKKM_kz8 getSeriesKKM_kz8() {
+        return seriesKKM_kz8;
     }
 
     public TaskKKM_s5 getSeriesKKM_s5() {

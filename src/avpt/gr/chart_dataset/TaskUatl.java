@@ -72,13 +72,13 @@ public class TaskUatl extends SeriesTasks {
         String result = "";
         switch (val) {
             case UATL_COMMAND_OFF:
-                result = "отключить";
+                result = " отключить";
                 break;
             case UATL_COMMAND_STEP1:
-                result = "ступень 1";
+                result = " ступень 1";
                 break;
             case UATL_COMMAND_STEP2:
-                result = "ступень 2";
+                result = " ступень 2";
                 break;
           //  default: result = String.valueOf(val);
         }
@@ -89,16 +89,16 @@ public class TaskUatl extends SeriesTasks {
         String result = "";
         switch (val) {
             case UATL_MODE_OFF:
-                result = "отключено";
+                result = " отключено";
                 break;
             case UATL_MODE_AUTO:
-                result = "автоматический";
+                result = " автоматический";
                 break;
             case UATL_MODE_MANUAL:
-                result = "ручной";
+                result = " ручной";
                 break;
             case UATL_MODE_AZ:
-                result = "режим «А3»";
+                result = " режим «А3»";
                 break;
          //   default: result = String.valueOf(val);
         }
@@ -109,13 +109,13 @@ public class TaskUatl extends SeriesTasks {
         String result = "";
         switch (val) {
             case UATL_WORK_OFF:
-                result = "отключен";
+                result = " отключен";
                 break;
             case UATL_WORK_STEP1:
-                result = "ступень 1";
+                result = " ступень 1";
                 break;
             case UATL_WORK_STEP2:
-                result = "ступень 2";
+                result = " ступень 2";
                 break;
          //   default: result = String.valueOf(val);
         }

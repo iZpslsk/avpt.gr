@@ -140,6 +140,7 @@ public class LoadAnimate extends JDialog {
                 chartDataset.setSeriesKKM_s5k_2();
                 chartDataset.setSeriesKKM_vl10();
                 chartDataset.setSeriesKKM_s5();
+                chartDataset.setSeriesKKM_kz8();
                 chartDataset.setSeriesPushKey();
                 chartDataset.setSeriesVsc();
                 chartDataset.setSeriesCabin();

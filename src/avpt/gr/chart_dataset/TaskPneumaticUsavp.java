@@ -26,19 +26,19 @@ public class TaskPneumaticUsavp extends SeriesTasks {
 
     @Override
     public String getDescript(int val, int key, int type_loc) {
-        String result = "нет";
+        String result = " нет";
         switch (val) {
             case PNEUMATIC_BRAKE:
-                result = "торможение";
+                result = " торможение";
                 break;
             case PNEUMATIC_OVERLAP:
-                result = "перекрыша";
+                result = " перекрыша";
                 break;
             case PNEUMATIC_RELEASE_BRAKE:
-                result = "отпуск";
+                result = " отпуск";
                 break;
             case PNEUMATIC_TRAIN:
-                result = "поездное";
+                result = " поездное";
                 break;
         }
         return result;

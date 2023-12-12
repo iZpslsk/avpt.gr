@@ -347,6 +347,6 @@ public class Block32_52 {
      * @return - ККБТ
      */
     public int getKKBT() {
-        return toUnsignedInt(values[25]) & 0x0F;
+        return toUnsignedInt(values[13]);
     }
 }

@@ -107,22 +107,22 @@ public class TaskPneumatic extends SeriesTasks {
 
     // 2
     private String getDescriptTask(int val) {
-        String result = "неизвестно";
+        String result = " неизвестно";
         switch (val) {
             case TASK_HAND:
-                result = "ручка ККМ";
+                result = " ручка ККМ";
                 break;
             case TASK_SAUT:
-                result = "САУТ";
+                result = " САУТ";
                 break;
             case TASK_RUTP:
-                result = "РУТП";
+                result = " РУТП";
                 break;
             case TASK_ISAVPRT:
-                result = "ИСАВП-РТ";
+                result = " ИСАВП-РТ";
                 break;
             case TASK_MPSU:
-                result = "МПСУ";
+                result = " МПСУ";
                 break;
         }
         return " источник задания: " + result;
@@ -130,29 +130,29 @@ public class TaskPneumatic extends SeriesTasks {
 
     // 1
     private String getDescriptBlock(int val) {
-        String result = "управление от блок";
+        String result = " управление от блок";
         switch (val) {
             case BLOCK_NO_COMMAND:
-                result = "нет команд БЛОК";
+                result = " нет команд БЛОК";
                 break;
             case BLOCK_KKM_I:
-                result = "перевести ККМ в I";
+                result = " перевести ККМ в I";
                 break;
             case BLOCK_KKM_II:
-                result = "перевести ККМ в II";
+                result = " перевести ККМ в II";
                 break;
             case BLOCK_WORK:
-                result = "работа в составе блок";
+                result = " работа в составе блок";
                 break;
             case BLOCK_BRAKE_KKM_1:
             case BLOCK_BRAKE_KKM_2:
             case BLOCK_BRAKE_KKM_3:
             case BLOCK_BRAKE_KKM_4:
             case BLOCK_BRAKE_KKM_5:
-                result = "торможение от ккм";
+                result = " торможение от ккм";
                 break;
             case BLOCK_CONTROL:
-                result = "управление от блок";
+                result = " управление от блок";
                 break;
         }
         return " статус БЛОК: " + result;
@@ -163,25 +163,25 @@ public class TaskPneumatic extends SeriesTasks {
         String result = "нет";
         switch (val) {
             case PNEUMATIC_RELEASE:
-                result = "отпуск";
+                result = " отпуск";
                 break;
             case PNEUMATIC_TRAIN:
-                result = "поездное";
+                result = " поездное";
                 break;
             case PNEUMATIC_OVERLAP_NO_SUPPLY:
-                result = "перекрыша без питания";
+                result = " перекрыша без питания";
                 break;
             case PNEUMATIC_OVERLAP_SUPPLY:
-                result = "перекрыша с питанием";
+                result = " перекрыша с питанием";
                 break;
             case PNEUMATIC_BRAKING_SLOW:
-                result = "торможение с замедлением";
+                result = " торможение с замедлением";
                 break;
             case PNEUMATIC_BRAKING:
-                result = "торможение служебное";
+                result = " торможение служебное";
                 break;
             case PNEUMATIC_BRAKING_EMERGENCY:
-                result = "торможенме экстренное";
+                result = " торможенме экстренное";
                 break;
         }
         return " положение: " + result;
@@ -192,16 +192,16 @@ public class TaskPneumatic extends SeriesTasks {
         String result = "";
         switch (val) {
             case PNEUMATIC_SLAVE_BRAKING:
-                result = "торможение";
+                result = " торможение";
                 break;
             case PNEUMATIC_SLAVE_OVERLAP:
-                result = "перекрыша";
+                result = " перекрыша";
                 break;
             case PNEUMATIC_SLAVE_RELEASE:
-                result = "отпуск";
+                result = " отпуск";
                 break;
             case PNEUMATIC_SLAVE_TRAIN:
-                result = "поездное";
+                result = " поездное";
                 break;
         }
         return " положенме 2-го " + result;

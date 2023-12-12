@@ -31,6 +31,8 @@ public class ListTasks {
     private final ArrayList<ItemTask> listKkm_2 = new ArrayList<ItemTask>();     //
     private final ArrayList<ItemTask> listKkm_s5 = new ArrayList<ItemTask>();     //
     private final ArrayList<ItemTask> listKkbt_s5 = new ArrayList<ItemTask>();     //
+    private final ArrayList<ItemTask> listKkm_kz8 = new ArrayList<ItemTask>();     //
+    private final ArrayList<ItemTask> listKkbt_kz8 = new ArrayList<ItemTask>();     //
     // бхв
     private final ArrayList<ItemTask> listBHV_valve = new ArrayList<ItemTask>();     //
     private final ArrayList<ItemTask> listBHV_command = new ArrayList<ItemTask>();     //
@@ -234,6 +236,14 @@ public class ListTasks {
 
     public ArrayList<ItemTask> getListKkbt_s5() {
         return listKkbt_s5;
+    }
+
+    public ArrayList<ItemTask> getListKkm_kz8() {
+        return listKkm_kz8;
+    }
+
+    public ArrayList<ItemTask> getListKkbt_kz8() {
+        return listKkbt_kz8;
     }
 
     public ArrayList<ItemTask> getListBHV_valve() {

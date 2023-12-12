@@ -32,29 +32,29 @@ public class TaskKKM_vl10 extends SeriesTasks {
 
     @Override
     public String getDescript(int val, int key, int type_loc) {
-        String result = "нет";
+        String result = " нет";
         String tag = (key + 1) + "-я секция ";
         switch (val) {
             case KKM_RELEASE:
-                result = "I - отпуск";
+                result = " I - отпуск";
                 break;
             case KKM_DRAWING:
-                result = "II - поездное";
+                result = " II - поездное";
                 break;
             case KKM_WITHOUT_EAT:
-                result = "III - перекрыша без питания";
+                result = " III - перекрыша без питания";
                 break;
             case KKM_WITH_EAT:
-                result = "IV - перекрыша с питанием";
+                result = " IV - перекрыша с питанием";
                 break;
             case KKM_BRAKE_SER:
-                result = "V - торможение служебное";
+                result = " V - торможение служебное";
                 break;
             case KKM_BRAKE_SLOWDOWN:
-                result = "Va - торможение с замедлением";
+                result = " Va - торможение с замедлением";
                 break;
             case KKM_BRAKE_EMERGENCY:
-                result = "VI - экстренное торможение";
+                result = " VI - экстренное торможение";
                 break;
         }
         return tag + result;

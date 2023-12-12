@@ -416,6 +416,7 @@ public class InfoPanel extends JPanel {
                 if (label.equals(PNEUMATIC_USAVP_LABEL)) subplot.setWeight(getWeight_pneumatic_usavp(true));
                 if (label.equals(UATL_LABEL)) subplot.setWeight(getWeight_uatl(true));
                 if (label.equals(KKM_S5K_LABEL)) subplot.setWeight(getWeight_kkm(true));
+                if (label.equals(KKM_KZ8_LABEL)) subplot.setWeight(getWeight_kkm_kz8(true));
                 if (label.equals(BHV_LABEL)) subplot.setWeight(getWeight_bhv(true));
                 if (label.equals(KKM_S5K_2_LABEL)) subplot.setWeight(getWeight_kkm2(true));
                 if (label.equals(KKM_VL10_LABEL)) subplot.setWeight(getWeight_kkm_vl10(true));

@@ -49,31 +49,31 @@ public class TaskMainControl extends SeriesTasks {
     @Override
     public String getDescript(int val, int key, int type_loc) {
         //System.out.println(val);
-        String result = "нет";
+        String result = " нет";
         switch (val) {
             case POS_0:
-                result = "положение «0»";
+                result = " положение «0»";
                 break;
             case POS_P_TRACT:
-                result = "положение «П» тяги";
+                result = " положение «П» тяги";
                 break;
             case POS_P_REC:
                 if (type_loc == S4K)
-                    result = "положение «ПТ» торможения";
+                    result = " положение «ПТ» торможения";
                 else
-                    result = "положение «П» рекуперации";
+                    result = " положение «П» рекуперации";
                 break;
             case POS_HP_TRACT:
                 if (type_loc == S4K)
-                    result = "«ТЯГА»";
+                    result = " «ТЯГА»";
                 else
-                    result = "положение «НР» тяги";
+                    result = " положение «НР» тяги";
                 break;
             case POS_HP_REC:
                 if (type_loc == S4K)
-                    result = "«ТОРМОЖЕНИЕ»";
+                    result = "« ТОРМОЖЕНИЕ»";
                 else
-                    result = "положение «НР» рекуперации";
+                    result = " положение «НР» рекуперации";
                 break;
         }
         return result;
