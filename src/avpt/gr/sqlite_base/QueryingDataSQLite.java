@@ -141,7 +141,8 @@ public class QueryingDataSQLite {
                         "INNER JOIN train t ON f.file_id = t.file_id " +
                         "INNER JOIN driver d ON d.driver_id = t.driver_id " +
                         "INNER JOIN locomotive l ON l.locomotive_id = t.locomotive_id " +
-                        "INNER JOIN locomotive_type lt ON lt.code_type_loc = l.code_type_loc AND lt.code_asoup = l.code_asoup " +
+                        "INNER JOIN locomotive_type lt ON lt.code_type_loc = l.code_type_loc " +
+                            "AND (lt.code_asoup = l.code_asoup OR NOT EXISTS(SELECT * FROM locomotive_type  WHERE code_asoup = l.code_asoup)) " +
                         "INNER JOIN section s ON s.train_id = t.train_id " +
                         "INNER JOIN road r ON r.code_road = t.code_road " +
                         "WHERE date_begin BETWEEN ? AND ? " +

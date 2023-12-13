@@ -83,7 +83,7 @@ public class ArrTrains {
         if (dateInitUsavp != null) date = dateInitUsavp;
         else if (dateInit != null) date = dateInit;
         LocalTime time = null;
-        if (curTimeBr != null) time = curTimeBr;
+        if (curTimeBr != null && curTimeBr.getHour() != 0 && curTimeBr.getMinute() != 0 && curTimeBr.getSecond() != 0) time = curTimeBr;
         else if (curTimeUsavp != null) time = curTimeUsavp;
         LocalDateTime dateTime = null;
         if (date != null && time != null)
