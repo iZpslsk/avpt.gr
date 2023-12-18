@@ -165,6 +165,8 @@ public class Train {
     private int blEnd = -1;				// номер блока картраджа - конец поезда
     private int secondsStart = 0;
     private int secondsEnd = 0;
+    private int coordinateStart = 0;
+    private int coordinateEnd = 0;
 
     // initBr
     private long numFactoryBr;      // заводской номер
@@ -1303,6 +1305,22 @@ public class Train {
 //        this.limits_c = limits_c;
 //    }
 
+
+    public int getCoordinateStart() {
+        return coordinateStart;
+    }
+
+    public void setCoordinateStart(int coordinateStart) {
+        this.coordinateStart = coordinateStart;
+    }
+
+    public int getCoordinateEnd() {
+        return coordinateEnd;
+    }
+
+    public void setCoordinateEnd(int coordinateEnd) {
+        this.coordinateEnd = coordinateEnd;
+    }
 
     public List<Stations.Station> getStations() {
         return stations;

@@ -785,6 +785,10 @@ public class ArrTrains {
             else if ((id >= 0x22 && id <= 0x2F) || (id >= 0x60 && id <= 0x6F) || (id >= 0x90 && id <= 0x9F)) cntTypesMove[index_p]++;
             else if (id >= 0xF0 && id <= 0xFF) cntTypesMove[index_pt]++;
             else if (id >= 0xC0 && id <= 0xC7) cntTypesMove[index_asim]++;
+
+            if (train.getCoordinateStart() < 1)
+                train.setCoordinateStart(arrBlock32.get(i).getCoordinate());
+            train.setCoordinateEnd(arrBlock32.get(i).getCoordinate());
         }
         if (lockBeginTmpLim) {
             train.getLimits_v().get(train.getLimits_v().size() - 1).setSecond_end(train.getSecondsEnd());

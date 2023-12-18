@@ -72,6 +72,7 @@ public class ChartArrays {
     private final ArrayList<LocalDateTime> listDateTimes = new ArrayList<LocalDateTime>();
     private final ArrayList<Integer> listBlockBySeconds = new ArrayList<Integer>();
 //    private final ArrayList<Double> listSpeedLimTmp = new ArrayList<Double>();
+    private final ArrayList<Integer> listCoordinates = new ArrayList<Integer>();
 
 //    посекундный список объектов и станций
     private int[] arrObjects;
@@ -2746,6 +2747,10 @@ public class ChartArrays {
         return listLimits;
     }
 
+    public ArrayList<Integer> getListCoordinates() {
+        return listCoordinates;
+    }
+
     /**
      * @param cnt_en_prev - предыдущее покозание
      * @param cnt_en_cur - текущее показание
@@ -2805,6 +2810,7 @@ public class ChartArrays {
             addCurObject();
             addCurProfile();
             addCurMapLimit();
+            listCoordinates.add(cur_coordinate);
         }
         else {
             int n = cur_coordinate - second_coordinate;
@@ -2816,6 +2822,7 @@ public class ChartArrays {
                 addCurObject();
                 addCurProfile();
                 addCurMapLimit();
+                listCoordinates.add(cur_coordinate);
             }
         }
     }

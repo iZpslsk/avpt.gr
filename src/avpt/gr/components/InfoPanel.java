@@ -229,6 +229,8 @@ public class InfoPanel extends JPanel {
         g2.drawString(chartDataset.getLatitudeText((int)x), shiftHorCur, hh);
         hh += hd;
         g2.drawString(chartDataset.getLongitudeText((int)x), shiftHorCur, hh);
+        hh += hd;
+        g2.drawString(chartDataset.getCoordinateText((int)x), shiftHorCur, hh);
 
         CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot)chartArm.getXYPlot();
         List subplotsList = cdPlot.getSubplots();

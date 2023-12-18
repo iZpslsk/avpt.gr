@@ -2,6 +2,7 @@ package avpt.gr.chart_dataset;
 
 import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.common.UtilsArmG;
+import avpt.gr.train.Train;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
@@ -61,6 +62,7 @@ public class ChartDataset {
     private ArrayList<int[]> listObjects = new ArrayList<int[]>();
     private ArrayList<int[]> listProfiles = new ArrayList<int[]>();
     private ArrayList<int[]> listLimits = new ArrayList<int[]>();
+    private ArrayList<Integer> listCoordinates = new ArrayList<Integer>();
     private LocalDate curDate = null;
     private LocalTime curTime = null;
     private boolean isTime;
@@ -80,6 +82,7 @@ public class ChartDataset {
         listObjects = chartArrays.getListObjects();
         listProfiles = chartArrays.getListProfiles();
         listLimits = chartArrays.getListLimits();
+        listCoordinates = chartArrays.getListCoordinates();
         if (isFill)
             chartArrays.fill(0, arrBlock32.size() - 1); // заполняем все
     }
@@ -639,4 +642,27 @@ public class ChartDataset {
         }
         else return TEXT;
     }
+
+    public int getCoordinate(int x) {
+        if (x >= 0 && x < listCoordinates.size()) {
+            return listCoordinates.get(x);
+        }
+        return 0;
+    }
+
+    public String getCoordinateText(int x) {
+        Train train = getArrTrains().getTrain(getArrBlock32(), x);
+        final String TEXT = "Пробег: ";
+
+        if (train != null) {
+            int begin_coord = train.getCoordinateStart();
+            double distance = getCoordinate(x) - begin_coord;
+            if (distance < 0) distance = 0;
+            double val = distance / 1000.0;
+            String str = String.format("%.3f км", val);
+            return TEXT + str;
+        }
+        return TEXT;
+    }
+
 }

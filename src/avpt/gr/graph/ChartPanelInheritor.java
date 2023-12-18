@@ -609,6 +609,10 @@ public class ChartPanelInheritor extends ChartPanel {
                 wd = getWd(g2, str, wd);
                 g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
                 hh += hd;
+                str = chartDataset.getCoordinateText((int)x);
+                wd = getWd(g2, str, wd);
+                g2.drawString(str, pnt.x - shiftHorCur, pnt.y + hh - shiftVertCur);
+                hh += hd;
             } else
                 drawTrainInfoCrosshair(g2, x, pnt);
 
