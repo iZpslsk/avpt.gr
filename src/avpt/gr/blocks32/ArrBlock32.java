@@ -21,6 +21,8 @@ import static avpt.gr.train.ArrTrains.*;
 public class ArrBlock32 {
 
     private final ArrayList<Block32_gp> arrayList = new ArrayList<Block32_gp>();          // массив элементов Block32
+    // список номеров первого байта соответсвующих 32-х байтовых посылок в файле поездки
+    private final ArrayList<Integer> listNBytes = new ArrayList<Integer>();
     private MappedByteBuffer buf = null;            		//
     private int len;                                        // длина channel
     private final boolean isShift;								// сдвижка
@@ -66,6 +68,7 @@ public class ArrBlock32 {
      * заполнение списка блоков
      */
     private void fillArrayList() {
+        final int VAL_SHIFT = 1; // величина сдвижки
         if (buf == null) return;
         buf.position(0);
         byte[] b = new byte[Block32_gp.SIZE_BLOCK];
@@ -75,6 +78,7 @@ public class ArrBlock32 {
         int cnt_pt = 0;
         int cnt_g = 0;
         int cnt_everything = 0;
+        int n_byte = 0;
         while (buf.hasRemaining()) {
             if ((buf.position() + Block32_gp.SIZE_BLOCK) > len)
                 buf.position(len);
@@ -91,6 +95,7 @@ public class ArrBlock32 {
                     (block32_gp.getId() >= 0xC0 && block32_gp.getId() <= 0xC7)) {  // asim
                     addIdToSetId(block32_gp);
                     arrayList.add(block32_gp);
+                    listNBytes.add(n_byte);
                 }
 
                 if (block32_gp.getId() != 0x21) cnt_everything++; // игнориоуем 0x21 посылку
@@ -98,10 +103,12 @@ public class ArrBlock32 {
                     (block32_gp.getId() >= 0x50 && block32_gp.getId() <= 0x5F)) cnt_g++;   // g
                 if (block32_gp.getId() >= 0xC0 && block32_gp.getId() <= 0xC7) cnt_asim++; // asim
 //                else cnt_not_asim++;
+                n_byte += Block32.SIZE_BLOCK;
             }
             else {
                 if (++cnt_shift < 3200000)
-                    buf.position(buf.position() - Block32_gp.SIZE_BLOCK + 1); // сдвижка
+                    buf.position(buf.position() - Block32_gp.SIZE_BLOCK + VAL_SHIFT); // сдвижка
+                n_byte += VAL_SHIFT;
             }
         }
         double percent_asim = (double) cnt_asim / (cnt_everything) * 100.0;
@@ -495,5 +502,14 @@ public class ArrBlock32 {
      */
     public boolean isNotExistsIdBl(int idBl, int subIdBl) {
         return !setIdBlk.contains((idBl & 0xFF) | ((subIdBl & 0xFF) << 8));
+    }
+
+    /**
+     * порядковый номер байта в файлу по номеру посылки с учетом сдвижки
+     * @param index порядковый номер блока
+     * @return - порядковый номер байта в файле
+     */
+    public int getNByte(int index) {
+        return listNBytes.get(index);
     }
 }
