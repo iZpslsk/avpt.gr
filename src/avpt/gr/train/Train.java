@@ -133,6 +133,56 @@ public class Train {
         }
     }
 
+    public static EnumLoc getEnumLoc(int codeTypeLoc, int code_asoup) {
+        switch (codeTypeLoc) {
+            case VL11: return EnumLoc._VL11;
+            case VL10: return code_asoup == 138 ? EnumLoc._VL10U : EnumLoc._VL10;
+            case VL80: return EnumLoc._VL80;
+            case VL85: return EnumLoc._VL85;
+            case S5K: {
+                switch (code_asoup) {
+                    case 253: return EnumLoc._3S5K;
+                    case 222: return EnumLoc._2S5K;
+                    case 220: return EnumLoc._4S5K;
+                    default: return EnumLoc._S5K;
+                }
+            }
+            case KZ8A: return EnumLoc._KZ8A;
+            case S5: return EnumLoc._2S5;
+            case S6: return EnumLoc._2S6;
+            case S4K: {
+                switch (code_asoup) {
+                    case 115: return EnumLoc._3S4K;
+                    case 144: return EnumLoc._2S4K;
+                    default: return EnumLoc._S4K;
+                }
+            }
+            case S5K_2: {
+                switch (code_asoup) {
+                    case 253: return EnumLoc._3S5K_2;
+                    case 222: return EnumLoc._2S5K_2;
+                    case 220: return EnumLoc._4S5K_2;
+                    default: return EnumLoc._S5K_2;
+                }
+            }
+            case VL11_ASIM: return EnumLoc._VL11_ASIM;
+            case VL15_ASIM: return EnumLoc._VL15_ASIM;
+            case VL85_ASIM: return EnumLoc._VL85_ASIM;
+            case VL10_ASIM: return EnumLoc._VL10_ASIM;
+            case VL11K_ASIM: return EnumLoc._VL11K_ASIM;
+            case VL80C_ASIM: return EnumLoc._VL80C_ASIM;
+            case VL80T_ASIM: return EnumLoc._VL80T_ASIM;
+            case VL80TK_ASIM: return EnumLoc._VL80TK_ASIM;
+            case VL80P_ASIM: return EnumLoc._VL80P_ASIM;
+            case VL80SK_ASIM: return EnumLoc._VL80SK_ASIM;
+            case VL10UK_ASIM: return EnumLoc._VL10UK_ASIM;
+            case VL10K_ASIM: return EnumLoc._VL10K_ASIM;
+            case VL10U_ASIM: return EnumLoc._VL10U_ASIM;
+            case VL11M_ASIM: return EnumLoc._VL11M_ASIM;
+            default: return EnumLoc.UNKNOWN;
+        }
+    }
+
     public final static int VL11 = 1;   // ВЛ11
     public final static int VL10 = 2;   // ВЛ10
     public final static int VL80 = 3;   // ВЛ80
@@ -495,77 +545,6 @@ public class Train {
         }
         return result;
     }
-
-//    public static int getSectionsByTypeLoc(int codeTypeLoc) {
-//        int result = 0;
-//        switch (codeTypeLoc) {
-//            case VL11:
-//            case VL10:
-//            case VL80:
-//            case VL85:
-//            case S6:
-//                result = 2;
-//                break;
-//            case S5:
-//            case S5K:
-//                if (locTypeAsoup == 253)
-//                    result = 3;
-//                else if (locTypeAsoup == 222)
-//                    result = 2;
-//                else if (locTypeAsoup == 220)
-//                    result = 4;
-//                else
-//                    result = 2;
-//                break;
-//            case S4K:
-//                if (locTypeAsoup == 115)
-//                    result = 3;
-//                else if (locTypeAsoup == 144)
-//                    result = 2;
-//                else
-//                    result = 2;
-//                break;
-//            case S5K_2:
-//                if (locTypeAsoup == 253)
-//                    result = 3;
-//                else if (locTypeAsoup == 222)
-//                    result = 2;
-//                else if (locTypeAsoup == 220)
-//                    result = 4;
-//                else
-//                    result = 3;
-//                break;
-////
-////            case VL11_ASIM:
-////                result = "ВЛ-11 АСИМ";
-////                break;
-////            case VL11M_ASIM:
-////                result = "ВЛ-11М АСИМ";
-////                break;
-////            case VL15_ASIM:
-////                result = "ВЛ-15 АСИМ";
-////                break;
-////            case VL10_ASIM:
-////                result = "ВЛ-10 АСИМ";
-////                break;
-////            case VL10U_ASIM:
-////                result = "ВЛ-10У АСИМ";
-////                break;
-////            case VL80C_ASIM:
-////                result = "ВЛ-10С АСИМ";
-////                break;
-////            case VL80T_ASIM:
-////                result = "ВЛ-10Т АСИМ";
-////                break;
-////            case VL80P_ASIM:
-////                result = "ВЛ-10Р АСИМ";
-////                break;
-////            case VL85_ASIM:
-////                result = "ВЛ-85 АСИМ";
-////                break;
-//        }
-//        return result;
-//    }
 
     public String getNumTrainStr() {
         if (numTrain != -1)
@@ -1551,8 +1530,16 @@ public class Train {
         return stations.isEmpty() ? "" : stations.get(0).getNameStation();
     }
 
+    public long getStationBeginECP() {
+        return stations.isEmpty() ? -1 : stations.get(0).getEcp();
+    }
+
     public String getStationEnd() {
         return stations.isEmpty() ? "" : stations.get(stations.size() - 1).getNameStation();
+    }
+
+    public long getStationEndECP() {
+        return stations.isEmpty() ? -1 : stations.get(stations.size() - 1).getEcp();
     }
 
     public String getStationsBeginEnd() {

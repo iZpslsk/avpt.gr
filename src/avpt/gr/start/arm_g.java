@@ -4,6 +4,7 @@ import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.chart_dataset.ChartDataset;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.database.Db;
+import avpt.gr.maps.Stations;
 import avpt.gr.rmi.ServerToPgSql;
 import avpt.gr.sqlite_base.CreateInsertSQLite;
 import avpt.gr.train.ArrTrains;
@@ -69,9 +70,15 @@ public class arm_g {
             }
             ChartDataset chartDataset = new ChartDataset(arrBlock32, true, true);
             ArrTrains trains = chartDataset.getArrTrains();
+            Stations stations;
+            if (arrBlock32 != null) {
+                stations = new Stations(arrBlock32);
+                stations.addStationsToTrains(trains);
+            }
             try {
                 String outFileName = UtilsArmG.replaceExtFile(fileName, ".output");	// out file рядом с файлом поездки
-                trains.writeInfo(outFileName);
+                trains.writeInfoXML(outFileName, arrBlock32);
+            //    trains.writeInfo(outFileName);
             } catch (IOException e) {
                 e.printStackTrace();
             }

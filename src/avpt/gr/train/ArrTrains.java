@@ -15,10 +15,13 @@ import org.threeten.bp.LocalTime;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static avpt.gr.blocks32.SubIdGr.getSubId;
+import static avpt.gr.common.UtilsArmG.formatDate;
+import static avpt.gr.common.UtilsArmG.formatDateTime;
 
 public class ArrTrains {
 
@@ -855,6 +858,55 @@ public class ArrTrains {
 
     public void add(Train train) {
         listTrains.add(train);
+    }
+
+    public void writeInfoXML(String outFilename, ArrBlock32 arrBlock32) throws IOException {
+        int index = 0;
+        StringBuilder sb = new StringBuilder("<?xml version=\"1.0\" encoding=\"Windows-1251\" standalone=\"yes\"?>\n");
+        sb.append("<output>\n");
+        sb.append("  <Mars>\n");
+
+        for (Train train : listTrains) {
+            sb.append("    <Marsr>\n");
+            sb.append(String.format("      <npp>%d</npp>\n", index));           // № по порядку
+            sb.append(String.format("      <name_train>%s</name_train>\n",
+                    Train.getEnumLoc(train.getTypeLoc(), train.getLocTypeAsoup()).getName()));   // название локомотива
+            sb.append(String.format("      <nomer>%d</nomer>\n", train.getNumLoc()));          // номер локомотива
+            sb.append(String.format("      <asoup>%d</asoup>\n", Train.getEnumLoc(train.getTypeLoc(), train.getLocTypeAsoup()).getAsoup()));          // асоуп
+            sb.append(String.format("      <trnm>%d</trnm>\n", train.getNumTrain()));          // номер поезда
+            sb.append(String.format("      <tabnm>%d</tabnm>\n", train.getNumTab()));          // табельный номер
+            sb.append(String.format("      <dtbeg>%s</dtbeg>\n", train.getDateTimeStart().format(formatDateTime)));          // дата начала
+            sb.append(String.format("      <dtend>%s</dtend>\n", train.getDateTimeEnd().format(formatDateTime)));          // дата конца
+
+//            sb.append(String.format("      <shrn>%d</shrn>\n", train.getLatStart()));          // широтк начала
+//            sb.append(String.format("      <dlgn>%d</dlgn>\n", train.getLonStart()));          // долгота начала
+//            sb.append(String.format("      <shrk>%d</shrk>\n", train.getLatEnd()));          // широтк начала
+//            sb.append(String.format("      <dlgk>%d</dlgk>\n", train.getLonEnd()));          // долгота начала
+
+            sb.append(String.format("      <esrn>%d</esrn>\n", train.getStationBeginECP()));
+            sb.append(String.format("      <esrk>%d</esrk>\n", train.getStationEndECP()));
+            LocalDate date = train.getDateMap();
+            if (date != null)
+                sb.append(String.format("      <datk>%s</datk>\n", date.format(formatDate)));
+            int n_start = arrBlock32.getNByte(train.getBlStart());
+            int n_end =  arrBlock32.getNByte(train.getBlEnd());
+            sb.append(String.format("      <addrn>%d</addrn>\n", n_start));          // адрес начала
+            sb.append(String.format("      <dlin>%d</dlin>\n", n_end > n_start ? n_end - n_start : 0));          // длина поездки
+
+            sb.append("    </Marsr>\n");
+            index++;
+        }
+
+        sb.append("  </Mars>\n");
+        sb.append(String.format("  <rpdaTrainsCount>%s</rpdaTrainsCount>\n", size()));	// счетчик поездок в файле
+        sb.append("</output>\n");
+        PrintWriter out = new PrintWriter(outFilename);
+        try {
+            out.println(sb.toString());
+        }
+        finally {
+            out.close();
+        }
     }
 
     /**
