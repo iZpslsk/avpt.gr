@@ -940,8 +940,9 @@ public class ChartArm extends JFreeChart {
             row = arrBlock32.searchIndexBySecond((int)x, 0, arrBlock32.size() - 1);
         }
       //  System.out.println((int)x + "_" + Math.abs(row));
-        if (row >= 0)
-            hexTab.selectRow(row);
+//        if (row >= 0)
+//            hexTab.selectRow(row);
+        hexTab.selectRow(Math.abs(row));
     }
 
     /**

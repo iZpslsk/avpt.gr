@@ -142,10 +142,10 @@ public class InfoPanel extends JPanel {
         int shiftHorCur = 7;
         double startX = chartArm.getStartIntervalXMarker();
         double endX = chartArm.getEndIntervalXMarker();
-        int indxStart = arrBlock32.
-                searchIndexBySecond((int)chartArm.getStartIntervalXMarker(), 0, arrBlock32.size() - 1);
-        int indxEnd = chartDataset.getArrBlock32().
-                searchIndexBySecond((int)chartArm.getEndIntervalXMarker(), 0, arrBlock32.size() - 1);
+        int indxStart = Math.abs(arrBlock32.
+                searchIndexBySecond((int)chartArm.getStartIntervalXMarker(), 0, arrBlock32.size() - 1));
+        int indxEnd = Math.abs(arrBlock32.
+                searchIndexBySecond((int)chartArm.getEndIntervalXMarker(), 0, arrBlock32.size() - 1));
 
         g2.drawString(descriptionTime + UtilsArmG.getDurationTime((long)(endX - startX)), shiftHorCur, hh);
         hh += hd;

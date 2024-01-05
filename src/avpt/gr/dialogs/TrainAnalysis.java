@@ -14,6 +14,8 @@ import java.io.File;
 
 import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.chart_dataset.ChartDataset;
+import avpt.gr.common.ComponentMover;
+import avpt.gr.common.ComponentResizer;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
 import avpt.gr.components.hex_tab.HexTab;
@@ -27,30 +29,34 @@ public class TrainAnalysis extends JDialog {
     // Windows 10 64-bit  HKEY_LOCAL_MACHINE\Software\JavaSoft\Prefs
     // HKEY_CURRENT_USER\SOFTWARE\JavaSoft\Prefs\avpt\arm\arm_g\/Train/Analysis
     public static final Preferences PREF = UtilsArmG.getNode("TrainAnalysis");
-    private final FileChooserRu fileChooser;
+    private final FileChooserRu fileChooser = makeFileChooser();
     private ArrBlock32 arrBlock32;
     private final JFrame owner;
-    private final boolean isShift;
+    private final boolean  isShift = PREF.getBoolean("shift", true);
     private String fileName;
-    private final JMenuBar menuBar;
-    private final JToolBar toolBar;
+    private JMenuBar menuBar;
+    private JToolBar toolBar;
     private boolean isTime = true;
+    private boolean isMaximize = false;
 
-    private final OpenAction openAction;
-    private final OpenSlaveAction openSlaveAction;
-    private final ExitAction exitAction;
-    private final ViewCoordinateAction viewCoordinateAction;
-    private final ViewTimeAction viewTimeAction;
-    private final ViewDefAction viewDefAction;
-    private final ShowInfoTrainsAction showInfoTrainsAction;
-    private final HelpAction helpAction;
-    private final AboutAction aboutAction;
+    OpenAction openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
+    OpenSlaveAction openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
+    ExitAction exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close16.png");
+    private final MinimizeAction minimizeAction = new MinimizeAction("Свернуть", "/avpt/gr/images/menu/minimize16.png");
+    private final MaximizeAction maximizeAction = new MaximizeAction("Максимизировать", "/avpt/gr/images/menu/maximize16.png");
+    private final NormalizeAction normalizeAction = new NormalizeAction("Нормализовать", "/avpt/gr/images/menu/normalize16.png");
+
+    ViewCoordinateAction viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
+    ViewTimeAction viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
+    ViewDefAction viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
+    ShowInfoTrainsAction showInfoTrainsAction = new ShowInfoTrainsAction("Отчеты", "/avpt/gr/images/menu/note_16.png");
+    HelpAction helpAction = new HelpAction("Помощь...", "/avpt/gr/images/menu/help16.png");
+    AboutAction aboutAction = new AboutAction("О программе...", "/avpt/gr/images/menu/info16.png");
 
     private JRadioButtonMenuItem itemCoordinate;
     private JRadioButtonMenuItem itemTime;
     private JMenuItem defViewItem;
 
-  //  private HexTablePan hexTablePan;
     private ChartPanelArm chartPanelArm;
     private JMenuItem openItemSlave;
     private JMenuItem openItem;
@@ -71,30 +77,19 @@ public class TrainAnalysis extends JDialog {
         setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
         this.owner = owner;
         this.trainAnalysisMain = trainAnalysisMain;
+        init(isClose);
+    }
+
+    private void init(final boolean isClose) {
         setLayout(new BorderLayout());
-        // расположение и сохраненные настройки
-        UtilsArmG.setWinBound(this, PREF);
-        isShift = PREF.getBoolean("shift", true);
-        fileChooser = makeFileChooser();
-
-        openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
-        openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
-        exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close_16.png");
-        viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
-        viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
-        viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
-        showInfoTrainsAction = new ShowInfoTrainsAction("Отчеты", "/avpt/gr/images/menu/note_16.png");
-        helpAction = new HelpAction("Помощь...", "/avpt/gr/images/menu/help16.png");
-        aboutAction = new AboutAction("О программе...", "/avpt/gr/images/menu/info16.png");
-
+        setUndecorated(true);
         WeightBlocks.loadSettings(PREF, false);
-//        viewToggleAction = new ViewToggleAction(isTime);
 
         addWindowListener(new WindowAdapter() {
             // событие закрытия окна
             public void windowClosing(WindowEvent event) {
                 // сохранение состояния если не открыто два окнаviewToggleAction
-                if (trainAnalysisSlave == null && trainAnalysisMain == null) {
+                if (!isMaximize && trainAnalysisSlave == null && trainAnalysisMain == null) {
                     UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
                     PREF.putBoolean("shift", isShift);
                 }
@@ -106,33 +101,48 @@ public class TrainAnalysis extends JDialog {
                 //
                 if (trainAnalysisMain != null) {
                     trainAnalysisMain.dispose();
-                    //trainAnalysisMain.setSecondNull();
                 }
 
                 if (isClose) System.exit(0);
 
                 closeDialog();
-
-//                Object[] options = {"Да", "Нет", "Отмена"};
-//                if (WeightBlocks.isModified()) {
-//                    int n = JOptionPane.showOptionDialog(TrainAnalysis.this, "Сохранить состояние?", "...?",
-//                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[1]);
-//                    if (n == JOptionPane.YES_OPTION)
-//                        WeightBlocks.saveSettings(PREF);
-//                    else if (n == JOptionPane.CANCEL_OPTION) return;
-//                }
-//                dispose();
-
-               // WeightBlocks.saveSettings(PREF);
             }
         });
         menuBar = makeMenuBar();
         setJMenuBar(menuBar);
         toolBar = makeToolBar();
         add(toolBar, BorderLayout.NORTH);
+
+        setNormalizeWin();
+        setVisibleButton("ViewTime", !isTime);
+        setVisibleButton("ViewCoordinate", isTime);
+        setComponentMover();
+        setComponentResizer();
         setTitle();
     }
 
+    /**
+     * устанавливаем возможность изменения размеров undecorated - окна
+     */
+    private void setComponentResizer() {
+        ComponentResizer cr = new ComponentResizer();
+        cr.registerComponent(this);
+        cr.setSnapSize(new Dimension(1, 1));
+    }
+
+    /**
+     * назначаем компоненты для перетаскивания undecorated - окна
+     */
+    private void setComponentMover() {
+        ComponentMover cm = new ComponentMover(this, menuBar, toolBar);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        cm.setEdgeInsets(new Insets((int)dim.getHeight() * -1, (int)dim.getWidth() * -1,
+                (int)dim.getHeight() * -1, (int)dim.getWidth() * -1));
+    }
+
+    /**
+     * обработка закрытия окна
+     */
     private void closeDialog() {
         if (WeightBlocks.isModified()) {
             int n = messClose();
@@ -243,9 +253,13 @@ public class TrainAnalysis extends JDialog {
                 trainAnalysisSlave.getOpenItemSlave().setEnabled(false);
                 trainAnalysisSlave.getOpenItem().setEnabled(false);
                 trainAnalysisSlave.setMenuBarVisible(false);
-                trainAnalysisSlave.setToolBarVisible(false);
+               // trainAnalysisSlave.setToolBarVisible(false);
                 openSlaveAction.setEnabled(false);
                 //openItemSlave.setEnabled(false);
+                trainAnalysisSlave.openAction.setEnabled(false);
+                trainAnalysisSlave.openSlaveAction.setEnabled(false);
+                trainAnalysisSlave.viewCoordinateAction.setEnabled(false);
+                trainAnalysisSlave.viewTimeAction.setEnabled(false);
 
                 ChartPanelArm chartPanelArmMain = trainAnalysisMain != null ? trainAnalysisMain.getChartPanelArm() : null;
                 ChartPanelArm chartPanelArmSlave = trainAnalysisSlave != null ? trainAnalysisSlave.getChartPanelArm() : null;
@@ -280,8 +294,71 @@ public class TrainAnalysis extends JDialog {
         }
         @Override
         public void actionPerformed(ActionEvent e) {
-            closeDialog();
+   //         closeDialog();
+            dispatchEvent(new WindowEvent( TrainAnalysis.this, WindowEvent.WINDOW_CLOSING));
         }
+    }
+
+    /**
+     * действие - минимизация окна
+     */
+    class MinimizeAction extends LocalAbstractAction {
+        public MinimizeAction(String name, String nameIcon) {
+            super(name, nameIcon);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            TrainAnalysis.this.owner.setState(Frame.ICONIFIED);
+        }
+    }
+
+    /**
+     * действие - максимизация окна
+     */
+    class MaximizeAction extends LocalAbstractAction {
+        public MaximizeAction(String name, String nameIcon) {
+            super(name, nameIcon);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setMaximizeWin();
+        }
+    }
+
+    /**
+     * действие - нормализация окна
+     */
+    class NormalizeAction extends LocalAbstractAction {
+        public NormalizeAction(String name, String nameIcon) {
+            super(name, nameIcon);
+        }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            setNormalizeWin();
+        }
+    }
+
+    /**
+     * максимизация окна
+     */
+    private void setMaximizeWin() {
+        isMaximize = true;
+        setVisibleButton("Normalize", true);
+        setVisibleButton("Maximize", false);
+        UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
+        UtilsArmG.setWinBoundMax(TrainAnalysis.this);
+        getRootPane().setBorder( BorderFactory.createEmptyBorder(0, 0, 0, 0) );
+    }
+
+    /**
+     * нормализация окна
+     */
+    private void setNormalizeWin() {
+        isMaximize = false;
+        setVisibleButton("Normalize", false);
+        setVisibleButton("Maximize", true);
+        UtilsArmG.setWinBound(TrainAnalysis.this, PREF);
+        getRootPane().setBorder( BorderFactory.createEmptyBorder(3, 3, 3, 3) );
     }
 
     /**
@@ -291,13 +368,15 @@ public class TrainAnalysis extends JDialog {
 
         public ViewCoordinateAction(String name, String nameIcon) {
             super(name, nameIcon);
-            this.setEnabled(isTime);
+           // this.setEnabled(isTime);
         }
         @Override
         public void actionPerformed(ActionEvent e) {
             remakeSaveMarker(isTime = false, true, 1);
-            this.setEnabled(isTime);
-            viewTimeAction.setEnabled(!isTime);
+//            this.setEnabled(isTime);
+//            viewTimeAction.setEnabled(!isTime);
+            setVisibleButton("ViewTime", true);
+            setVisibleButton("ViewCoordinate", false);
             itemCoordinate.setSelected(true);
             setTitle();
         }
@@ -310,13 +389,15 @@ public class TrainAnalysis extends JDialog {
 
         public ViewTimeAction(String name, String nameIcon) {
             super(name, nameIcon);
-            this.setEnabled(!isTime);
+        //    this.setEnabled(!isTime);
         }
         @Override
         public void actionPerformed(ActionEvent e) {
             remakeSaveMarker(isTime = true, true, 1);
-            this.setEnabled(!isTime);
-            viewCoordinateAction.setEnabled(isTime);
+//            this.setEnabled(!isTime);
+//            viewCoordinateAction.setEnabled(isTime);
+            setVisibleButton("ViewTime", false);
+            setVisibleButton("ViewCoordinate", true);
             itemTime.setSelected(true);
             setTitle();
         }
@@ -471,7 +552,23 @@ public class TrainAnalysis extends JDialog {
         menuBar.add(makeViewMenu());
         menuBar.add(makeRepMenu());
         menuBar.add(makeHelpMenu());
+        menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(Box.createHorizontalGlue());
         return menuBar;
+    }
+
+    /**
+     * включить-выключить видимость кнопки на toolBar
+     * @param nameButton - название кнопки: Open, ViewCoordinate, ViewTime, ShowInfoTrains, ViewDef, Minimize, Maximize, Exit
+     * @param isVisible - true - включена, false - выключена
+     */
+    private void setVisibleButton(String nameButton, boolean isVisible) {
+        if (toolBar != null) {
+            for (Component c : toolBar.getComponents()) {
+                if (nameButton.equals(c.getName()))
+                    c.setVisible(isVisible);
+            }
+        }
     }
 
     /**
@@ -479,21 +576,38 @@ public class TrainAnalysis extends JDialog {
      */
     private JToolBar makeToolBar() {
         JToolBar toolBar = new JToolBar();
+        toolBar.addSeparator();
         toolBar.add(openAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Open");
         toolBar.add(openSlaveAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("OpenSlave");
         toolBar.addSeparator();
         toolBar.add(viewCoordinateAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewCoordinate");
         toolBar.add(viewTimeAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewTime");
         toolBar.addSeparator();
         toolBar.add(showInfoTrainsAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ShowInfoTrains");
         toolBar.addSeparator();
         toolBar.add(viewDefAction);
-        toolBar.addSeparator();
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewDef");
+        //toolBar.addSeparator();
+        toolBar.add(Box.createHorizontalGlue());
+        toolBar.add(minimizeAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Minimize");
+        toolBar.add(maximizeAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Maximize");
+        toolBar.add(normalizeAction);
+        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Normalize");
         toolBar.add(exitAction);
         toolBar.setRollover(true);
+        toolBar.setFloatable(false);
         //       toolBar.add(new ViewToggleAction(isTime));
         //   toolBar.setFloatable(false);
-        for (Component c : toolBar.getComponents()) c.setFocusable(false);
+        for (Component c : toolBar.getComponents()) {
+            c.setFocusable(false);
+        }
         return toolBar;
     }
 
@@ -557,17 +671,6 @@ public class TrainAnalysis extends JDialog {
             chartPanelArmSlave.getChartArm().doZoomByCursor(chartPanelArmSlave.getScrollBar(), n, duration_slave);
 
         chartPanelArm.getChartArm().paintMarker(chartPanelArmMain, chartPanelArmSlave, chartPanelArm.getScrollBar(), n);
-
-//        int newSecond = chartPanelArm.getChartDataset().getArrBlock32().get(k).getSecond();
-//        System.out.println("old_pos=" + oldPosScroll + " old_sec=" + oldSecond + " new_sec=" +newSecond);
-//       // long pos = oldPosScroll * newSecond / oldSecond;
-//        System.out.println(oldPosScroll * newSecond / oldSecond);
-//      //  chartPanelArm.getScrollBar().setValue(pos);
-
-//        System.out.println(chartPanelArm.getScrollBar().getValue() + "_" +
-//                chartPanelArm.getChartDataset().getArrBlock32().get(k).getSecond() + "_" +
-//                chartPanelArm.getChartArm().getDomainAxis().getRange().getUpperBound());
-
         toFront();
     }
 
@@ -589,9 +692,6 @@ public class TrainAnalysis extends JDialog {
         try {
             ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(owner, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime, precision);
             hexTabToChartPan(chartDataset);
-//            HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-//            hexTablePan.setVisible(false); //
-//            addChartPanelArm(chartDataset, hexTablePan);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -611,9 +711,6 @@ public class TrainAnalysis extends JDialog {
                 ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime, 1);
                 arrBlock32 = chartDataset.getArrBlock32();
                 hexTabToChartPan(chartDataset);
-//                HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-//                hexTablePan.setVisible(false); //
-//                addChartPanelArm(chartDataset, hexTablePan);
                 if (chartDataset.getArrTrains().size() == 0)
                     JOptionPane.showMessageDialog(
                             this, "Поездки не сформированы!",
@@ -660,9 +757,7 @@ public class TrainAnalysis extends JDialog {
               ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime, 1);
               arrBlock32 = chartDataset.getArrBlock32();
               hexTabToChartPan(chartDataset);
-//              HexTablePan hexTablePan = new HexTablePan(arrBlock32, 0, chartDataset.getArrBlock32().size() - 1);
-//              hexTablePan.setVisible(false); //
-//              addChartPanelArm(chartDataset, hexTablePan);
+
               if (chartDataset.getArrTrains().size() == 0)
 //                throw (new IOException(mess_error));
                   JOptionPane.showMessageDialog(

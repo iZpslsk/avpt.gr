@@ -274,6 +274,16 @@ public class UtilsArmG {
     }
 
     /**
+     * установить максимальный размер главного окна
+     * @param win - окно
+     */
+    public static void setWinBoundMax(Window win) {
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        win.setBounds(0, 0, (int)screenSize.getWidth(), (int)screenSize.getHeight());
+    }
+
+    /**
      * устанавливаем размеры и положение окна отчетов
      * @param win - окно
      * @param pref - узел
