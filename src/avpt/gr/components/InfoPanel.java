@@ -18,6 +18,8 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import avpt.gr.train.Train;
+import org.threeten.bp.Duration;
+import org.threeten.bp.LocalDateTime;
 
 import javax.swing.*;
 import java.awt.*;
@@ -140,14 +142,21 @@ public class InfoPanel extends JPanel {
         int hh = (int)descriptFont.getStringBounds(chartDataset.getDateText((int)x), g2.getFontRenderContext()).getHeight();
         int hd = hh;	// hd - высота строки
         int shiftHorCur = 7;
-        double startX = chartArm.getStartIntervalXMarker();
-        double endX = chartArm.getEndIntervalXMarker();
+//        double startX = chartArm.getStartIntervalXMarker();
+//        double endX = chartArm.getEndIntervalXMarker();
         int indxStart = Math.abs(arrBlock32.
                 searchIndexBySecond((int)chartArm.getStartIntervalXMarker(), 0, arrBlock32.size() - 1));
         int indxEnd = Math.abs(arrBlock32.
                 searchIndexBySecond((int)chartArm.getEndIntervalXMarker(), 0, arrBlock32.size() - 1));
 
-        g2.drawString(descriptionTime + UtilsArmG.getDurationTime((long)(endX - startX)), shiftHorCur, hh);
+        double startX = arrBlock32.getSecond(indxStart);
+        double endX = arrBlock32.getSecond(indxEnd);
+        LocalDateTime startD = chartDataset.getDateTime((int)startX);
+        LocalDateTime endD = chartDataset.getDateTime((int)endX);
+        if (startD != null && endD != null) {
+            long s = Duration.between(startD, endD).getSeconds();
+            g2.drawString(descriptionTime + UtilsArmG.getDurationTime(s), shiftHorCur, hh);
+        }
         hh += hd;
         int distance = 0;
         Block32_gp block32_gp_prev = null;

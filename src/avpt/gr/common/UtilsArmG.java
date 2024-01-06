@@ -274,6 +274,21 @@ public class UtilsArmG {
     }
 
     /**
+     * сохраняем оптимальные размеры и положение главного окна
+     * @param pref - узел
+     */
+    public static void saveWinBoundOptimal(Preferences pref) {
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        Dimension screenSize = kit.getScreenSize();
+        double h_perc = screenSize.getHeight() * 3 / 100;
+        double w_perc = screenSize.getWidth() * 6 / 100;
+        pref.putInt("left", 0);
+        pref.putInt("top", 0);
+        pref.putInt("width", (int)screenSize.getWidth() - (int)w_perc);
+        pref.putInt("height", (int)screenSize.getHeight() - (int)h_perc);
+    }
+
+    /**
      * установить максимальный размер главного окна
      * @param win - окно
      */

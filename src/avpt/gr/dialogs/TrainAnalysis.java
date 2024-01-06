@@ -93,6 +93,10 @@ public class TrainAnalysis extends JDialog {
                     UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
                     PREF.putBoolean("shift", isShift);
                 }
+                // если закрываем из режима сцепки "save and slave", сохраняем оптимальное положение окна
+                else if (trainAnalysisSlave == null || trainAnalysisMain == null) {
+                    UtilsArmG.saveWinBoundOptimal(PREF);
+                }
 
                 // закрываем оба окна
                 if (trainAnalysisSlave != null) {
