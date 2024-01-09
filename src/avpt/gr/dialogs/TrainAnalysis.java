@@ -39,19 +39,24 @@ public class TrainAnalysis extends JDialog {
     private boolean isTime = true;
     private boolean isMaximize = false;
 
-    OpenAction openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
-    OpenSlaveAction openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
-    ExitAction exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close16.png");
+    private final OpenAction openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
+    private final OpenSlaveAction openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
+    private final ExitAction exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close16.png");
     private final MinimizeAction minimizeAction = new MinimizeAction("Свернуть", "/avpt/gr/images/menu/minimize16.png");
     private final MaximizeAction maximizeAction = new MaximizeAction("Максимизировать", "/avpt/gr/images/menu/maximize16.png");
     private final NormalizeAction normalizeAction = new NormalizeAction("Нормализовать", "/avpt/gr/images/menu/normalize16.png");
-
-    ViewCoordinateAction viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
-    ViewTimeAction viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
-    ViewDefAction viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
-    ShowInfoTrainsAction showInfoTrainsAction = new ShowInfoTrainsAction("Отчеты", "/avpt/gr/images/menu/note_16.png");
-    HelpAction helpAction = new HelpAction("Помощь...", "/avpt/gr/images/menu/help16.png");
-    AboutAction aboutAction = new AboutAction("О программе...", "/avpt/gr/images/menu/info16.png");
+    private final ViewCoordinateAction viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
+    private final ViewTimeAction viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
+    private final ViewDefAction viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
+    private final ShowInfoTrainsAction showInfoTrainsAction = new ShowInfoTrainsAction("Отчеты", "/avpt/gr/images/menu/note_16.png");
+    private final HelpAction helpAction = new HelpAction("Помощь...", "/avpt/gr/images/menu/help16.png");
+    private final AboutAction aboutAction = new AboutAction("О программе...", "/avpt/gr/images/menu/info16.png");
+    private JButton exitBtn;
+    private JButton minimizeBtn;
+    private JButton maximizeBtn;
+    private JButton normalizeBtn;
+    private JButton viewTimeBtn;
+    private JButton viewCoordinateBtn;
 
     private JRadioButtonMenuItem itemCoordinate;
     private JRadioButtonMenuItem itemTime;
@@ -64,6 +69,9 @@ public class TrainAnalysis extends JDialog {
     private final TrainAnalysis trainAnalysisMain; // для первого всегда = null, для второго всегда != null
     private TrainAnalysis trainAnalysisSlave; // для первого окна != null если открыто второе
     private InfoTrainsDialog infoTrainsDialog;
+
+    private ComponentResizer componentResizer;
+    private ComponentMover componentMover;
 
     private static final String VIEW_TIME = "по времени";
     private static final String VIEW_COORDINATE = "по координате";
@@ -112,16 +120,17 @@ public class TrainAnalysis extends JDialog {
                 closeDialog();
             }
         });
-        menuBar = makeMenuBar();
+        makeToolBar();
+        createMenuBar();
         setJMenuBar(menuBar);
-        toolBar = makeToolBar();
         add(toolBar, BorderLayout.NORTH);
 
         setNormalizeWin();
-        setVisibleButton("ViewTime", !isTime);
-        setVisibleButton("ViewCoordinate", isTime);
+        viewTimeBtn.setVisible(!isTime);
+        viewCoordinateBtn.setVisible(isTime);
         setComponentMover();
         setComponentResizer();
+        getRootPane().setBorder( BorderFactory.createEmptyBorder(3, 3, 3, 3) );
         setTitle();
     }
 
@@ -129,18 +138,18 @@ public class TrainAnalysis extends JDialog {
      * устанавливаем возможность изменения размеров undecorated - окна
      */
     private void setComponentResizer() {
-        ComponentResizer cr = new ComponentResizer();
-        cr.registerComponent(this);
-        cr.setSnapSize(new Dimension(1, 1));
+        componentResizer = new ComponentResizer();
+        componentResizer.registerComponent(this);
+        componentResizer.setSnapSize(new Dimension(1, 1));
     }
 
     /**
      * назначаем компоненты для перетаскивания undecorated - окна
      */
     private void setComponentMover() {
-        ComponentMover cm = new ComponentMover(this, menuBar, toolBar);
+        componentMover = new ComponentMover(this, menuBar, toolBar);
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        cm.setEdgeInsets(new Insets((int)dim.getHeight() * -1, (int)dim.getWidth() * -1,
+        componentMover.setEdgeInsets(new Insets((int)dim.getHeight() * -1, (int)dim.getWidth() * -1,
                 (int)dim.getHeight() * -1, (int)dim.getWidth() * -1));
     }
 
@@ -347,11 +356,12 @@ public class TrainAnalysis extends JDialog {
      */
     private void setMaximizeWin() {
         isMaximize = true;
-        setVisibleButton("Normalize", true);
-        setVisibleButton("Maximize", false);
+        if (normalizeBtn != null) normalizeBtn.setVisible(true);
+        if (maximizeBtn != null) maximizeBtn.setVisible(false);
         UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
         UtilsArmG.setWinBoundMax(TrainAnalysis.this);
-        getRootPane().setBorder( BorderFactory.createEmptyBorder(0, 0, 0, 0) );
+        if (componentResizer != null) componentResizer.deregisterComponent(this);
+        if (componentMover != null) componentMover.deregisterComponent(menuBar, toolBar);
     }
 
     /**
@@ -359,10 +369,11 @@ public class TrainAnalysis extends JDialog {
      */
     private void setNormalizeWin() {
         isMaximize = false;
-        setVisibleButton("Normalize", false);
-        setVisibleButton("Maximize", true);
+        if (normalizeBtn != null) normalizeBtn.setVisible(false);
+        if (maximizeBtn != null) maximizeBtn.setVisible(true);
         UtilsArmG.setWinBound(TrainAnalysis.this, PREF);
-        getRootPane().setBorder( BorderFactory.createEmptyBorder(3, 3, 3, 3) );
+        if (componentResizer != null) componentResizer.registerComponent(this);
+        if (componentMover != null) componentMover.registerComponent(menuBar, toolBar);
     }
 
     /**
@@ -377,10 +388,8 @@ public class TrainAnalysis extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             remakeSaveMarker(isTime = false, true, 1);
-//            this.setEnabled(isTime);
-//            viewTimeAction.setEnabled(!isTime);
-            setVisibleButton("ViewTime", true);
-            setVisibleButton("ViewCoordinate", false);
+            viewTimeBtn.setVisible(true);
+            viewCoordinateBtn.setVisible(false);
             itemCoordinate.setSelected(true);
             setTitle();
         }
@@ -398,10 +407,8 @@ public class TrainAnalysis extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             remakeSaveMarker(isTime = true, true, 1);
-//            this.setEnabled(!isTime);
-//            viewCoordinateAction.setEnabled(isTime);
-            setVisibleButton("ViewTime", false);
-            setVisibleButton("ViewCoordinate", true);
+            viewTimeBtn.setVisible(false);
+            viewCoordinateBtn.setVisible(true);
             itemTime.setSelected(true);
             setTitle();
         }
@@ -548,71 +555,66 @@ public class TrainAnalysis extends JDialog {
     }
 
     /**
-     * @return панель меню
+     * панель меню
      */
-    private JMenuBar makeMenuBar() {
-        JMenuBar menuBar = new JMenuBar();
+    private void createMenuBar() {
+        menuBar = new JMenuBar();
         menuBar.add(makeFileMenu());
         menuBar.add(makeViewMenu());
         menuBar.add(makeRepMenu());
         menuBar.add(makeHelpMenu());
         menuBar.add(Box.createHorizontalGlue());
         menuBar.add(Box.createHorizontalGlue());
-        return menuBar;
+
+        menuBar.add(Box.createHorizontalGlue());
+        menuBar.add(minimizeBtn);
+        menuBar.add(maximizeBtn);
+        menuBar.add(normalizeBtn);
+        menuBar.add(exitBtn);
     }
 
     /**
-     * включить-выключить видимость кнопки на toolBar
-     * @param nameButton - название кнопки: Open, ViewCoordinate, ViewTime, ShowInfoTrains, ViewDef, Minimize, Maximize, Exit
-     * @param isVisible - true - включена, false - выключена
+     * панель кнопок
      */
-    private void setVisibleButton(String nameButton, boolean isVisible) {
-        if (toolBar != null) {
-            for (Component c : toolBar.getComponents()) {
-                if (nameButton.equals(c.getName()))
-                    c.setVisible(isVisible);
-            }
-        }
-    }
+    private void makeToolBar() {
+        toolBar = new JToolBar();
+        toolBar.addSeparator();
+        addButton(openAction, true);
+        addButton(openSlaveAction, true);
+        toolBar.addSeparator();
+        viewCoordinateBtn = addButton(viewCoordinateAction, true);
+        viewTimeBtn = addButton(viewTimeAction, true);
+        toolBar.addSeparator();
+        addButton(showInfoTrainsAction, true);
+        toolBar.addSeparator();
+        addButton(viewDefAction, true);
 
-    /**
-     * @return панель кнопок
-     */
-    private JToolBar makeToolBar() {
-        JToolBar toolBar = new JToolBar();
-        toolBar.addSeparator();
-        toolBar.add(openAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Open");
-        toolBar.add(openSlaveAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("OpenSlave");
-        toolBar.addSeparator();
-        toolBar.add(viewCoordinateAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewCoordinate");
-        toolBar.add(viewTimeAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewTime");
-        toolBar.addSeparator();
-        toolBar.add(showInfoTrainsAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ShowInfoTrains");
-        toolBar.addSeparator();
-        toolBar.add(viewDefAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("ViewDef");
-        //toolBar.addSeparator();
         toolBar.add(Box.createHorizontalGlue());
-        toolBar.add(minimizeAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Minimize");
-        toolBar.add(maximizeAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Maximize");
-        toolBar.add(normalizeAction);
-        toolBar.getComponent(toolBar.getComponentCount() - 1).setName("Normalize");
-        toolBar.add(exitAction);
+        minimizeBtn = addButton(minimizeAction, false);
+        maximizeBtn = addButton(maximizeAction, false);
+        normalizeBtn = addButton(normalizeAction, false);
+        exitBtn = addButton(exitAction, false);
+
         toolBar.setRollover(true);
         toolBar.setFloatable(false);
-        //       toolBar.add(new ViewToggleAction(isTime));
-        //   toolBar.setFloatable(false);
         for (Component c : toolBar.getComponents()) {
             c.setFocusable(false);
         }
-        return toolBar;
+    }
+
+    /**
+     *  добавляем button на toolBar
+     * @param action - действие
+     * @param isBorder - есть рамка
+     * @return button
+     */
+    private JButton addButton(LocalAbstractAction action, boolean isBorder) {
+        JButton btn = toolBar.add(action);
+        if (!isBorder) {
+            btn.setBorderPainted(false);
+            btn.setContentAreaFilled(false);
+        }
+        return btn;
     }
 
     /**
