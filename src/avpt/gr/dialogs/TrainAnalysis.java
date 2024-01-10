@@ -38,6 +38,7 @@ public class TrainAnalysis extends JDialog {
     private JToolBar toolBar;
     private boolean isTime = true;
     private boolean isMaximize = false;
+    private boolean isResize = false;
 
     private final OpenAction openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
     private final OpenSlaveAction openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
@@ -93,19 +94,33 @@ public class TrainAnalysis extends JDialog {
         setUndecorated(true);
         WeightBlocks.loadSettings(PREF, false);
 
+        addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                if (isMaximize) isResize = true;
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+                if (isMaximize && isResize) {
+                    setNormalizeWin();
+                }
+                isResize = false;
+            }
+        });
+
         addWindowListener(new WindowAdapter() {
             // событие закрытия окна
             public void windowClosing(WindowEvent event) {
                 // сохранение состояния если не открыто два окнаviewToggleAction
                 if (!isMaximize && trainAnalysisSlave == null && trainAnalysisMain == null) {
                     UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
-                    PREF.putBoolean("shift", isShift);
                 }
                 // если закрываем из режима сцепки "save and slave", сохраняем оптимальное положение окна
-                else if (trainAnalysisSlave == null || trainAnalysisMain == null) {
+                else if (!isMaximize && (trainAnalysisSlave == null || trainAnalysisMain == null)) {
                     UtilsArmG.saveWinBoundOptimal(PREF);
                 }
-
+                PREF.putBoolean("shift", isShift);
                 // закрываем оба окна
                 if (trainAnalysisSlave != null) {
                     trainAnalysisSlave.dispose();
@@ -236,14 +251,13 @@ public class TrainAnalysis extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-//            if (openFileTrain(isTime) == JFileChooser.APPROVE_OPTION)
-//                UtilsArmG.setWinBound(TrainAnalysis.this, pref);
+            isMaximize = false;
+            isResize = false;
             openFileTrain(isTime);
             if (trainAnalysisSlave != null) {
                 trainAnalysisSlave.dispose();
                 trainAnalysisSlave = null;
             }
-            //openItemSlave.setEnabled(true);
             openSlaveAction.setEnabled(true);
             toFront();
         }
@@ -361,7 +375,7 @@ public class TrainAnalysis extends JDialog {
         UtilsArmG.saveWinBound(TrainAnalysis.this, PREF);
         UtilsArmG.setWinBoundMax(TrainAnalysis.this);
         if (componentResizer != null) componentResizer.deregisterComponent(this);
-        if (componentMover != null) componentMover.deregisterComponent(menuBar, toolBar);
+     //   if (componentMover != null) componentMover.deregisterComponent(menuBar, toolBar);
     }
 
     /**
@@ -373,7 +387,7 @@ public class TrainAnalysis extends JDialog {
         if (maximizeBtn != null) maximizeBtn.setVisible(true);
         UtilsArmG.setWinBound(TrainAnalysis.this, PREF);
         if (componentResizer != null) componentResizer.registerComponent(this);
-        if (componentMover != null) componentMover.registerComponent(menuBar, toolBar);
+     //   if (componentMover != null) componentMover.registerComponent(menuBar, toolBar);
     }
 
     /**
