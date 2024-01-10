@@ -43,9 +43,9 @@ public class TrainAnalysis extends JDialog {
     private final OpenAction openAction = new OpenAction("Открыть...", "/avpt/gr/images/menu/open16.png");
     private final OpenSlaveAction openSlaveAction = new OpenSlaveAction("Сцепка...", "/avpt/gr/images/menu/chain_16.png");
     private final ExitAction exitAction = new ExitAction("Закрыть", "/avpt/gr/images/menu/close16.png");
-    private final MinimizeAction minimizeAction = new MinimizeAction("Свернуть", "/avpt/gr/images/menu/minimize16.png");
-    private final MaximizeAction maximizeAction = new MaximizeAction("Максимизировать", "/avpt/gr/images/menu/maximize16.png");
-    private final NormalizeAction normalizeAction = new NormalizeAction("Нормализовать", "/avpt/gr/images/menu/normalize16.png");
+    private final MinimizeAction minimizeAction = new MinimizeAction("", "/avpt/gr/images/menu/minimize16.png");
+    private final MaximizeAction maximizeAction = new MaximizeAction("", "/avpt/gr/images/menu/maximize16.png");
+    private final NormalizeAction normalizeAction = new NormalizeAction("", "/avpt/gr/images/menu/normalize16.png");
     private final ViewCoordinateAction viewCoordinateAction = new ViewCoordinateAction("Развернуть " + VIEW_COORDINATE, "/avpt/gr/images/menu/distance16.png");
     private final ViewTimeAction viewTimeAction = new ViewTimeAction("Развернуть " + VIEW_TIME, "/avpt/gr/images/menu/time16.png");
     private final ViewDefAction viewDefAction = new ViewDefAction("Восстановить стандартный вид", "/avpt/gr/images/menu/reload16.png");
@@ -251,8 +251,8 @@ public class TrainAnalysis extends JDialog {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            isMaximize = false;
-            isResize = false;
+//            isMaximize = false;
+//            isResize = false;
             openFileTrain(isTime);
             if (trainAnalysisSlave != null) {
                 trainAnalysisSlave.dispose();
@@ -577,9 +577,6 @@ public class TrainAnalysis extends JDialog {
         menuBar.add(makeViewMenu());
         menuBar.add(makeRepMenu());
         menuBar.add(makeHelpMenu());
-        menuBar.add(Box.createHorizontalGlue());
-        menuBar.add(Box.createHorizontalGlue());
-
         menuBar.add(Box.createHorizontalGlue());
         menuBar.add(minimizeBtn);
         menuBar.add(maximizeBtn);
