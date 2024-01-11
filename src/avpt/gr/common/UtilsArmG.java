@@ -349,6 +349,34 @@ public class UtilsArmG {
     }
 
     /**
+     * сокращаем слишком длинное полное имя файла поездки
+     * @param fullName - полное имя файла поездки
+     * @return - сокращенное имя файла поездки
+     */
+    public static String getShorterNameFile(String fullName) {
+        int MAX_LEN_NAME = 70; // максимальное полное имя файла
+        if (fullName.length() < MAX_LEN_NAME)
+            return fullName;
+        int MAX_LEN_PATH = 50; // максимальная длина пути к файлу поездки
+        File file = new File(fullName);
+        String name = File.separator + file.getName();
+        String path;
+        do {
+            file = file.getParentFile();
+            path = file.getPath();
+        }
+        while (file.getParentFile() != null && path.length() > MAX_LEN_PATH);
+
+        if (path.length() < 4)
+            return fullName;
+
+        if (fullName.length() == path.length() + name.length())
+            return fullName;
+        else
+            return path + File.separator + "..." + name;
+    }
+
+    /**
      * @param bcd - массив
      * @return - decimal
      */

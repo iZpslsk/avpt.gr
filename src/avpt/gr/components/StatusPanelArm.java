@@ -32,7 +32,7 @@ public class StatusPanelArm extends JPanel {
      * @return JLabel с именем файла поездки
      */
     private JLabel makeLabelFileName(String fileName) {
-        JLabel label = new JLabel("Файл: " + UtilsArmG.getShortNameFile(fileName) + " ");
+        JLabel label = new JLabel("Файл: " + UtilsArmG.getShorterNameFile(fileName) + " ");
         label.setForeground(Color.WHITE);
         label.setBorder(new BevelBorder(BevelBorder.LOWERED));
         label.setFont(statusFont);
