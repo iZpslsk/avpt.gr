@@ -21,11 +21,30 @@ public class StatusPanelArm extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
         chartArm = chartPanelArm.getChartArm();
         chartDataset = chartArm.getChartDataset();
+        add(makeLabelZoom());
         add(makeLabelFileName(chartPanelArm.getChartDataset().getArrBlock32().getFileName()));
         add(makeLabelTime());
         add(makeLabelRailCoordinate());
         add(makeLabelLatLon());
         add(makeEmptyLabel());
+    }
+
+    private JLabel makeLabelZoom() {
+        JLabel label = new JLabel("") {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                double duration = chartArm != null ? chartArm.getBoundUpper().get() : 0;
+                String txt = String.format("Масштаб: 1:%.2f %s", UtilsArmG.round(duration / 1500, 2),
+                        chartDataset.isTime() ? "сек" : "м");
+                setText(txt);
+                this.repaint();
+            }
+        };
+        label.setForeground(Color.WHITE);
+        label.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        label.setFont(statusFont);
+        return label;
     }
 
     /**

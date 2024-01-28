@@ -252,12 +252,12 @@ public class SeriesSignalsDiscrete extends SeriesSignals {
                 break;
             case KEY_DB1: color = new Color(0x70E797);
                 break;
-            case KEY_DB2: color = new Color(0x70E797);
+            case KEY_DB2: color = new Color(0xD5E768);
                 break;
 
-            case KEY_READY_AUTO: color = new Color(0x014D75);
+            case KEY_READY_AUTO: color = new Color(0x207532);
                 break;
-            case KEY_INTER_DRIVER: color = new Color(0x80F686);
+            case KEY_INTER_DRIVER: color = new Color(0xF6C984);
                 break;
             case KEY_KAET: color = new Color(0x0000FF);
                 break;

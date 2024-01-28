@@ -389,7 +389,7 @@ public class Objects {
     }
 
     public void addAnnotationsTrafficLight(XYPlot plot) {
-        final double d = 2.5;
+        final double d = 6;
         for (int i = 0; i < traffic_light.size(); i++) {
             XYAnnotation a = new XYImageAnnotation(traffic_light.get(i).getSecond(), LINE_MAP + d, iconTrafficLight.getImage());
             plot.addAnnotation(a);

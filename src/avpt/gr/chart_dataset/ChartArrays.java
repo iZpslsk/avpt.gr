@@ -101,7 +101,7 @@ public class ChartArrays {
     private LocalTime curTime;  // время: для каждого типа локомотива своя посылка
     private LocalTime curTime_21; // время из посылки 0x21-4
 
-    public static double LINE_MAP = 1.0;    // координата y для линии под станцией
+    public static double LINE_MAP = 1.5;    // координата y для линии под станцией
 
     // 1D_4 ------------------------------------------------------------------------------------------------------------
     private int km = -1;

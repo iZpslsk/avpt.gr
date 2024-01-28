@@ -980,6 +980,7 @@ public class ChartArm extends JFreeChart {
         double lower = domainAxis.getRange().getLowerBound();
         double upper = domainAxis.getRange().getUpperBound();
         upper += (upper - lower) / step;
+        upper = UtilsArmG.round(upper, 0);
         final double duration = upper - lower;
         if (duration < minDuration || duration > maxDuration) return;   // ограничения
         boundUpper.set(duration);

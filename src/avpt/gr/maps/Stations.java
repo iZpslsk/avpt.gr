@@ -255,11 +255,11 @@ public class Stations {
      */
     public void setAnnotationsToPlot(XYPlot plot) {
         for (int i = 0; i < stations.size(); i++) {
-            XYAnnotation a = new XYImageAnnotation(stations.get(i).getSecond(), 2.3, iconStation.getImage());
+            XYAnnotation a = new XYImageAnnotation(stations.get(i).getSecond(), 4.0, iconStation.getImage());
             plot.addAnnotation(a);
             String nameStation = stations.get(i).getNameStation();
             if (nameStation != null) {
-                XYTextAnnotation t = new XYTextAnnotation(UtilsArmG.getFirstLaterUpper(stations.get(i).getNameStation()), stations.get(i).getSecond(), 0.5);
+                XYTextAnnotation t = new XYTextAnnotation(UtilsArmG.getFirstLaterUpper(stations.get(i).getNameStation()), stations.get(i).getSecond(), 1.0);
                 t.setFont(stationNameFont);
                 t.setPaint(new Color(0xB0B2F1FF, true));
                 plot.addAnnotation(t);
