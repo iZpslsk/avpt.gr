@@ -144,6 +144,7 @@ public class ChartArm extends JFreeChart {
     private ArrayList<Marker> intervalMarkers = new ArrayList<Marker>();
     private ArrayList trainLabelMarkers;			// маркеры для названий поездов
   //  private static HashMap<Comparable<String>, Boolean> mapViewLines = new HashMap<Comparable<String>, Boolean>();
+    private ChartPanelArm.ActionRepaintStatus actionRepaintStatus;
 
     private int weight_signal = 100;
 
@@ -194,9 +195,10 @@ public class ChartArm extends JFreeChart {
     public static final String SIGN_LINK_LABEL =        "Связь      ";
     public static final String SIGN_BHV_LABEL =         "Сигналы БХВ";
 
-    public ChartArm(ChartDataset chartDataset, HexTab hexTab, UtilsArmG.MutableDouble boundUpper) {
+    public ChartArm(ChartDataset chartDataset, HexTab hexTab, UtilsArmG.MutableDouble boundUpper, ChartPanelArm.ActionRepaintStatus actionRepaintStatus) {
         super(new CombinedDomainXYPlot(new NumberAxis()));
         this.chartDataset = chartDataset;
+        this.actionRepaintStatus = actionRepaintStatus;
         minDuration = 90;
         maxDuration = 16000;
         if (!chartDataset.isTime()) {
@@ -688,6 +690,7 @@ public class ChartArm extends JFreeChart {
             for (ValueMarker curMarker : valueMarkers) {
                 curMarker.setValue(x);
             }
+        actionRepaintStatus.actionPerformed(null);
     }
 
     public void setIntervalXMarker(double x_start, double x_end) {
@@ -987,6 +990,7 @@ public class ChartArm extends JFreeChart {
         ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(lower, upper);
         setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
+        actionRepaintStatus.actionPerformed(null);
     }
 
     private void doZoom (double duration, JScrollBar scrollBar) {

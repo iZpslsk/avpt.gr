@@ -32,6 +32,7 @@ public class ChartPanelArm extends JPanel {
     private final ChartArm chartArm;
     private final ChartPanel chartPanel;
     private final ScrollBarArm scrollBar;
+    private final StatusPanelArm statusPanel;
     private final HexTab hexTab;
     private final ChartDataset chartDataset;
     private final InfoPanel infoPanel;
@@ -39,6 +40,15 @@ public class ChartPanelArm extends JPanel {
 
     private ChartPanelArm chartPanelArmMain; // если второе окно - chartPanelArmMain != null;
     private ChartPanelArm chartPanelArmSlave; // если первое окно и есть второе
+
+    class ActionRepaintStatus implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (ChartPanelArm.this.statusPanel != null)
+                ChartPanelArm.this.statusPanel.repaint();
+        }
+    }
 
     public ChartPanelArm(final ChartDataset chartDataset, final JPanel hexTab) {
         super(new BorderLayout());
@@ -48,10 +58,10 @@ public class ChartPanelArm extends JPanel {
         this.chartDataset = chartDataset;
         this.hexTab = (HexTab) hexTab;
         boundUpper = new UtilsArmG.MutableDouble();
-        chartArm = new ChartArm(chartDataset, this.hexTab, boundUpper);
+        chartArm = new ChartArm(chartDataset, this.hexTab, boundUpper, new ActionRepaintStatus());
         scrollBar = new ScrollBarArm(chartArm);
         infoPanel = new InfoPanel(scrollBar, chartArm);
-        StatusPanelArm statusPanel = new StatusPanelArm(this);
+        statusPanel = new StatusPanelArm(this);
         JPanel southPanel = makeSouthPanel(statusPanel, scrollBar);
         add(southPanel, BorderLayout.SOUTH);
         chartPanel = new ChartPanelInheritor(chartArm, scrollBar);
@@ -396,10 +406,17 @@ public class ChartPanelArm extends JPanel {
 
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "chartPanelArm.up");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "chartPanelArm.down");
+
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_MASK), "chartPanelArm.plus");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_MASK), "chartPanelArm.plus");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_MASK), "chartPanelArm.minus");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_MASK), "chartPanelArm.minus");
+
+        imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_ADD, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK), "chartPanelArm.plus.shift");
+        imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_EQUALS, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK), "chartPanelArm.plus.shift");
+        imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_SUBTRACT, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK), "chartPanelArm.minus.shift");
+        imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_MINUS, InputEvent.CTRL_MASK | InputEvent.SHIFT_MASK), "chartPanelArm.minus.shift");
+
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_HOME, 0), "chartPanelArm.home");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_END, 0), "chartPanelArm.end");
         imap.put(KeyStroke.getKeyStroke(KeyEvent.VK_F3, 0), "chartPanelArm.search_up");
@@ -509,6 +526,22 @@ public class ChartPanelArm extends JPanel {
             @Override
             public void actionPerformed(ActionEvent arg0) {
                 chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 10, 1);
+            }
+        });
+
+        // более точно
+        // масштаб ++
+        amap.put("chartPanelArm.plus.shift", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), -360, 1);
+            }
+        });
+        // масштаб --
+        amap.put("chartPanelArm.minus.shift", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent arg0) {
+                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 360, 1);
             }
         });
 

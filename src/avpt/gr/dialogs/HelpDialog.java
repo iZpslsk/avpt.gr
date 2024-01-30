@@ -16,7 +16,11 @@ public class HelpDialog {
                     "<h3> <font color=%2$s> <u>Масштаб:</u> </h3>" +
                     "<li>" +
                     "<i>изменение относительно курсора</i> - " +
-                    "<font %1$s>[CTRL]+[<font size=\"5\">+</font>], [CTRL]+[<font size=\"5\">-</font>]</font>" +
+                    "<font %1$s>[CTRL+SHIFT]+[<font size=\"4\">+</font>], [CTRL+SHIFT]+[<font size=\"4\">-</font>]</font>" +
+                    "</li>" +
+                    "<li>" +
+                    "<i>изменение относительно курсора более точно</i> - " +
+                    "<font %1$s>[CTRL+SHIFT]+[<font size=\"4\">+</font>], [CTRL+SHIFT]+[<font size=\"4\">-</font>]</font>" +
                     "</li>" +
                     "<li>" +
                     "<i>изменение относительно курсора мыши</i> - " +

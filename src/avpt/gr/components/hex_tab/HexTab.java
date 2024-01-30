@@ -208,11 +208,14 @@ public class HexTab extends JPanel {
                                                                int row, int column) {
                     if (column == 0) {
                         setForeground(Color.WHITE);
-                        table.setSelectionForeground(Color.WHITE);
+                        if (isSelected)
+                            table.setSelectionForeground(Color.WHITE);
                     }
                     else {
-                        setForeground(getColorById(curIdColor, curSubIdColor));
-                        table.setSelectionForeground(getColorById(curIdColor, curSubIdColor));
+                        Color c = getColorById(curIdColor, curSubIdColor);
+                        setForeground(c);
+                        if (isSelected)
+                            table.setSelectionForeground(c);
                     }
                     return super.getTableCellRendererComponent(table, value, isSelected,
                             hasFocus, row, column);

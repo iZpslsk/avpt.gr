@@ -38,7 +38,7 @@ public class StatusPanelArm extends JPanel {
                 String txt = String.format("Масштаб: 1:%.2f %s", UtilsArmG.round(duration / 1500, 2),
                         chartDataset.isTime() ? "сек" : "м");
                 setText(txt);
-                this.repaint();
+              //  this.repaint();
             }
         };
         label.setForeground(Color.WHITE);
@@ -74,7 +74,7 @@ public class StatusPanelArm extends JPanel {
                 String date_txt = chartDataset.getDateText((int)curX);
                 String time_txt = chartDataset.getTimeText((int)curX);
                 setText(date_txt + "; " + time_txt + " ");
-                this.repaint();
+                //this.repaint();
             }
         };
         label.setForeground(Color.WHITE);
@@ -99,7 +99,7 @@ public class StatusPanelArm extends JPanel {
                 String lat_txt = chartDataset.getLatitudeText((int)curX);
                 String lon_txt = chartDataset.getLongitudeText((int)curX);
                 setText(lat_txt + " " + lon_txt);
-                this.repaint();
+              //  this.repaint();
             }
         };
         label.setForeground(Color.WHITE);
@@ -120,7 +120,7 @@ public class StatusPanelArm extends JPanel {
                     curX = 0;
                 String coordinate_txt = chartDataset.getRailCoordinateText((int)curX);
                 setText(coordinate_txt);
-                this.repaint();
+              //  this.repaint();
             }
         };
         label.setForeground(Color.WHITE);
