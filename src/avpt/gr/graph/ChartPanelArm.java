@@ -518,32 +518,32 @@ public class ChartPanelArm extends JPanel {
         amap.put("chartPanelArm.plus", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), -10, 1);
+                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), -1, 1);
             }
         });
         // масштаб --
         amap.put("chartPanelArm.minus", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent arg0) {
-                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 10, 1);
+                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 1, 1);
             }
         });
 
-        // более точно
-        // масштаб ++
-        amap.put("chartPanelArm.plus.shift", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), -360, 1);
-            }
-        });
-        // масштаб --
-        amap.put("chartPanelArm.minus.shift", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent arg0) {
-                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 360, 1);
-            }
-        });
+//        // более точно
+//        // масштаб ++
+//        amap.put("chartPanelArm.plus.shift", new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), -720, 1);
+//            }
+//        });
+//        // масштаб --
+//        amap.put("chartPanelArm.minus.shift", new AbstractAction() {
+//            @Override
+//            public void actionPerformed(ActionEvent arg0) {
+//                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), 720, 1);
+//            }
+//        });
 
         // hexTablePanel - строка вверх
         amap.put("chartPanelArm.up", new AbstractAction() {

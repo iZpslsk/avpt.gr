@@ -41,8 +41,9 @@ import static avpt.gr.common.UtilsArmG.trMarkerFont;
  * диаграммы линий, сигналов, задач
  */
 public class ChartArm extends JFreeChart {
-    public static final int MAX_RANGE = 97200 * 5;//129600;// 64800;// prefSizeHeight
-    public static final int MAX_RANGE_COORDINATE = 97200 * 50;
+    public static final int MAX_RANGE = 90000 * 5;//129600;// 64800;// prefSizeHeight
+    public static final int MAX_RANGE_COORDINATE = 90000 * 50;
+   // public static final int STEP_ZOOM_KEYBOARD = 1500; // постоянная для шагового увеличения
     private int maxRange = MAX_RANGE;
     private int minDuration;
     private int maxDuration;
@@ -957,7 +958,7 @@ public class ChartArm extends JFreeChart {
     public void doZoomByCursor(ScrollBarArm scrollBar, int xMarker, int step, int cnt) {
         double d1 = domainAxis.getRange().getUpperBound() - domainAxis.getRange().getLowerBound();
         for (int i = 0; i < cnt; i++)
-            doZoom(step, scrollBar);
+            doZoomKey(step, scrollBar);
         double d2 = domainAxis.getRange().getUpperBound() - domainAxis.getRange().getLowerBound();
         double percent = (d1 - d2) * 100 / d1;
         double dmark = xMarker - domainAxis.getRange().getLowerBound();
@@ -973,6 +974,34 @@ public class ChartArm extends JFreeChart {
         double dmark = xMarker - domainAxis.getRange().getLowerBound();
         double dmarkproc = percent * dmark / 100;
         scrollBar.setValue(scrollBar.getValue() + (int)Math.round(dmarkproc));
+    }
+
+
+    public void doZoomKey(final int direct, JScrollBar scrollBar) {
+        int stepZoomKey = 1500;
+        double lower = domainAxis.getRange().getLowerBound();
+        double upper = domainAxis.getRange().getUpperBound();
+        int d = (int)(upper - lower);
+
+        if (d < 3000 && direct == -1) {
+            stepZoomKey = 150;
+        }
+
+        if (d < 1500 && direct == 1) {
+            stepZoomKey = 150;
+        }
+
+        upper += stepZoomKey * direct;
+        double duration = upper - lower;
+
+        if (duration < minDuration || duration > maxDuration) return;   // ограничения
+        duration = duration - duration % stepZoomKey;
+
+        boundUpper.set(duration);
+        ((ScrollBarArm)scrollBar).changeMaximumSize();
+        domainAxis.setRange(lower, upper);
+        setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
+        actionRepaintStatus.actionPerformed(null);
     }
 
     /**
