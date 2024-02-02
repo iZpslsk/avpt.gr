@@ -41,8 +41,10 @@ import static avpt.gr.common.UtilsArmG.trMarkerFont;
  * диаграммы линий, сигналов, задач
  */
 public class ChartArm extends JFreeChart {
-    public static final int MAX_RANGE = 90000 * 5;//129600;// 64800;// prefSizeHeight
+    // изменение этих величин должно быть согласовано со значениями фиксированного масштаба
+    public static final int MAX_RANGE = 90000 * 5;
     public static final int MAX_RANGE_COORDINATE = 90000 * 50;
+
    // public static final int STEP_ZOOM_KEYBOARD = 1500; // постоянная для шагового увеличения
     private int maxRange = MAX_RANGE;
     private int minDuration;
@@ -1038,20 +1040,19 @@ public class ChartArm extends JFreeChart {
      * @param duration -
      */
     public void setAnnotationProfile(double duration) {
-        int LOW = 700;
-        int HIGH = 10000;
+        int LOW = 750;
+        int HIGH = 15000;
         if (!chartDataset.isTime()) {
-            LOW *= 20;
+            LOW *= 10;
             HIGH *= 10;
         }
-
-        if (duration < LOW && !isTextAnnotationProfile) {
+        if (duration <= LOW && !isTextAnnotationProfile) {
             plotProfile.clearAnnotations();
             profiles.addAnnotationProfile(plotProfile, true);
             isTextAnnotationProfile = true;
             isAllAnnotationProfile = true;
         }
-        if (duration >= LOW && duration < HIGH && isTextAnnotationProfile) {
+        if (duration > LOW && duration < HIGH && isTextAnnotationProfile) {
             plotProfile.clearAnnotations();
             profiles.addAnnotationProfile(plotProfile, false);
             isTextAnnotationProfile = false;

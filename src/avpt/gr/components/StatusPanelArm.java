@@ -8,13 +8,18 @@ import avpt.gr.graph.ChartPanelArm;
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import static avpt.gr.common.UtilsArmG.statusFont;
 
 public class StatusPanelArm extends JPanel {
 
-    ChartArm chartArm;
-    ChartDataset chartDataset;
+    private ChartArm chartArm;
+    private ChartDataset chartDataset;
+
+    private JPopupMenu popupZoom = new JPopupMenu();
+    private ButtonGroup buttonGroupZoom = new ButtonGroup();
 
     public StatusPanelArm(ChartPanelArm chartPanelArm) {
         setBackground(Color.BLACK);
@@ -29,6 +34,90 @@ public class StatusPanelArm extends JPanel {
         add(makeEmptyLabel());
     }
 
+    private ActionListener actionListenerZoom;
+
+    private class ItemActionListenerZoom implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (actionListenerZoom != null)
+                actionListenerZoom.actionPerformed(
+                        new ActionEvent(e.getSource(), e.getID(), e.getActionCommand()));
+        }
+    }
+
+    public void addActionListenerZoom(ActionListener actionListener) {
+        this.actionListenerZoom = actionListener;
+    }
+
+    /**
+     * @param item - item
+     * @param name - строковое значение duration (разница между upperBound и lowerBound)
+     *             по времени сек:
+     *             150-     1:0.1;
+     *             750-     1:0.5
+     *             1500-    1:1;
+     *             3000-    1:2;
+     *             7500-    1:5;
+     *             15000-   1:10;
+     *             по координате м:
+     *             1500-    1:1;
+     *             3000-    1:2;
+     *             7500-    1:5;
+     *             15000-   1:10;
+     *             30000-   1:20;
+     *             75000-   1:50;
+     *             150000-  1:100
+     */
+    private void initItem(JMenuItem item, String name) {
+        buttonGroupZoom.add(item);
+        item.addActionListener(new ItemActionListenerZoom());
+        item.setName(name);
+        popupZoom.add(item);
+        int duration = Integer.parseInt(name);
+        int boundUpper = (int)chartArm.getBoundUpper().get();
+        if (duration == boundUpper)
+            item.setSelected(true);
+    }
+
+    /**
+     * @param isTime - развертка по времени или координате (true/false)
+     * @return JPopupMenu
+     */
+    private JPopupMenu createPopupZoom(boolean isTime) {
+        if (isTime) {
+            JRadioButtonMenuItem ten = new JRadioButtonMenuItem("1:10 сек");
+            initItem(ten, "15000");
+            JRadioButtonMenuItem five = new JRadioButtonMenuItem("1:5 сек");
+            initItem(five, "7500");
+            JRadioButtonMenuItem two = new JRadioButtonMenuItem("1:2 сек");
+            initItem(two, "3000");
+            JRadioButtonMenuItem one = new JRadioButtonMenuItem("1:1 сек");
+            initItem(one, "1500");
+            JRadioButtonMenuItem five_tenth = new JRadioButtonMenuItem("1:0.5 сек");
+            initItem(five_tenth, "750");
+            JRadioButtonMenuItem one_tenth = new JRadioButtonMenuItem("1:0.1 сек");
+            initItem(one_tenth, "150");
+        }
+        else {
+            JRadioButtonMenuItem hundred = new JRadioButtonMenuItem("1:100 м");
+            initItem(hundred, "150000");
+            JRadioButtonMenuItem fifty = new JRadioButtonMenuItem("1:50 м");
+            initItem(fifty, "75000");
+            JRadioButtonMenuItem twenty = new JRadioButtonMenuItem("1:20 м");
+            initItem(twenty, "30000");
+            JRadioButtonMenuItem ten = new JRadioButtonMenuItem("1:10 м");
+            initItem(ten, "15000");
+            JRadioButtonMenuItem five = new JRadioButtonMenuItem("1:5 м");
+            initItem(five, "7500");
+            JRadioButtonMenuItem two = new JRadioButtonMenuItem("1:2 м");
+            initItem(two, "3000");
+            JRadioButtonMenuItem one = new JRadioButtonMenuItem("1:1 м");
+            initItem(one, "1500");
+        }
+        return popupZoom;
+    }
+
     private JLabel makeLabelZoom() {
         JLabel label = new JLabel("") {
             @Override
@@ -38,12 +127,12 @@ public class StatusPanelArm extends JPanel {
                 String txt = String.format("Масштаб: 1:%.2f %s", UtilsArmG.round(duration / 1500, 2),
                         chartDataset.isTime() ? "сек" : "м");
                 setText(txt);
-              //  this.repaint();
             }
         };
         label.setForeground(Color.WHITE);
         label.setBorder(new BevelBorder(BevelBorder.LOWERED));
         label.setFont(statusFont);
+        label.setComponentPopupMenu(createPopupZoom(chartDataset.isTime()));
         return label;
     }
 

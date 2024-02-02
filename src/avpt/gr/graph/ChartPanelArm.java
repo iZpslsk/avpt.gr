@@ -62,6 +62,15 @@ public class ChartPanelArm extends JPanel {
         scrollBar = new ScrollBarArm(chartArm);
         infoPanel = new InfoPanel(scrollBar, chartArm);
         statusPanel = new StatusPanelArm(this);
+        statusPanel.addActionListenerZoom(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JMenuItem item = (JMenuItem) e.getSource();
+                double duration = Double.parseDouble(item.getName());
+                chartArm.doZoomByCursor(scrollBar, (int)chartArm.getXMarker(), duration);
+                statusPanel.repaint();
+            }
+        });
         JPanel southPanel = makeSouthPanel(statusPanel, scrollBar);
         add(southPanel, BorderLayout.SOUTH);
         chartPanel = new ChartPanelInheritor(chartArm, scrollBar);
