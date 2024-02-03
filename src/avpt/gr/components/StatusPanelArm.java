@@ -86,33 +86,33 @@ public class StatusPanelArm extends JPanel {
      */
     private JPopupMenu createPopupZoom(boolean isTime) {
         if (isTime) {
-            JRadioButtonMenuItem ten = new JRadioButtonMenuItem("1:10 сек");
+            JMenuItem ten = new JMenuItem("1:10 сек");
             initItem(ten, "15000");
-            JRadioButtonMenuItem five = new JRadioButtonMenuItem("1:5 сек");
+            JMenuItem five = new JMenuItem("1:5 сек");
             initItem(five, "7500");
-            JRadioButtonMenuItem two = new JRadioButtonMenuItem("1:2 сек");
+            JMenuItem two = new JMenuItem("1:2 сек");
             initItem(two, "3000");
-            JRadioButtonMenuItem one = new JRadioButtonMenuItem("1:1 сек");
+            JMenuItem one = new JMenuItem("1:1 сек");
             initItem(one, "1500");
-            JRadioButtonMenuItem five_tenth = new JRadioButtonMenuItem("1:0.5 сек");
+            JMenuItem five_tenth = new JMenuItem("1:0.5 сек");
             initItem(five_tenth, "750");
-            JRadioButtonMenuItem one_tenth = new JRadioButtonMenuItem("1:0.1 сек");
+            JMenuItem one_tenth = new JMenuItem("1:0.1 сек");
             initItem(one_tenth, "150");
         }
         else {
-            JRadioButtonMenuItem hundred = new JRadioButtonMenuItem("1:100 м");
+            JMenuItem hundred = new JMenuItem("1:100 м");
             initItem(hundred, "150000");
-            JRadioButtonMenuItem fifty = new JRadioButtonMenuItem("1:50 м");
+            JMenuItem fifty = new JMenuItem("1:50 м");
             initItem(fifty, "75000");
-            JRadioButtonMenuItem twenty = new JRadioButtonMenuItem("1:20 м");
+            JMenuItem twenty = new JMenuItem("1:20 м");
             initItem(twenty, "30000");
-            JRadioButtonMenuItem ten = new JRadioButtonMenuItem("1:10 м");
+            JMenuItem ten = new JMenuItem("1:10 м");
             initItem(ten, "15000");
-            JRadioButtonMenuItem five = new JRadioButtonMenuItem("1:5 м");
+            JMenuItem five = new JMenuItem("1:5 м");
             initItem(five, "7500");
-            JRadioButtonMenuItem two = new JRadioButtonMenuItem("1:2 м");
+            JMenuItem two = new JMenuItem("1:2 м");
             initItem(two, "3000");
-            JRadioButtonMenuItem one = new JRadioButtonMenuItem("1:1 м");
+            JMenuItem one = new JMenuItem("1:1 м");
             initItem(one, "1500");
         }
         return popupZoom;

@@ -1002,7 +1002,7 @@ public class ChartArm extends JFreeChart {
         boundUpper.set(duration);
         ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(lower, upper);
-        setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
+        setAnnotationProfile(duration, false); // профиль устанавливаем в зависимости от масштаба
         actionRepaintStatus.actionPerformed(null);
     }
 
@@ -1020,7 +1020,7 @@ public class ChartArm extends JFreeChart {
         boundUpper.set(duration);
         ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(lower, upper);
-        setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
+        setAnnotationProfile(duration, false); // профиль устанавливаем в зависимости от масштаба
         actionRepaintStatus.actionPerformed(null);
     }
 
@@ -1032,33 +1032,34 @@ public class ChartArm extends JFreeChart {
         ((ScrollBarArm)scrollBar).changeMaximumSize();
         domainAxis.setRange(domainAxis.getRange().getLowerBound(), upper);
         isTextAnnotationProfile = false;
-        setAnnotationProfile(duration); // профиль устанавливаем в зависимости от масштаба
+        setAnnotationProfile(duration, true); // профиль устанавливаем в зависимости от масштаба
     }
 
     /**
      * установка аннотацй профиля в зависимости от масштаба
-     * @param duration -
+     * @param duration - продолжительность
+     * @param  isWideStep - широкий шаг изменения масштаба
      */
-    public void setAnnotationProfile(double duration) {
+    public void setAnnotationProfile(double duration, boolean isWideStep) {
         int LOW = 750;
         int HIGH = 15000;
         if (!chartDataset.isTime()) {
             LOW *= 10;
             HIGH *= 10;
         }
-        if (duration <= LOW && !isTextAnnotationProfile) {
+        if (duration <= LOW && (!isTextAnnotationProfile || isWideStep)) {
             plotProfile.clearAnnotations();
             profiles.addAnnotationProfile(plotProfile, true);
             isTextAnnotationProfile = true;
             isAllAnnotationProfile = true;
         }
-        if (duration > LOW && duration < HIGH && isTextAnnotationProfile) {
+        if (duration > LOW && duration < HIGH && (isTextAnnotationProfile || isWideStep)) {
             plotProfile.clearAnnotations();
             profiles.addAnnotationProfile(plotProfile, false);
             isTextAnnotationProfile = false;
             isAllAnnotationProfile = true;
         }
-        if (duration >= HIGH && isAllAnnotationProfile) {
+        if (duration >= HIGH && (isAllAnnotationProfile || isWideStep)) {
             plotProfile.clearAnnotations();
             isAllAnnotationProfile = false;
             isTextAnnotationProfile = true;

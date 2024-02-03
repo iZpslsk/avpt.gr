@@ -7,7 +7,7 @@ public class Version {
     // инициализация номера версии
     static {
         versionBase = new VersionBase(0, 2);
-        versionJar = new VersionJar(0, 1, 2, 240201);
+        versionJar = new VersionJar(0, 1, 2, 240205);
     }
 
     /**
