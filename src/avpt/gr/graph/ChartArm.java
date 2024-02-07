@@ -3,6 +3,7 @@ package avpt.gr.graph;
 import avpt.gr.blocks32.ArrBlock32;
 import avpt.gr.chart_dataset.*;
 import avpt.gr.chart_dataset.keysEnum.LineKeys;
+import avpt.gr.common.StandardXYItemRendererArm;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
 import avpt.gr.components.ScrollBarArm;
@@ -14,6 +15,8 @@ import avpt.gr.maps.Stations;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.annotations.XYAnnotation;
 import org.jfree.chart.axis.*;
+import org.jfree.chart.event.RendererChangeEvent;
+import org.jfree.chart.event.RendererChangeListener;
 import org.jfree.chart.plot.*;
 import org.jfree.chart.renderer.xy.*;
 import org.jfree.data.Range;
@@ -616,15 +619,14 @@ public class ChartArm extends JFreeChart {
     }
 
     private XYItemRenderer getRenderer(String title) {
-        XYItemRenderer renderer;
         if (title.equals(POSITION_LABEL)) {// заливка под позицией
-            renderer = new XYStepAreaRenderer();
+            return new XYStepAreaRenderer();
         }
         else {
-            renderer = new StandardXYItemRenderer();
-            // renderer = new XYStepRenderer();
+            StandardXYItemRendererArm renderer = new StandardXYItemRendererArm();
+            renderer.setMutable_duration(boundUpper);
+            return renderer;
         }
-        return renderer;
     }
 
     private  CombinedDomainXYPlot getPlotCombine() {
@@ -937,7 +939,6 @@ public class ChartArm extends JFreeChart {
         int row;
         ArrBlock32 arrBlock32;
         if (chartDataset.isTime()) {
-            //    row = chartDataset.getChartArrays().getNBlockBySecond((int)x);
             arrBlock32 = chartDataset.getArrBlock32();
             row = arrBlock32.searchIndexBySecond((int) x, 0, arrBlock32.size() - 1);
         }
@@ -945,9 +946,6 @@ public class ChartArm extends JFreeChart {
             arrBlock32 = chartDataset.getArrBlock32();
             row = arrBlock32.searchIndexBySecond((int)x, 0, arrBlock32.size() - 1);
         }
-      //  System.out.println((int)x + "_" + Math.abs(row));
-//        if (row >= 0)
-//            hexTab.selectRow(row);
         hexTab.selectRow(Math.abs(row));
     }
 
@@ -966,7 +964,6 @@ public class ChartArm extends JFreeChart {
         double dmark = xMarker - domainAxis.getRange().getLowerBound();
         double dmarkproc = percent * dmark / 100;
         scrollBar.setValue(scrollBar.getValue() + (int)Math.round(dmarkproc));
-//        return d2;
     }
 
     public void doZoomByCursor(ScrollBarArm scrollBar, int xMarker, double duration) {

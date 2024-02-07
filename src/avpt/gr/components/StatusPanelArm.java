@@ -19,7 +19,7 @@ public class StatusPanelArm extends JPanel {
     private ChartDataset chartDataset;
 
     private JPopupMenu popupZoom = new JPopupMenu();
-    private ButtonGroup buttonGroupZoom = new ButtonGroup();
+//    private ButtonGroup buttonGroupZoom = new ButtonGroup();
 
     public StatusPanelArm(ChartPanelArm chartPanelArm) {
         setBackground(Color.BLACK);
@@ -70,7 +70,7 @@ public class StatusPanelArm extends JPanel {
      *             150000-  1:100
      */
     private void initItem(JMenuItem item, String name) {
-        buttonGroupZoom.add(item);
+ //       buttonGroupZoom.add(item);
         item.addActionListener(new ItemActionListenerZoom());
         item.setName(name);
         popupZoom.add(item);
@@ -125,7 +125,7 @@ public class StatusPanelArm extends JPanel {
                 super.paintComponent(g);
                 double duration = chartArm != null ? chartArm.getBoundUpper().get() : 0;
                 String txt = String.format("Масштаб: 1:%.2f %s", UtilsArmG.round(duration / 1500, 2),
-                        chartDataset.isTime() ? "сек" : "м");
+                        chartDataset.isTime() ? "сек " : "м ");
                 setText(txt);
             }
         };

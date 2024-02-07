@@ -233,7 +233,7 @@ public class ChartArrays {
                             listLines.add(listLines.getListSpeed_USAVP(), second_coordinate, block32_21_4.getSpeed(), max_second_21_4);
                             listLines.add(listLines.getListSpeed_ERG(), second_coordinate, block32_21_4.getSpeedERG(), max_second_21_4);
                          //   listLines.add_lim_map(listLines.getListSpeedMax(), second_coordinate, Block32_21_4.getMaxLimit());
-                            listLines.add(listLines.getListPressTC_USAVP(), second_coordinate, block32_21_4.getPressTC(), max_second_21_4);
+                            listLines.add(listLines.getListPressTC_USAVP(), second_coordinate, block32_21_4.getPressTC(), -1);
                             listLines.add(listLines.getListPressTM_USAVP(), second_coordinate, block32_21_4.getPressTM(), max_second_21_4);
                             listLines.add(listLines.getListPressUR_USAVP(), second_coordinate, block32_21_4.getPressUR(), max_second_21_4);
 
