@@ -1,5 +1,7 @@
 package avpt.gr.common;
 
+import avpt.gr.chart_dataset.keysEnum.LineKeys;
+import avpt.gr.graph.ChartArm;
 import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.entity.EntityCollection;
 import org.jfree.chart.plot.CrosshairState;
@@ -20,20 +22,30 @@ import java.awt.image.ImageObserver;
 
 public class StandardXYItemRendererArm extends StandardXYItemRenderer {
     private int precision;
+    private int count;
     private UtilsArmG.MutableDouble mutable_duration;
+    private boolean isTime;
+
+    public StandardXYItemRendererArm(UtilsArmG.MutableDouble mutable_duration, int count, boolean isTime) {
+        this.mutable_duration = mutable_duration;
+        this.count = count;
+        this.isTime = isTime;
+    }
 
     private void setPrecision() {
         int zoom = (int)(mutable_duration.get() / 1500);
         switch (zoom) {
             case 1:
-            case 2:
                 precision = 1;
                 break;
-            case 3:
+            case 2:
                 precision = 2;
                 break;
-            case 4:
+            case 3:
                 precision = 3;
+                break;
+            case 4:
+                precision = 4;
                 break;
             case 5:
                 precision = 6;
@@ -56,14 +68,31 @@ public class StandardXYItemRendererArm extends StandardXYItemRenderer {
         }
     }
 
-    public void setMutable_duration(UtilsArmG.MutableDouble mutable_duration) {
-        this.mutable_duration = mutable_duration;
+    private double getPercent(int series, XYDataset dataset) {
+        int cnt = dataset.getItemCount(series);
+        return cnt / (double)count * 100.0;
     }
 
     @Override
     public void drawItem(Graphics2D g2, XYItemRendererState state, Rectangle2D dataArea, PlotRenderingInfo info, XYPlot plot, ValueAxis domainAxis, ValueAxis rangeAxis, XYDataset dataset, int series, int item, CrosshairState crosshairState, int pass) {
        // super.drawItem(g2, state, dataArea, info, plot, domainAxis, rangeAxis, dataset, series, item, crosshairState, pass);
+
+//        String label = rangeAxis.getLabel();
+//        if (label.equals(ChartArm.PRESS_LABEL) && series == 4) {
+//            domainAxis.getRange().getLength();
+//            int cnt = dataset.getSeriesCount();
+//            cnt = dataset.getItemCount(series);
+//            LineKeys description = (LineKeys) dataset.getSeriesKey(series);
+//            double upper = rangeAxis.getUpperBound();
+//            double lower = rangeAxis.getLowerBound();
+//            double percent = cnt / (double)count * 100.0;
+//            System.out.println("lower=" + lower + " upper=" + upper + " %=" + percent + " description=" + description);
+//        }
+
+        final int max_percent = 25;
+        final int item_cnt = dataset.getItemCount(series);
         setPrecision();
+        double percent = getPercent(series, dataset);
         if (precision == 0) return;
         boolean itemVisible = this.getItemVisible(series, item);
         Shape entityArea = null;
@@ -79,9 +108,17 @@ public class StandardXYItemRendererArm extends StandardXYItemRenderer {
         g2.setStroke(seriesStroke);
         double x1 = 0;
         double y1 = 0;
-        if (item % precision == 0) {
+        if (percent < max_percent) {
             x1 = dataset.getXValue(series, item);
             y1 = dataset.getYValue(series, item);
+        }
+        else if (item % precision == 0) {
+            x1 = dataset.getXValue(series, item);
+            y1 = dataset.getYValue(series, item);
+            for (int i = 1; i < precision; i++) {
+                if (item + i < item_cnt)
+                    y1 = Math.max(y1, dataset.getYValue(series, item + i));
+            }
         }
         if (java.lang.Double.isNaN(x1) || java.lang.Double.isNaN(y1)) {
             itemVisible = false;
@@ -128,9 +165,16 @@ public class StandardXYItemRendererArm extends StandardXYItemRenderer {
                     g2.draw(s.seriesPath);
                 }
             } else if (item != 0 && itemVisible) {
-                if (item % precision == 0) {
+                if (percent < max_percent) {
+                    xx = dataset.getXValue(series, item - 1);
+                    yy = dataset.getYValue(series, item - 1);
+                }
+                else if (item % precision == 0) {
                     xx = dataset.getXValue(series, item - precision);
                     yy = dataset.getYValue(series, item - precision);
+                    for (int i = 1; i < precision; i++) {
+                        yy = Math.max(yy, dataset.getYValue(series, item - i));
+                    }
                 }
                 if (!java.lang.Double.isNaN(xx) && !java.lang.Double.isNaN(yy)) {
                     boolean drawLine = true;
@@ -155,15 +199,20 @@ public class StandardXYItemRendererArm extends StandardXYItemRenderer {
                         if (orientation == PlotOrientation.HORIZONTAL) {
                             state.workingLine.setLine(transY0, transX0, transY1, transX1);
                         } else if (orientation == PlotOrientation.VERTICAL) {
-                            if (item % precision == 0) {
+                            if (percent < max_percent) {
+                                state.workingLine.setLine(transX0, transY0, transX1, transY1);
+                            }
+                            else if (item % precision == 0) {
                                 state.workingLine.setLine(transX0, transY0, transX1, transY1);
                             }
                         }
 
                         if (state.workingLine.intersects(dataArea)) {
-                            if (item % precision == 0) {
-                                if (transX1 - transX0 < 100 || precision < 4)
-                                    g2.draw(state.workingLine);
+                            if (percent < max_percent) {
+                                g2.draw(state.workingLine);
+                            }
+                            else if (item % precision == 0) {
+                                g2.draw(state.workingLine);
                             }
                         }
                     }
