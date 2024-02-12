@@ -623,8 +623,9 @@ public class ChartArm extends JFreeChart {
             return new XYStepAreaRenderer();
         }
         else {
-            ArrBlock32 arrBlock32 = chartDataset.getArrBlock32();
-            return new StandardXYItemRendererArm(boundUpper, arrBlock32.getSecond(arrBlock32.size() - 1), chartDataset.isTime());
+            return new StandardXYItemRenderer();
+//            ArrBlock32 arrBlock32 = chartDataset.getArrBlock32();
+//            return new StandardXYItemRendererArm(boundUpper, arrBlock32.getSecond(arrBlock32.size() - 1), chartDataset.isTime());
         }
     }
 
