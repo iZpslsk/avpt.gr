@@ -1,6 +1,7 @@
 package avpt.gr.chart_dataset;
 
 import java.awt.*;
+import java.util.HashSet;
 
 import static avpt.gr.chart_dataset.ListSignals.*;
 
@@ -8,6 +9,9 @@ import static avpt.gr.chart_dataset.ListSignals.*;
  * дискретные сигналы
  */
 public class SeriesSignalsDiscrete extends SeriesSignals {
+
+    private static HashSet<Integer> setSeriesDiscrete = new HashSet<Integer>();
+
 
     public SeriesSignalsDiscrete(ListSignals listSignals) {
         // 0x21_4

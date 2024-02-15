@@ -4,6 +4,8 @@ import avpt.gr.chart_dataset.*;
 import avpt.gr.chart_dataset.keysEnum.LineKeys;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
+import avpt.gr.components.CheckPopup;
+import avpt.gr.components.ScrollPopupCheck;
 import avpt.gr.maps.Limits;
 import avpt.gr.maps.Profiles;
 import avpt.gr.maps.Stations;
@@ -34,6 +36,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.List;
 
+import static avpt.gr.chart_dataset.ListSignals.KEY_ALLOW_ANSWER;
+import static avpt.gr.chart_dataset.ListSignals.KEY_BAN_THRUST;
 import static avpt.gr.common.UtilsArmG.*;
 import static avpt.gr.graph.ChartArm.*;
 import static avpt.gr.maps.Limits.COLOR_LIM_MAP;
@@ -100,6 +104,7 @@ public class ChartPanelInheritor extends ChartPanel {
         chartInfo = getChartRenderingInfo();
         subplotsList = cdPlot.getSubplots();
 
+        final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
 
         addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -191,6 +196,12 @@ public class ChartPanelInheritor extends ChartPanel {
                     }
 
                     chartArm.setRowHexTab();
+                }
+                else if (SwingUtilities.isRightMouseButton(e)) {
+                    if (SIGNALS_LABEL.equals(curSubplot.getRangeAxis().getLabel())) {
+                        //checkPopupSignal.show(ChartPanelInheritor.this, e.getX(), e.getY());
+                        scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
+                    }
                 }
             }
 
@@ -1047,12 +1058,40 @@ public class ChartPanelInheritor extends ChartPanel {
         }
     }
 
-//    /**
-//     * @param x - координата
-//     * @return поездка Train
-//     */
-//    private Train getTrain(double x) {
-//        int index = chartArm.getChartDataset().getArrTrains().getIndexFromX(chartArm.getChartDataset().getArrBlock32(), x);
-//        return chartArm.getChartDataset().getArrTrains().get(index);
+//    private CheckPopup createCheckPopupSignal() {
+//        CheckPopup checkPopup = new CheckPopup();
+//        SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
+//        for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
+//            String description = ListSignals.getDescriptionSygnal(i);
+//            Color color = seriesSignalsDiscrete.getColorSeries(i);
+//            if (!description.isEmpty())
+//                checkPopup.add(color, 10, 10, description);
+//        }
+//        return checkPopup;
 //    }
+
+    private class CheckItemActionListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getSource();
+            System.out.println(item.getText() + " " + item.isSelected());
+        }
+    }
+
+    private ScrollPopupCheck createScrollPopupMenu() {
+        ScrollPopupCheck scrollPopupMenu = new ScrollPopupCheck();
+        SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
+        for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
+            String description = ListSignals.getDescriptionSygnal(i);
+            Color color = seriesSignalsDiscrete.getColorSeries(i);
+            if (!description.isEmpty()) {
+              JCheckBoxMenuItem item = scrollPopupMenu.add(color, 10, 10, description);
+              item.setSelected(true);
+              item.addActionListener(new CheckItemActionListener());
+            }
+        }
+        return scrollPopupMenu;
+    }
+
 }
