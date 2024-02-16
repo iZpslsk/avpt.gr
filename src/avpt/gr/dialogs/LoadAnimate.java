@@ -131,6 +131,7 @@ public class LoadAnimate extends JDialog {
                 chartDataset.setSeriesAlsnBr_vl10();
                 chartDataset.setSeriesAlsnBr_vl80();
                 chartDataset.setSeriesUatl();
+                chartDataset.setSeriesKM130();
                 chartDataset.setSeriesAuto();
                 chartDataset.setSeriesPneumatic();
                 chartDataset.setSeriesBhv();

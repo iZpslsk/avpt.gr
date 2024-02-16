@@ -100,6 +100,9 @@ public class WeightBlocks {
     private static int weight_uatl = W_GANTT_UATL;
     private static boolean visibleUatl = false;
 
+    private static int weight_km130 = W_GANTT;
+    private static boolean visibleKm130 = false;
+
     private static int weight_push_key = W_KEY;
     private static boolean visiblePushKey = false;
 
@@ -703,8 +706,27 @@ public class WeightBlocks {
         return visibleUatl;
     }
 
+
+    public static int getWeight_km130(boolean isInvert) {
+        if (isInvert) visibleKm130 = !visibleKm130;
+        return visibleKm130 ? weight_km130 : EMPTY;
+    }
+
+    public static void setWeight_km130(int weight_km130) {
+        WeightBlocks.weight_km130 = weight_km130;
+    }
+
+    public static boolean isVisibleKm130(boolean isInvert) {
+        if (isInvert) visibleKm130 = !visibleKm130;
+        return visibleKm130;
+    }
+
     public static void setVisibleUatl(boolean visibleUatl) {
         WeightBlocks.visibleUatl = visibleUatl;
+    }
+
+    public static void setVisibleKm130(boolean visibleKm130) {
+        WeightBlocks.visibleKm130 = visibleKm130;
     }
 
     public static int getWeight_push_key(boolean isInvert) {
@@ -954,6 +976,7 @@ public class WeightBlocks {
         node.putBoolean("visiblePneumatic_usavp", visiblePneumatic_usavp);
     //    node.putInt("weight_uatl", weight_uatl);
         node.putBoolean("visibleUatl", visibleUatl);
+        node.putBoolean("visibleKm130", visibleKm130);
     //    node.putInt("weight_push_key", weight_push_key);
         node.putBoolean("visiblePushKey", visiblePushKey);
     //    node.putInt("weight_rev_control", weight_rev_control);
@@ -1033,6 +1056,7 @@ public class WeightBlocks {
         visiblePneumatic2 = !is_default && node.getBoolean("visiblePneumatic2", false);
         visiblePneumatic_usavp = !is_default && node.getBoolean("visiblePneumatic_usavp", false);
         visibleUatl = !is_default && node.getBoolean("visibleUatl", false);
+        visibleKm130 = !is_default && node.getBoolean("visibleKm130", false);
         visiblePushKey = !is_default && node.getBoolean("visiblePushKey", false);
         visibleRevControl = !is_default && node.getBoolean("visibleRevControl", false);
         visibleSchema = !is_default && node.getBoolean("visibleSchema", false);
@@ -1209,6 +1233,11 @@ public class WeightBlocks {
             subplot.setWeight(EMPTY);
             setWeight_uatl(W_GANTT_UATL);
             setVisibleUatl(false);
+        }
+        else if (subplot.getRangeAxis().getLabel().equals(KM130_LABEL)) {
+            subplot.setWeight(EMPTY);
+            setWeight_km130(W_GANTT);
+            setVisibleKm130(false);
         }
         else if (subplot.getRangeAxis().getLabel().equals(KEYS_LABEL)) {
             subplot.setWeight(EMPTY);

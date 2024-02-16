@@ -4,7 +4,6 @@ import avpt.gr.chart_dataset.*;
 import avpt.gr.chart_dataset.keysEnum.LineKeys;
 import avpt.gr.common.UtilsArmG;
 import avpt.gr.common.WeightBlocks;
-import avpt.gr.components.CheckPopup;
 import avpt.gr.components.ScrollPopupCheck;
 import avpt.gr.maps.Limits;
 import avpt.gr.maps.Profiles;
@@ -104,7 +103,7 @@ public class ChartPanelInheritor extends ChartPanel {
         chartInfo = getChartRenderingInfo();
         subplotsList = cdPlot.getSubplots();
 
-        final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
+       // final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
 
         addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -200,7 +199,8 @@ public class ChartPanelInheritor extends ChartPanel {
                 else if (SwingUtilities.isRightMouseButton(e)) {
                     if (SIGNALS_LABEL.equals(curSubplot.getRangeAxis().getLabel())) {
                         //checkPopupSignal.show(ChartPanelInheritor.this, e.getX(), e.getY());
-                        scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
+//                        if (scrollPopupMenu != null)
+//                            scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
                     }
                 }
             }
@@ -498,6 +498,8 @@ public class ChartPanelInheritor extends ChartPanel {
             seriesTasks = chartDataset.getSeriesPneumaticUsavp();
         if (title.equals(UATL_LABEL))
             seriesTasks = chartDataset.getSeriesUatl();
+        if (title.equals(KM130_LABEL))
+            seriesTasks = chartDataset.getSeriesKM130();
         if (title.equals(KKM_KZ8_LABEL))
             seriesTasks = chartDataset.getSeriesKKM_kz8();
         if (title.equals(KKM_S5K_LABEL))
@@ -553,6 +555,8 @@ public class ChartPanelInheritor extends ChartPanel {
             return "Пневматика УСАВП";
         else if (UATL_LABEL.equals(title))
             return "УАТЛ ";
+        else if (KM130_LABEL.equals(title))
+            return "Обмен с краном 130 ";
         else if (VOLTAGE_CS_LABEL.equals(title))
             return "Напряжение контактной сети ";
         else if (AMPERAGE_COMMON_LABEL.equals(title))
@@ -1075,6 +1079,8 @@ public class ChartPanelInheritor extends ChartPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getSource();
+            SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
+            seriesSignalsDiscrete.addTaskSeriesEmpty(4);
             System.out.println(item.getText() + " " + item.isSelected());
         }
     }
@@ -1085,9 +1091,10 @@ public class ChartPanelInheritor extends ChartPanel {
         for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
             String description = ListSignals.getDescriptionSygnal(i);
             Color color = seriesSignalsDiscrete.getColorSeries(i);
-            if (!description.isEmpty()) {
+            if (!description.isEmpty() && color != Color.GRAY) {
               JCheckBoxMenuItem item = scrollPopupMenu.add(color, 10, 10, description);
-              item.setSelected(true);
+              if (seriesSignalsDiscrete.isSeriesSelected(i))
+                item.setSelected(true);
               item.addActionListener(new CheckItemActionListener());
             }
         }

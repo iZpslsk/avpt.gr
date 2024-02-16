@@ -1991,7 +1991,12 @@ public class ChartArrays {
                 break;
             case Train.VL85:// ВЛ85
                 break;
-            case S5K:
+            case S5K: {
+                avpt.gr.blocks32.s5k.Block32_55 block32_55 = new avpt.gr.blocks32.s5k.Block32_55(curTypeLoc, arrBlock32.get(index).getValues());
+                //System.out.println(String.format("%X", block32_55.getStatusSystemBrake()));
+                listTasks.add(listTasks.getListKM130_StatusSystemBrake(), second_coordinate, block32_55.getStatusSystemBrake(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKM130_VirPosKM(), second_coordinate, block32_55.getVirPosKM(), curTypeLoc, -1);
+            }
                 break;
             case Train.KZ8A:// KZ8A
                 break;

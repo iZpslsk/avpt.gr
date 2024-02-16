@@ -3,6 +3,9 @@ package avpt.gr.blocks32.s5k_2;
 import static avpt.gr.common.UtilsArmG.toUnsignedInt;
 import static avpt.gr.train.Train.S5K_2;
 
+/**
+ * УАТЛ
+ */
 public class Block32_51 {
 
     private final byte[] values;

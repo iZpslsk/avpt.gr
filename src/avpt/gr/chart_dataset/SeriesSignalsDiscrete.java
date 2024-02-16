@@ -10,9 +10,6 @@ import static avpt.gr.chart_dataset.ListSignals.*;
  */
 public class SeriesSignalsDiscrete extends SeriesSignals {
 
-    private static HashSet<Integer> setSeriesDiscrete = new HashSet<Integer>();
-
-
     public SeriesSignalsDiscrete(ListSignals listSignals) {
         // 0x21_4
         addTaskSeries(KEY_BAN_THRUST, listSignals.getListBanThrust());

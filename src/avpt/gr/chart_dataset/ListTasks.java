@@ -23,6 +23,10 @@ public class ListTasks {
     private final ArrayList<ItemTask> listUatlMode = new ArrayList<ItemTask>();     // Режимы управления УАТЛ
     private final ArrayList<ItemTask> listUatlWork = new ArrayList<ItemTask>();     // Режимы работы УАТЛ
 
+    // обмен с краном 130
+    private final ArrayList<ItemTask> listKM130_StatusSystemBrake = new ArrayList<ItemTask>();  // Статус системы исполнения торможения
+    private final ArrayList<ItemTask> listKM130_VirPosKM = new ArrayList<ItemTask>();  // Виртуальное положение ручки КМ при исполнении команд управления
+
     // ккм
     private final ArrayList<ItemTask> listKKM = new ArrayList<ItemTask>();     //
     private final ArrayList<ItemTask> listKkm = new ArrayList<ItemTask>();     //
@@ -208,6 +212,14 @@ public class ListTasks {
 
     public ArrayList<ItemTask> getListUatlWork() {
         return listUatlWork;
+    }
+
+    public ArrayList<ItemTask> getListKM130_StatusSystemBrake() {
+        return listKM130_StatusSystemBrake;
+    }
+
+    public ArrayList<ItemTask> getListKM130_VirPosKM() {
+        return listKM130_VirPosKM;
     }
 
     public ArrayList<ItemTask> getListKkm() {

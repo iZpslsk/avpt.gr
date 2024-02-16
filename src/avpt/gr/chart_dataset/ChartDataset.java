@@ -38,6 +38,7 @@ public class ChartDataset {
     private TaskPneumatic seriesPneumatic2;
     private TaskPneumaticUsavp seriesPneumaticUsavp;
     private TaskUatl seriesUatl;
+    private TaskKM130 seriesKM130;
     private TaskKKM_s5k seriesKKM_s5k;
     private TaskKKM_s5k_2 seriesKKM_s5k_2;
     private TaskKKM_vl10 seriesKKM_vl10;
@@ -172,6 +173,13 @@ public class ChartDataset {
         list.add(chartArrays.getListTasks().getListUatlWork());
         list.add(chartArrays.getListTasks().getListUatlCommand());
         this.seriesUatl = new TaskUatl(list, false);
+    }
+
+    public void setSeriesKM130() {
+        ArrayList<ArrayList<ListTasks.ItemTask>> list = new ArrayList<ArrayList<ListTasks.ItemTask>>();
+        list.add(chartArrays.getListTasks().getListKM130_StatusSystemBrake());
+        list.add(chartArrays.getListTasks().getListKM130_VirPosKM());
+        this.seriesKM130 = new TaskKM130(list, false);
     }
 
 //    public void setSeriesPneumatic2() {
@@ -501,6 +509,10 @@ public class ChartDataset {
 
     public TaskUatl getSeriesUatl() {
         return seriesUatl;
+    }
+
+    public TaskKM130 getSeriesKM130() {
+        return seriesKM130;
     }
 
     public TaskKKM_s5k getSeriesKKM_s5k() {
