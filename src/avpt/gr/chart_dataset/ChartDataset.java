@@ -179,6 +179,7 @@ public class ChartDataset {
         ArrayList<ArrayList<ListTasks.ItemTask>> list = new ArrayList<ArrayList<ListTasks.ItemTask>>();
         list.add(chartArrays.getListTasks().getListKM130_StatusSystemBrake());
         list.add(chartArrays.getListTasks().getListKM130_VirPosKM());
+        list.add(chartArrays.getListTasks().getListKM130_PosKKM());
         this.seriesKM130 = new TaskKM130(list, false);
     }
 

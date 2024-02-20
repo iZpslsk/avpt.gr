@@ -47,10 +47,13 @@ public class ScrollPopupCheck extends JPopupMenu {
     /**
      * пункт мнею JCheckBocMenuItem
      */
-    private static class Item extends JCheckBoxMenuItem {
+    public static class Item extends JCheckBoxMenuItem {
 
-        public Item(Paint paint, int width, int height, String text) {
+        int key;
+
+        public Item(Paint paint, int width, int height, String text, int key) {
             super(text, new ScrollPopupCheck.RectangleIcon(paint, width, height));
+            this.key = key;
             // запрет скрытия окна при щелчке мыши
             setUI(new BasicCheckBoxMenuItemUI() {
                 @Override
@@ -58,6 +61,10 @@ public class ScrollPopupCheck extends JPopupMenu {
                     menuItem.doClick(0);
                 }
             });
+        }
+
+        public int getKey() {
+            return key;
         }
     }
 
@@ -261,8 +268,8 @@ public class ScrollPopupCheck extends JPopupMenu {
      * @param height - высота прямоугольника
      * @param text - текст
      */
-    public JCheckBoxMenuItem add(Paint paint, int width, int height, String text) {
-        return (JCheckBoxMenuItem) super.add(new ScrollPopupCheck.Item(paint, width, height, text));
+    public Item add(Paint paint, int width, int height, String text, int key) {
+        return (Item) super.add(new ScrollPopupCheck.Item(paint, width, height, text, key));
     }
 
 

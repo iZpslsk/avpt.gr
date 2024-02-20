@@ -25,7 +25,8 @@ public class ListTasks {
 
     // обмен с краном 130
     private final ArrayList<ItemTask> listKM130_StatusSystemBrake = new ArrayList<ItemTask>();  // Статус системы исполнения торможения
-    private final ArrayList<ItemTask> listKM130_VirPosKM = new ArrayList<ItemTask>();  // Виртуальное положение ручки КМ при исполнении команд управления
+    private final ArrayList<ItemTask> listKM130_VirPosKM = new ArrayList<ItemTask>(); // Виртуальное положение ручки КМ при исполнении команд управления
+    private final ArrayList<ItemTask> listKM130_PosKKM = new ArrayList<ItemTask>();  // положение ручки ККМ
 
     // ккм
     private final ArrayList<ItemTask> listKKM = new ArrayList<ItemTask>();     //
@@ -216,6 +217,10 @@ public class ListTasks {
 
     public ArrayList<ItemTask> getListKM130_StatusSystemBrake() {
         return listKM130_StatusSystemBrake;
+    }
+
+    public ArrayList<ItemTask> getListKM130_PosKKM() {
+        return listKM130_PosKKM;
     }
 
     public ArrayList<ItemTask> getListKM130_VirPosKM() {

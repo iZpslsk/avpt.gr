@@ -100,7 +100,7 @@ public class WeightBlocks {
     private static int weight_uatl = W_GANTT_UATL;
     private static boolean visibleUatl = false;
 
-    private static int weight_km130 = W_GANTT;
+    private static int weight_km130 = W_GANTT_UATL;
     private static boolean visibleKm130 = false;
 
     private static int weight_push_key = W_KEY;
@@ -1236,7 +1236,7 @@ public class WeightBlocks {
         }
         else if (subplot.getRangeAxis().getLabel().equals(KM130_LABEL)) {
             subplot.setWeight(EMPTY);
-            setWeight_km130(W_GANTT);
+            setWeight_km130(W_GANTT_UATL);
             setVisibleKm130(false);
         }
         else if (subplot.getRangeAxis().getLabel().equals(KEYS_LABEL)) {

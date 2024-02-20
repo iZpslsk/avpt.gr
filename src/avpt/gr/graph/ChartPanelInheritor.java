@@ -35,8 +35,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.Iterator;
 import java.util.List;
 
-import static avpt.gr.chart_dataset.ListSignals.KEY_ALLOW_ANSWER;
-import static avpt.gr.chart_dataset.ListSignals.KEY_BAN_THRUST;
+import static avpt.gr.chart_dataset.ListSignals.*;
 import static avpt.gr.common.UtilsArmG.*;
 import static avpt.gr.graph.ChartArm.*;
 import static avpt.gr.maps.Limits.COLOR_LIM_MAP;
@@ -103,7 +102,7 @@ public class ChartPanelInheritor extends ChartPanel {
         chartInfo = getChartRenderingInfo();
         subplotsList = cdPlot.getSubplots();
 
-       // final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
+    //    final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
 
         addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -199,8 +198,7 @@ public class ChartPanelInheritor extends ChartPanel {
                 else if (SwingUtilities.isRightMouseButton(e)) {
                     if (SIGNALS_LABEL.equals(curSubplot.getRangeAxis().getLabel())) {
                         //checkPopupSignal.show(ChartPanelInheritor.this, e.getX(), e.getY());
-//                        if (scrollPopupMenu != null)
-//                            scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
+                      //  scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
                     }
                 }
             }
@@ -1076,23 +1074,50 @@ public class ChartPanelInheritor extends ChartPanel {
 
     private class CheckItemActionListener implements ActionListener {
 
+        private JPopupMenu getPopup(JCheckBoxMenuItem item) {
+            JPopupMenu popupMenu = null;
+            while (popupMenu == null) {
+                if (item.getParent() instanceof  JPopupMenu) {
+                    popupMenu = (JPopupMenu) item.getParent();
+                }
+            }
+            return popupMenu;
+        }
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            JCheckBoxMenuItem item = (JCheckBoxMenuItem)e.getSource();
+            ScrollPopupCheck.Item item = (ScrollPopupCheck.Item)e.getSource();
+            ScrollPopupCheck scrollPopupMenu = (ScrollPopupCheck) getPopup(item);
             SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
-            seriesSignalsDiscrete.addTaskSeriesEmpty(4);
-            System.out.println(item.getText() + " " + item.isSelected());
+            for (int i = 0; i < scrollPopupMenu.getComponentCount(); i++) {
+                if (scrollPopupMenu.getComponent(i) instanceof  JCheckBoxMenuItem) {
+                    item = (ScrollPopupCheck.Item) scrollPopupMenu.getComponent(i);
+                //    System.out.println(item.getText() + " " + item.getKey() + " " + item.isSelected());
+                }
+            }
+
+
+          //  ((XYTaskDataset)seriesSignalsDiscrete.getTaskSeriesCollection()).getTasks().removeAll();
+
+          //  seriesSignalsDiscrete.addTaskSeriesEmpty(4);
+         //   System.out.println(item.getText() + " " + item.isSelected());
         }
     }
 
     private ScrollPopupCheck createScrollPopupMenu() {
         ScrollPopupCheck scrollPopupMenu = new ScrollPopupCheck();
         SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
+
+        //((XYTaskDataset)seriesSignalsDiscrete.getTaskSeriesCollection()).getTasks().getSeries(0).removeAll();
+        //System.out.println(key);
+       // scrollPopupMenu.getInvoker();
+
         for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
             String description = ListSignals.getDescriptionSygnal(i);
             Color color = seriesSignalsDiscrete.getColorSeries(i);
             if (!description.isEmpty() && color != Color.GRAY) {
-              JCheckBoxMenuItem item = scrollPopupMenu.add(color, 10, 10, description);
+              ScrollPopupCheck.Item item = scrollPopupMenu.add(color, 10, 10, description, i);
+
               if (seriesSignalsDiscrete.isSeriesSelected(i))
                 item.setSelected(true);
               item.addActionListener(new CheckItemActionListener());

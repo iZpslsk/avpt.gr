@@ -1996,6 +1996,7 @@ public class ChartArrays {
                 //System.out.println(String.format("%X", block32_55.getStatusSystemBrake()));
                 listTasks.add(listTasks.getListKM130_StatusSystemBrake(), second_coordinate, block32_55.getStatusSystemBrake(), curTypeLoc, -1);
                 listTasks.add(listTasks.getListKM130_VirPosKM(), second_coordinate, block32_55.getVirPosKM(), curTypeLoc, -1);
+                listTasks.add(listTasks.getListKM130_PosKKM(), second_coordinate, block32_55.getPosKKM(), curTypeLoc, -1);
             }
                 break;
             case Train.KZ8A:// KZ8A
