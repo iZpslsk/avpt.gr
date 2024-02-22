@@ -175,6 +175,7 @@ public class ListSignals {
 
     // keys для дискретных сигналов
     // 0x21_4
+    public static final int KEY_FIRST = 1;             // первый ключ
     public static final int KEY_BAN_THRUST = 1;//"BanThrust";    // запрет тяги
     public static final int KEY_BAN_BRAKE = 2;//"BanBrake";      // запрет торможения
     public static final int KEY_EMULATE = 3;//"Emulate";         // режим эмуляции
@@ -183,9 +184,6 @@ public class ListSignals {
     public static final int KEY_TEST_BRAKE_CORRUPT = 6;//"TestBrakeCorrupt"; // тест тормозов не пройден
     public static final int KEY_TEST_TRACT_CORRUPT = 7;//"TestTractCorrupt"; // тест тяги не пройден
     public static final int KEY_MANEUVER = 8;//"Maneuver";                   // маневровые работы
-    public static final int KEY_MAIN_CHANNEL = 10;                  // связь по основному каналу
-    public static final int KEY_ADDITIONAL_CHANNEL = 11;            // связь по доп каналу
-
     // 0x1D_4
     public static final int KEY_BAN_PT = 51;//"BanPt";                        //  запрет ПТ
     public static final int KEY_BAN_ET = 52;//"BanEt";                        // запрет ЭТ
@@ -236,52 +234,7 @@ public class ListSignals {
     public static final int KEY_RELEASE_BRAKE = 141;       // отпуск тормозов
     public static final int KEY_SAND_AUTO = 142;           // песок автоматически
     public static final int KEY_HAND_SPEED_ZERO = 143;  // рукоятка задания скорости в нулевом положении
-    // 0x21_7
-    public static final int KEY_READY = 151;                    // готов
-    public static final int KEY_CAN = 152;                      // can_modem
-    public static final int KEY_ERROR = 153;                    // ошибки'{'связь сим'}
-    public static final int KEY_CHANGE_ACCEPTED_SCHEDULE = 154; // смена прин расп
-    public static final int KEY_CHANGE_VALID_SCHEDULE = 155;    // смена верн расп
-    public static final int KEY_CHANGE_LOAD_SCHEDULE = 156;     // смена загр расп
-    public static final int KEY_SOURCE_SCHEDULE = 157;          // ИР БД
-    public static final int KEY_MODE_WORK = 158;                // режим работы бмс
-    public static final int KEY_LEVEL_GPRS = 159;               // уровень GPRS
-    public static final int KEY_SEND_DIAG = 160;                // отпр диагн
-    public static final int KEY_UPDATE = 161;                   // обновление ПО
-    public static final int KEY_ESM_BS = 162;                   // скачивание д с ЕСМ БС
-    public static final int KEY_LINK_SERVER = 163;              // связь с сервером
-    public static final int KEY_LINK_GATEWAY = 164;             // связь со шлюзом РОРС
-    public static final int KEY_GPRS = 165;                     // есть GPRS услуга
-    public static final int KEY_AUTO_SCHEDULE = 166;            // автовед. по расп. СИМ
-    // ЭС5К МСУД-15
-    public static final int KEY_TED1_1S = 200;                // отключеие тэд 1 1-й секции
-    public static final int KEY_TED2_1S = 201;                // отключеие тэд 2 1-й секции
-    public static final int KEY_TED3_1S = 202;                // отключеие тэд 3 1-й секции
-    public static final int KEY_TED4_1S = 203;                // отключеие тэд 4 1-й секции
 
-    public static final int KEY_TED1_2S = 204;                // отключеие тэд 1 2-й секции
-    public static final int KEY_TED2_2S = 205;                // отключеие тэд 2 2-й секции
-    public static final int KEY_TED3_2S = 206;                // отключеие тэд 3 2-й секции
-    public static final int KEY_TED4_2S = 207;                // отключеие тэд 4 2-й секции
-
-    public static final int KEY_TED1_3S = 208;                // отключеие тэд 1 3-й секции
-    public static final int KEY_TED2_3S = 209;                // отключеие тэд 2 3-й секции
-    public static final int KEY_TED3_3S = 210;                // отключеие тэд 3 3-й секции
-    public static final int KEY_TED4_3S = 211;                // отключеие тэд 4 3-й секции
-
-    public static final int KEY_TED1_4S = 212;                // отключеие тэд 1 4-й секции
-    public static final int KEY_TED2_4S = 213;                // отключеие тэд 2 4-й секции
-    public static final int KEY_TED3_4S = 214;                // отключеие тэд 3 4-й секции
-    public static final int KEY_TED4_4S = 215;                // отключеие тэд 4 4-й секции
-    // ЭС5К
-    public static final int KEY_TED_1_2 = 216;                // отключеие тэд 1 и тэд 2
-    public static final int KEY_TED_3_4 = 217;                // отключеие тэд 3 и тэд 4
-    public static final int KEY_TED_5_6 = 218;                // отключеие тэд 5 и тэд 6
-    public static final int KEY_TED_7_8 = 219;                // отключеие тэд 7 и тэд 8
-    public static final int KEY_TED_9_10 = 220;               // отключеие тэд 9 и тэд 10
-    public static final int KEY_TED_11_12 = 221;              // отключеие тэд 11 и тэд 12
-    public static final int KEY_TED_13_14 = 222;              // отключеие тэд 13 и тэд 14
-    public static final int KEY_TED_15_16 = 223;              // отключеие тэд 15 и тэд 16
     // ЭС4К
     public static final int KEY_DISCHARGE_AB = 224;          // разряд АБ
     // вл 11
@@ -313,6 +266,10 @@ public class ListSignals {
     // KZ8
     public static final int KEY_UZ_TCU = 470;         // управленин от автоведения
     public static final int KEY_UZ_WSP = 471;          // свисток ЭПК
+    public static final int KEY_LAST = KEY_UZ_WSP;             // последний ключ
+
+    public static final int KEY_MAIN_CHANNEL = 480;                  // связь по основному каналу
+    public static final int KEY_ADDITIONAL_CHANNEL = 481;            // связь по доп каналу
 
     // бхв
     public static final int KEY_BRAKE_TAIL = 500;           // торможение с хвоста
@@ -332,6 +289,54 @@ public class ListSignals {
     public static final int KEY_CRASH_AFU_MOST = 514;       // Авария АФУ МОСТ
     public static final int KEY_IS_BHV = 515;               // БХВ включен
     public static final int KEY_ALLOW_ANSWER = 516;         // Незапр ответы
+
+    // ЭС5К МСУД-15
+    public static final int KEY_TED1_1S = 600;                // отключеие тэд 1 1-й секции
+    public static final int KEY_TED2_1S = 601;                // отключеие тэд 2 1-й секции
+    public static final int KEY_TED3_1S = 602;                // отключеие тэд 3 1-й секции
+    public static final int KEY_TED4_1S = 603;                // отключеие тэд 4 1-й секции
+
+    public static final int KEY_TED1_2S = 604;                // отключеие тэд 1 2-й секции
+    public static final int KEY_TED2_2S = 605;                // отключеие тэд 2 2-й секции
+    public static final int KEY_TED3_2S = 606;                // отключеие тэд 3 2-й секции
+    public static final int KEY_TED4_2S = 607;                // отключеие тэд 4 2-й секции
+
+    public static final int KEY_TED1_3S = 608;                // отключеие тэд 1 3-й секции
+    public static final int KEY_TED2_3S = 609;                // отключеие тэд 2 3-й секции
+    public static final int KEY_TED3_3S = 610;                // отключеие тэд 3 3-й секции
+    public static final int KEY_TED4_3S = 611;                // отключеие тэд 4 3-й секции
+
+    public static final int KEY_TED1_4S = 612;                // отключеие тэд 1 4-й секции
+    public static final int KEY_TED2_4S = 613;                // отключеие тэд 2 4-й секции
+    public static final int KEY_TED3_4S = 614;                // отключеие тэд 3 4-й секции
+    public static final int KEY_TED4_4S = 615;                // отключеие тэд 4 4-й секции
+    // ЭС5К
+    public static final int KEY_TED_1_2 = 616;                // отключеие тэд 1 и тэд 2
+    public static final int KEY_TED_3_4 = 617;                // отключеие тэд 3 и тэд 4
+    public static final int KEY_TED_5_6 = 618;                // отключеие тэд 5 и тэд 6
+    public static final int KEY_TED_7_8 = 619;                // отключеие тэд 7 и тэд 8
+    public static final int KEY_TED_9_10 = 620;               // отключеие тэд 9 и тэд 10
+    public static final int KEY_TED_11_12 = 621;              // отключеие тэд 11 и тэд 12
+    public static final int KEY_TED_13_14 = 622;              // отключеие тэд 13 и тэд 14
+    public static final int KEY_TED_15_16 = 623;              // отключеие тэд 15 и тэд 16
+
+    // 0x21_7
+    public static final int KEY_READY = 751;                    // готов
+    public static final int KEY_CAN = 752;                      // can_modem
+    public static final int KEY_ERROR = 753;                    // ошибки'{'связь сим'}
+    public static final int KEY_CHANGE_ACCEPTED_SCHEDULE = 754; // смена прин расп
+    public static final int KEY_CHANGE_VALID_SCHEDULE = 755;    // смена верн расп
+    public static final int KEY_CHANGE_LOAD_SCHEDULE = 756;     // смена загр расп
+    public static final int KEY_SOURCE_SCHEDULE = 757;          // ИР БД
+    public static final int KEY_MODE_WORK = 758;                // режим работы бмс
+    public static final int KEY_LEVEL_GPRS = 759;               // уровень GPRS
+    public static final int KEY_SEND_DIAG = 760;                // отпр диагн
+    public static final int KEY_UPDATE = 761;                   // обновление ПО
+    public static final int KEY_ESM_BS = 762;                   // скачивание д с ЕСМ БС
+    public static final int KEY_LINK_SERVER = 763;              // связь с сервером
+    public static final int KEY_LINK_GATEWAY = 764;             // связь со шлюзом РОРС
+    public static final int KEY_GPRS = 765;                     // есть GPRS услуга
+    public static final int KEY_AUTO_SCHEDULE = 766;            // автовед. по расп. СИМ
 
     /**
      * @param key - ключ сигнала

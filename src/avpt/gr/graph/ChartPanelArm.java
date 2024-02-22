@@ -50,6 +50,15 @@ public class ChartPanelArm extends JPanel {
         }
     }
 
+    class ActionRepaintInfoPanel implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (ChartPanelArm.this.infoPanel != null)
+                ChartPanelArm.this.infoPanel.repaint();
+        }
+    }
+
     public ChartPanelArm(final ChartDataset chartDataset, final JPanel hexTab) {
         super(new BorderLayout());
         UIManager.put("Menu.font", menuFont);
@@ -73,7 +82,7 @@ public class ChartPanelArm extends JPanel {
         });
         JPanel southPanel = makeSouthPanel(statusPanel, scrollBar);
         add(southPanel, BorderLayout.SOUTH);
-        chartPanel = new ChartPanelInheritor(chartArm, scrollBar);
+        chartPanel = new ChartPanelInheritor(chartArm, scrollBar, new ActionRepaintInfoPanel());
         chartPanel.setMaximumDrawWidth(10000);
         chartPanel.setMinimumDrawWidth(10);
         chartPanel.setMaximumDrawHeight(5000);

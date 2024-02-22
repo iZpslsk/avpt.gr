@@ -64,6 +64,8 @@ public class ChartPanelInheritor extends ChartPanel {
     ChartRenderingInfo chartInfo;// = getChartRenderingInfo();
     List subplotsList;// = cdPlot.getSubplots();
 
+    private ChartPanelArm.ActionRepaintInfoPanel actionRepaintInfoPanel;
+
     /**
      * установка размера вертикально шкалы
      * @param rotation - направление
@@ -84,11 +86,12 @@ public class ChartPanelInheritor extends ChartPanel {
         }
     }
 
-    public ChartPanelInheritor(final ChartArm chartArm, JScrollBar scrollBar) {
+    public ChartPanelInheritor(final ChartArm chartArm, JScrollBar scrollBar, ChartPanelArm.ActionRepaintInfoPanel actionRepaintInfoPanel) {
         super(chartArm);
         this.chartArm = chartArm;
         this.chartDataset = chartArm.getChartDataset();
         this.scrollBar = scrollBar;
+        this.actionRepaintInfoPanel = actionRepaintInfoPanel;
         this.setForeground(Color.BLACK);
         setRangeZoomable(false);
         setDomainZoomable(false);
@@ -102,7 +105,7 @@ public class ChartPanelInheritor extends ChartPanel {
         chartInfo = getChartRenderingInfo();
         subplotsList = cdPlot.getSubplots();
 
-    //    final ScrollPopupCheck scrollPopupMenu = createScrollPopupMenu();
+        final ScrollPopupCheck scrollPopupMenu = createDiscretePopupMenu();
 
         addMouseWheelListener(new MouseWheelListener() {
             @Override
@@ -198,7 +201,7 @@ public class ChartPanelInheritor extends ChartPanel {
                 else if (SwingUtilities.isRightMouseButton(e)) {
                     if (SIGNALS_LABEL.equals(curSubplot.getRangeAxis().getLabel())) {
                         //checkPopupSignal.show(ChartPanelInheritor.this, e.getX(), e.getY());
-                      //  scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
+                        scrollPopupMenu.show(ChartPanelInheritor.this, e.getX(), e.getY());
                     }
                 }
             }
@@ -1060,67 +1063,33 @@ public class ChartPanelInheritor extends ChartPanel {
         }
     }
 
-//    private CheckPopup createCheckPopupSignal() {
-//        CheckPopup checkPopup = new CheckPopup();
-//        SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
-//        for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
-//            String description = ListSignals.getDescriptionSygnal(i);
-//            Color color = seriesSignalsDiscrete.getColorSeries(i);
-//            if (!description.isEmpty())
-//                checkPopup.add(color, 10, 10, description);
-//        }
-//        return checkPopup;
-//    }
-
-    private class CheckItemActionListener implements ActionListener {
-
-        private JPopupMenu getPopup(JCheckBoxMenuItem item) {
-            JPopupMenu popupMenu = null;
-            while (popupMenu == null) {
-                if (item.getParent() instanceof  JPopupMenu) {
-                    popupMenu = (JPopupMenu) item.getParent();
-                }
-            }
-            return popupMenu;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            ScrollPopupCheck.Item item = (ScrollPopupCheck.Item)e.getSource();
-            ScrollPopupCheck scrollPopupMenu = (ScrollPopupCheck) getPopup(item);
-            SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
-            for (int i = 0; i < scrollPopupMenu.getComponentCount(); i++) {
-                if (scrollPopupMenu.getComponent(i) instanceof  JCheckBoxMenuItem) {
-                    item = (ScrollPopupCheck.Item) scrollPopupMenu.getComponent(i);
-                //    System.out.println(item.getText() + " " + item.getKey() + " " + item.isSelected());
-                }
-            }
-
-
-          //  ((XYTaskDataset)seriesSignalsDiscrete.getTaskSeriesCollection()).getTasks().removeAll();
-
-          //  seriesSignalsDiscrete.addTaskSeriesEmpty(4);
-         //   System.out.println(item.getText() + " " + item.isSelected());
-        }
-    }
-
-    private ScrollPopupCheck createScrollPopupMenu() {
+    /**
+     *  всплывающее меню для дискретных сигналов
+     * @return ScrollPopupCheck
+     */
+    private ScrollPopupCheck createDiscretePopupMenu() {
         ScrollPopupCheck scrollPopupMenu = new ScrollPopupCheck();
         SeriesSignalsDiscrete seriesSignalsDiscrete = chartDataset.getSeriesSignalsDiscrete();
-
-        //((XYTaskDataset)seriesSignalsDiscrete.getTaskSeriesCollection()).getTasks().getSeries(0).removeAll();
-        //System.out.println(key);
-       // scrollPopupMenu.getInvoker();
-
-        for (int i = KEY_BAN_THRUST; i <= KEY_ALLOW_ANSWER; i++) {
+        for (int i = KEY_FIRST; i <= KEY_LAST; i++) {
             String description = ListSignals.getDescriptionSygnal(i);
             Color color = seriesSignalsDiscrete.getColorSeries(i);
+            // если ключ существует
             if (!description.isEmpty() && color != Color.GRAY) {
               ScrollPopupCheck.Item item = scrollPopupMenu.add(color, 10, 10, description, i);
-
-              if (seriesSignalsDiscrete.isSeriesSelected(i))
-                item.setSelected(true);
-              item.addActionListener(new CheckItemActionListener());
+              if (seriesSignalsDiscrete.isSeriesSelected(i)) {
+                  item.setSelected(true);
+              }
+              item.addActionListener(new ActionListener() {
+                  @Override
+                  public void actionPerformed(ActionEvent e) {
+                      ScrollPopupCheck.Item item = (ScrollPopupCheck.Item)e.getSource();
+                      int key = item.getKey();
+                      chartDataset.getSeriesSignalsDiscrete().doSeriesSelected(key, item.isSelected());
+                      chartArm.addSignalsDiscreteToPlotCombine();
+                      if (actionRepaintInfoPanel != null)
+                          actionRepaintInfoPanel.actionPerformed(null);
+                  }
+              });
             }
         }
         return scrollPopupMenu;

@@ -426,6 +426,68 @@ public class ChartArm extends JFreeChart {
         }
     }
 
+    private XYPlot getPlotByLabel(String label) {
+        for  (int i = 0; i < plotCombine.getSubplots().size(); i++) {
+            XYPlot plot = (XYPlot) plotCombine.getSubplots().get(i);
+            if (plot.getRangeAxis().getLabel().equals(SIGNALS_LABEL)) {
+                return plot;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * изменяем прорисовку сигналов в существующем Plot (только для основных сигналов)
+     */
+    public void addSignalsDiscreteToPlotCombine() {
+        IntervalXYDataset dataset = seriesSignalsDiscrete.getTaskSeriesCollection();
+        String[] symbols = new String[dataset.getSeriesCount()];
+        Arrays.fill(symbols, "");
+        SymbolAxis yAxis = new SymbolAxis(SIGNALS_LABEL , symbols);
+        yAxis.setLabelAngle(Math.PI/2.0);
+        yAxis.setGridBandsVisible(false);
+        yAxis.setTickLabelsVisible(false);
+        yAxis.setLabelFont(labelYAxisFont);
+        yAxis.setInverted(true);
+
+        XYBarRenderer renderer = new XYBarRenderer();
+        renderer.setUseYInterval(true);
+        renderer.setShadowVisible(false);
+
+        XYPlot plot = getPlotByLabel(SIGNALS_LABEL);
+        if (plot == null) return;
+        plot.setDataset(dataset);
+        plot.setRenderer(renderer);
+        plot.setRangeAxis(yAxis);
+
+        for (int i = plot.getSeriesCount() - 1; i >= 0; i--) {
+            int key = Integer.parseInt(((XYTaskDataset) dataset).getTasks().getSeries(i).getKey().toString());
+            renderer.setSeriesPaint(i, seriesSignalsDiscrete.getColorSeries(key));
+        }
+
+        plot.setRangeGridlinesVisible(false);
+        plot.setDomainGridlinesVisible(false);
+        plot.getRangeAxis().setTickMarksVisible(false);
+        ((XYBarRenderer) plot.getRenderer()).setBarPainter(new StandardXYBarPainter()); // убрать градиент
+
+        setCrosshair(plot);
+        addMarker(plot);
+        addMarkerTrains(plot, chartDataset.getArrTrains());
+        plot.setBackgroundPaint(Color.BLACK);
+        plot.setDomainGridlinesVisible(false);
+        if (dataset.getSeriesCount() > 0) {
+          //  plotCombine.add(plot, 1);
+            plot.setWeight(getWeight_signals(false));
+        }
+    }
+
+    /**
+     * создаем plot с дискретными сигналами
+     * @param seriesSignals -
+     * @param title -
+     * @param weight -
+     * @return - XYPlot
+     */
     private XYPlot addSignalsToPlotCombine(SeriesSignals seriesSignals, String title, int weight) {
         IntervalXYDataset dataset = seriesSignals.getTaskSeriesCollection();
         String[] symbols = new String[dataset.getSeriesCount()];
