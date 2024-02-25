@@ -37,6 +37,7 @@ public class OutLoadVSC {
     private final CellStyle styleCenter;
     private boolean isBrake = false;
     private boolean isTm = false;
+    private ChartPanelArm chartPanelArm;
 
     /**
      * режим работы
@@ -74,6 +75,7 @@ public class OutLoadVSC {
     public OutLoadVSC(XSSFSheet sheet, ChartPanelArm chartPanelArm, Train train) {
         this.sheet = sheet;
         this.train = train;
+        this.chartPanelArm = chartPanelArm;
         arrBlock32 = chartPanelArm.getChartDataset().getArrBlock32();
         Stations stations = chartPanelArm.getChartArm().getStations();
         int secondStart = train != null ? train.getSecondStart() : arrBlock32.get(0).getSecond();
@@ -161,8 +163,22 @@ public class OutLoadVSC {
         long lat = 0;
         long lon = 0;
 
-        int blStart = train != null ? train.getBlStart() : 0;
-        int blEnd = train != null ? train.getBlEnd() : arrBlock32.size() - 1;
+        int indxStart = Math.abs(arrBlock32.searchIndexBySecond((int)chartPanelArm.getChartArm().getStartIntervalXMarker(),
+                0, arrBlock32.size() - 1));
+        int indxEnd = Math.abs(arrBlock32.searchIndexBySecond((int)chartPanelArm.getChartArm().getEndIntervalXMarker(),
+                0, arrBlock32.size() - 1));
+
+        int blStart, blEnd;
+        if (Math.abs(indxEnd - indxStart) > 60) {
+            blStart = indxStart;
+            blEnd = indxEnd;
+        }
+        else {
+            blStart = train != null ? train.getBlStart() : 0;
+            blEnd = train != null ? train.getBlEnd() : arrBlock32.size() - 1;
+        }
+
+
         int curTypeLoc = 0;
         long curNumLoc = 0;
         int curNumTrain = 0;
