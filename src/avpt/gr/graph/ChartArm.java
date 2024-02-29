@@ -769,6 +769,7 @@ public class ChartArm extends JFreeChart {
     }
 
     public void setIntervalXMarker(double x_start, double x_end) {
+        this.isSelected = true;
         if (x_end >= x_start && x_start >= 0 && x_end <= getSecondCoordinate())
             for (Marker intervalMarker : intervalMarkers) {
                 ((IntervalMarker)intervalMarker).setStartValue(x_start);
