@@ -1000,8 +1000,9 @@ public class WeightBlocks {
         node.putBoolean("visibleSignalsLink", visibleSignalsLink);
 
         // видимость линий
-        String str = UtilsArmG.trimFirstLast(SeriesLines.getMapVisible().toString(), 1, 1);
-        node.put("viewLinesStr", str);
+        node.put("viewLinesStr", UtilsArmG.trimFirstLast(SeriesLines.getMapVisible().toString(), 1, 1));
+        // цвет линий
+        node.put("colorLinesStr", UtilsArmG.trimFirstLast(SeriesLines.getMapColorLines().toString(), 1, 1));
         modified = false;
     }
 
@@ -1070,8 +1071,9 @@ public class WeightBlocks {
         visibleSignalsLink = !is_default && node.getBoolean("visibleSignalsLink", false);
         // видимость линий
         if (!is_default) {
-            String str = node.get("viewLinesStr", "");
-            SeriesLines.setMapVisible(UtilsArmG.getMapFromStr(str));
+            //String str = node.get("viewLinesStr", "");
+            SeriesLines.setMapVisible(UtilsArmG.getMapVisibleFromStr(node.get("viewLinesStr", "")));
+            SeriesLines.setMapColorLines(UtilsArmG.getMapColorFromStr(node.get("colorLinesStr", "")));
         }
 //        ChartPanelArm.setMapViewLines(hm);
     }

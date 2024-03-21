@@ -22,6 +22,9 @@ import org.threeten.bp.Duration;
 import org.threeten.bp.LocalDateTime;
 
 import javax.swing.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -371,83 +374,144 @@ public class InfoPanel extends JPanel {
         if (hh > prefSizeHeight) prefSizeHeight =  hh + 10;
     }
 
+    private Color selectColor(final XYItemRenderer renderer, final int index) {
+
+        final JColorChooser chooser = new JColorChooser();
+        chooser.getSelectionModel().addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if (((Color)renderer.getSeriesPaint(index)).getRGB() != chooser.getColor().getRGB()) {
+                    renderer.setSeriesPaint(index, chooser.getColor());
+                    repaint();
+                    WeightBlocks.setModified(true);
+                }
+            }
+        });
+        chooser.setColor((Color)renderer.getSeriesPaint(index));
+        AbstractColorChooserPanel[] panels = chooser.getChooserPanels();
+        for (AbstractColorChooserPanel panel : panels) {
+            if (panel.getDisplayName().equals("RGB")) {
+                //  changeH2B(panel.getComponents());
+                JOptionPane.showOptionDialog(
+                        SwingUtilities.getAncestorOfClass(JPanel.class, this), panel,"выбор цвета линии",
+                        JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+            }
+        }
+        return chooser.getColor();
+    }
+
+    private void setColorLine() {
+        if (keySelectedLine != null && chartArm != null) {
+            CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
+            for (Object ob : cdPlot.getSubplots()) {
+                XYPlot subplot = (XYPlot) ob;
+                XYDataset ds = subplot.getDataset(0);
+                XYItemRenderer rend = subplot.getRenderer();
+                for (int i = 0; i < subplot.getSeriesCount(); i++) {
+                    if (ds instanceof XYSeriesCollection) {
+                        XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
+                        LineKeys key = (LineKeys) ser.getKey();
+                        if (key == keySelectedLine
+                                && key != LineKeys.MAP_DIRECT
+                                && key != LineKeys.MAP_LINE
+                                && !key.getName().contains("Lim")
+                                && key != LineKeys.SPEED_MAX        //  постоянные ограничения
+                                && key != LineKeys.PROFILE
+                                && key != LineKeys.PROFILE_DIRECT
+                                && key != LineKeys.POSITION
+                                && key != LineKeys.WEAK_FIELD) {
+                            Color color = selectColor(rend, i);
+                            if (color != null)
+                                SeriesLines.getMapColorLines().put(key.getName(), color.getRGB());
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * выполняем при двойном клике на инфо-панели
      */
     private void doubleClickInfoPan(MouseEvent event) {
-
-        invertViewLines();
-
-        // на дискретном сигнале перемещаемся на начало следующего
-        if (/*event.isControlDown() &&*/ idSelectedSignal != -1) {
-            nextSignal(idSelectedSignal);
-            chartArm.setRowHexTab();
+        if (event.isControlDown()) {
+            setColorLine();
         }
-        // на сигнале задач
-        if (idSelectedTask != -1 && titleSelectedTask != null) {
-            nextTask(idSelectedTask, titleSelectedTask);
-            chartArm.setRowHexTab();
-        }
-        // на заголовке сворачиваем-разворачиваем линии заголовка
-        if (idSelectedTitle != -1) {
-            if (chartArm != null) {
-                CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot)chartArm.getXYPlot();
-                List subplotsList = cdPlot.getSubplots();
-                XYPlot subplot = (XYPlot) subplotsList.get(idSelectedTitle + 1);
-                String label = subplot.getRangeAxis().getLabel();
-                SeriesLines seriesLines = chartDataset.getSeriesLines();
-                if (label.equals(VOLTAGE_CS_LABEL)) subplot.setWeight(getWeight_voltage_cs(true));
-                if (label.equals(VOLTAGE_ENGINE_LABEL)) subplot.setWeight(getWeight_voltage(true));
+        else {
+
+            invertViewLines();
+
+            // на дискретном сигнале перемещаемся на начало следующего
+            if (/*event.isControlDown() &&*/ idSelectedSignal != -1) {
+                nextSignal(idSelectedSignal);
+                chartArm.setRowHexTab();
+            }
+            // на сигнале задач
+            if (idSelectedTask != -1 && titleSelectedTask != null) {
+                nextTask(idSelectedTask, titleSelectedTask);
+                chartArm.setRowHexTab();
+            }
+            // на заголовке сворачиваем-разворачиваем линии заголовка
+            if (idSelectedTitle != -1) {
+                if (chartArm != null) {
+                    CombinedDomainXYPlot cdPlot = (CombinedDomainXYPlot) chartArm.getXYPlot();
+                    List subplotsList = cdPlot.getSubplots();
+                    XYPlot subplot = (XYPlot) subplotsList.get(idSelectedTitle + 1);
+                    String label = subplot.getRangeAxis().getLabel();
+                    SeriesLines seriesLines = chartDataset.getSeriesLines();
+                    if (label.equals(VOLTAGE_CS_LABEL)) subplot.setWeight(getWeight_voltage_cs(true));
+                    if (label.equals(VOLTAGE_ENGINE_LABEL)) subplot.setWeight(getWeight_voltage(true));
 //                if (label.equals(VOLTAGE_LABEL_2)) subplot.setWeight(getWeight_voltage2(true));
 //                if (label.equals(VOLTAGE_LABEL_3)) subplot.setWeight(getWeight_voltage3(true));
 //                if (label.equals(VOLTAGE_LABEL_4)) subplot.setWeight(getWeight_voltage4(true));
-                if (label.equals(AMPERAGE_COMMON_LABEL)) subplot.setWeight(getWeight_amperage_common(true));
-                if (label.equals(AMPERAGE_ANCHOR_LABEL)) subplot.setWeight(getWeight_amperage_anchor(true));
-                if (label.equals(AMPERAGE_EXCITATION_LABEL)) subplot.setWeight(getWeight_amperage_excitation(true));
-                if (label.equals(AMPERAGE_ENGINE_LABEL)) subplot.setWeight(getWeight_amperage_engine(true));
-                if (label.equals(AMPERAGE_LABEL)) subplot.setWeight(getWeight_amperage(true));
+                    if (label.equals(AMPERAGE_COMMON_LABEL)) subplot.setWeight(getWeight_amperage_common(true));
+                    if (label.equals(AMPERAGE_ANCHOR_LABEL)) subplot.setWeight(getWeight_amperage_anchor(true));
+                    if (label.equals(AMPERAGE_EXCITATION_LABEL)) subplot.setWeight(getWeight_amperage_excitation(true));
+                    if (label.equals(AMPERAGE_ENGINE_LABEL)) subplot.setWeight(getWeight_amperage_engine(true));
+                    if (label.equals(AMPERAGE_LABEL)) subplot.setWeight(getWeight_amperage(true));
 //                if (label.equals(AMPERAGE_LABEL_3)) subplot.setWeight(getWeight_amperage3(true));
 //                if (label.equals(AMPERAGE_LABEL_4)) subplot.setWeight(getWeight_amperage4(true));
-                if (label.equals(CONSUMPTION_LABEL)) subplot.setWeight(getWeight_consumption(true));
-                if (label.equals(POWER_LABEL)) subplot.setWeight(getWeight_power(true));
-                if (label.equals(TAIL_LABEL)) subplot.setWeight(getWeight_tail(true));
-                //if (label.equals(MODEM_LABEL)) subplot.setWeight(subplot.getWeight() > 1 ? 1 : seriesLines.getW_modem());
-                if (label.equals(PRESS_LABEL)) subplot.setWeight(getWeight_press(true));
-                if (label.equals(SPEED_LABEL)) subplot.setWeight(getWeight_speed(true));
-                if (label.equals(MAP_LABEL)) subplot.setWeight(getWeight_map(true));
-                if (label.equals(PROF_LABEL)) subplot.setWeight(getWeight_prof(true));
-                if (label.equals(POSITION_LABEL)) subplot.setWeight(getWeight_position(true));
-                if (label.equals(ALSN_LABEL)) subplot.setWeight(getWeight_alsn(true));
-                if (label.equals(ALSN_BR_LABEL)) subplot.setWeight(getWeight_alsn_br(true));
-                if (label.equals(ALSN_BR_VL80_LABEL)) subplot.setWeight(getWeight_alsn_br(true));
-                if (label.equals(ALSN_CLUB_LABEL)) subplot.setWeight(getWeight_alsn_club(true));
-                if (label.equals(AUTO_LABEL)) subplot.setWeight(getWeight_auto_drive(true));
-                if (label.equals(PNEUMATIC_LABEL)) subplot.setWeight(getWeight_pneumatic1(true));
-                if (label.equals(PNEUMATIC2_LABEL)) subplot.setWeight(getWeight_pneumatic2(true));
-                if (label.equals(PNEUMATIC_USAVP_LABEL)) subplot.setWeight(getWeight_pneumatic_usavp(true));
-                if (label.equals(UATL_LABEL)) subplot.setWeight(getWeight_uatl(true));
-                if (label.equals(KM130_LABEL)) subplot.setWeight(getWeight_km130(true));
-                if (label.equals(KKM_S5K_LABEL)) subplot.setWeight(getWeight_kkm(true));
-                if (label.equals(KKM_KZ8_LABEL)) subplot.setWeight(getWeight_kkm_kz8(true));
-                if (label.equals(BHV_LABEL)) subplot.setWeight(getWeight_bhv(true));
-                if (label.equals(KKM_S5K_2_LABEL)) subplot.setWeight(getWeight_kkm2(true));
-                if (label.equals(KKM_VL10_LABEL)) subplot.setWeight(getWeight_kkm_vl10(true));
-                if (label.equals(KKM_S5_LABEL)) subplot.setWeight(getWeight_kkm_s5(true));
-                if (label.equals(VSC_LABEL)) subplot.setWeight(getWeight_vsc(true));
-                if (label.equals(CABIN_LABEL)) subplot.setWeight(getWeight_cabin(true));
-                if (label.equals(MAIN_CONTROL_LABEL)) subplot.setWeight(getWeight_main_control(true));
-                if (label.equals(REV_CONTROL_LABEL)) subplot.setWeight(getWeight_rev_control(true));
-                if (label.equals(SCHEMA_LABEL)) subplot.setWeight(getWeight_schema(true));
-                if (label.equals(KEYS_LABEL)) subplot.setWeight(getWeight_push_key(true));
-                if (label.equals(SIGNALS_LABEL)) subplot.setWeight(getWeight_signals(true));
-                if (label.equals(AUTODIS_LABEL)) subplot.setWeight(getWeight_signals_autodis(true));
-                if (label.equals(SIGN_BHV_LABEL)) subplot.setWeight(getWeight_signals_bhv(true));
-                if (label.equals(SIGN_TED_LABEL)) subplot.setWeight(getWeight_signals_ted(true));
-                if (label.equals(SIGN_TED_S5K_LABEL)) subplot.setWeight(getWeight_signals_ted_s5k(true));
-                if (label.equals(SIGN_LINK_LABEL)) subplot.setWeight(getWeight_signals_link(true));
-                WeightBlocks.setModified(true);
+                    if (label.equals(CONSUMPTION_LABEL)) subplot.setWeight(getWeight_consumption(true));
+                    if (label.equals(POWER_LABEL)) subplot.setWeight(getWeight_power(true));
+                    if (label.equals(TAIL_LABEL)) subplot.setWeight(getWeight_tail(true));
+                    //if (label.equals(MODEM_LABEL)) subplot.setWeight(subplot.getWeight() > 1 ? 1 : seriesLines.getW_modem());
+                    if (label.equals(PRESS_LABEL)) subplot.setWeight(getWeight_press(true));
+                    if (label.equals(SPEED_LABEL)) subplot.setWeight(getWeight_speed(true));
+                    if (label.equals(MAP_LABEL)) subplot.setWeight(getWeight_map(true));
+                    if (label.equals(PROF_LABEL)) subplot.setWeight(getWeight_prof(true));
+                    if (label.equals(POSITION_LABEL)) subplot.setWeight(getWeight_position(true));
+                    if (label.equals(ALSN_LABEL)) subplot.setWeight(getWeight_alsn(true));
+                    if (label.equals(ALSN_BR_LABEL)) subplot.setWeight(getWeight_alsn_br(true));
+                    if (label.equals(ALSN_BR_VL80_LABEL)) subplot.setWeight(getWeight_alsn_br(true));
+                    if (label.equals(ALSN_CLUB_LABEL)) subplot.setWeight(getWeight_alsn_club(true));
+                    if (label.equals(AUTO_LABEL)) subplot.setWeight(getWeight_auto_drive(true));
+                    if (label.equals(PNEUMATIC_LABEL)) subplot.setWeight(getWeight_pneumatic1(true));
+                    if (label.equals(PNEUMATIC2_LABEL)) subplot.setWeight(getWeight_pneumatic2(true));
+                    if (label.equals(PNEUMATIC_USAVP_LABEL)) subplot.setWeight(getWeight_pneumatic_usavp(true));
+                    if (label.equals(UATL_LABEL)) subplot.setWeight(getWeight_uatl(true));
+                    if (label.equals(KM130_LABEL)) subplot.setWeight(getWeight_km130(true));
+                    if (label.equals(KKM_S5K_LABEL)) subplot.setWeight(getWeight_kkm(true));
+                    if (label.equals(KKM_KZ8_LABEL)) subplot.setWeight(getWeight_kkm_kz8(true));
+                    if (label.equals(BHV_LABEL)) subplot.setWeight(getWeight_bhv(true));
+                    if (label.equals(KKM_S5K_2_LABEL)) subplot.setWeight(getWeight_kkm2(true));
+                    if (label.equals(KKM_VL10_LABEL)) subplot.setWeight(getWeight_kkm_vl10(true));
+                    if (label.equals(KKM_S5_LABEL)) subplot.setWeight(getWeight_kkm_s5(true));
+                    if (label.equals(VSC_LABEL)) subplot.setWeight(getWeight_vsc(true));
+                    if (label.equals(CABIN_LABEL)) subplot.setWeight(getWeight_cabin(true));
+                    if (label.equals(MAIN_CONTROL_LABEL)) subplot.setWeight(getWeight_main_control(true));
+                    if (label.equals(REV_CONTROL_LABEL)) subplot.setWeight(getWeight_rev_control(true));
+                    if (label.equals(SCHEMA_LABEL)) subplot.setWeight(getWeight_schema(true));
+                    if (label.equals(KEYS_LABEL)) subplot.setWeight(getWeight_push_key(true));
+                    if (label.equals(SIGNALS_LABEL)) subplot.setWeight(getWeight_signals(true));
+                    if (label.equals(AUTODIS_LABEL)) subplot.setWeight(getWeight_signals_autodis(true));
+                    if (label.equals(SIGN_BHV_LABEL)) subplot.setWeight(getWeight_signals_bhv(true));
+                    if (label.equals(SIGN_TED_LABEL)) subplot.setWeight(getWeight_signals_ted(true));
+                    if (label.equals(SIGN_TED_S5K_LABEL)) subplot.setWeight(getWeight_signals_ted_s5k(true));
+                    if (label.equals(SIGN_LINK_LABEL)) subplot.setWeight(getWeight_signals_link(true));
+                    WeightBlocks.setModified(true);
+                }
+                setWeightTr();
             }
-            setWeightTr();
         }
     }
 

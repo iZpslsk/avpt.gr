@@ -22,6 +22,8 @@ public class SeriesLines {
     private final int precision;  // точность
     private static Map<String, Boolean> mapVisible = new HashMap<String, Boolean>();
     public static final Map<String, Boolean> mapDefVisible = new HashMap<String, Boolean>();
+    public static Map<String, Integer> mapColorLines = new HashMap<String, Integer>();
+    public static Map<String, Integer> mapDefColorLines = new HashMap<String, Integer>();
     // блоки линий
     private final XYSeriesCollection serTrainCollect = new XYSeriesCollection();    // поезд
     private final XYSeriesCollection serVoltageCollect_cs = new XYSeriesCollection();  // напряжение контактной сети
@@ -502,7 +504,8 @@ public class SeriesLines {
     private static void setRenderer(LineKeys key, LineKeys cur_key, int index, XYItemRenderer renderer, Color color, boolean is_visible) {
         if (key == cur_key) {
             setStrokeDef(index, renderer);
-            renderer.setSeriesPaint(index, color);
+            //renderer.setSeriesPaint(index, color);
+            setSeriesColor(renderer, index, key, color);
             setSeriesVisible(renderer, index, key, is_visible);
         }
     }
@@ -700,6 +703,16 @@ public class SeriesLines {
         rend.setSeriesStroke(i, basicStroke);
     }
 
+    private static void setSeriesColor(XYItemRenderer renderer, int index, LineKeys key, Color color) {
+        mapDefColorLines.put(key.getName(), color.getRGB());
+        if (mapColorLines.get(key.getName()) == null) {
+            renderer.setSeriesPaint(index, color);
+        }
+        else {
+            renderer.setSeriesPaint(index, new Color(mapColorLines.get(key.getName())));
+        }
+    }
+
     /**
      * установка видимости линии с сохранением в mapVisible
      * @param renderer -
@@ -789,5 +802,13 @@ public class SeriesLines {
 
     public static void setMapVisible(Map<String, Boolean> mapVisible) {
         SeriesLines.mapVisible = mapVisible;
+    }
+
+    public static Map<String, Integer> getMapColorLines() {
+        return mapColorLines;
+    }
+
+    public static void setMapColorLines(Map<String, Integer> mapColorLines) {
+        SeriesLines.mapColorLines = mapColorLines;
     }
 }

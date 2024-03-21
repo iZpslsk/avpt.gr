@@ -622,7 +622,7 @@ public class UtilsArmG {
      * @param str - исходная строка
      * @return HashMap<String, Boolean>
      */
-    public static HashMap<String, Boolean> getMapFromStr(String str) {
+    public static HashMap<String, Boolean> getMapVisibleFromStr(String str) {
         HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
         String[] pairs = str.split(",");
         for (int i=0; i < pairs.length; i++) {
@@ -632,6 +632,18 @@ public class UtilsArmG {
                 hashMap.put(keyValue[0].trim(), Boolean.valueOf(keyValue[1]));
                 //hashMap.put(trim(keyValue[0]).toString(), Boolean.valueOf(keyValue[1]));
             }
+        }
+        return  hashMap;
+    }
+
+    public static HashMap<String, Integer> getMapColorFromStr(String str) {
+        HashMap<String, Integer> hashMap = new HashMap<String, Integer>();
+        String[] pairs = str.split(",");
+        for (int i=0; i < pairs.length; i++) {
+            String pair = pairs[i];
+            String[] keyValue = pair.split("=");
+            if (keyValue.length > 1)
+                hashMap.put(keyValue[0].trim(), Integer.valueOf(keyValue[1]));
         }
         return  hashMap;
     }

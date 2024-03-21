@@ -76,6 +76,12 @@ public class HelpDialog {
                     "<i>одной линии</i> - " +
                     "<font %1$s>Double click на названии линии на инфо-панели</font>" +
                     "</li>" +
+
+                    "<h3><font color=%2$s> <u>Выбор цвета</u> </h3>" +
+                    "<li>" +
+                    "<i>линии</i> - " +
+                    "<font %1$s>[CTRL]+Double click на названии линии на инфо-панели</font>" +
+                    "</li>" +
 //                    "<li>" +
 //                    "<i> всех линий блока </i> - " +
 //                    "<font %1$s>Double click+[CTRL] на названии линии на инфо-панели </font>" +

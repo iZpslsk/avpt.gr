@@ -1163,6 +1163,7 @@ public class ChartArm extends JFreeChart {
     @SuppressWarnings("unchecked")
     public void setViewLines(boolean isDef) {
         Map<String, Boolean> mapVisible = isDef ? SeriesLines.mapDefVisible : SeriesLines.getMapVisible();
+        Map<String, Integer> mapColorLines = isDef ? SeriesLines.mapDefColorLines : SeriesLines.getMapColorLines();
         if (mapVisible.isEmpty()) return;
         for (Object ob : plotCombine.getSubplots()) {
             XYPlot subplot = (XYPlot) ob;
@@ -1184,6 +1185,21 @@ public class ChartArm extends JFreeChart {
                     XYSeries ser = ((XYSeriesCollection) ds).getSeries(i);
                     LineKeys key = (LineKeys)ser.getKey();
                     Boolean isView = mapVisible.get(((LineKeys)ser.getKey()).getName());
+
+                    // цвет линии
+                    if (key != LineKeys.SPEED_MAX
+                            && key != LineKeys.MAP_LINE
+                            && key != LineKeys.POSITION
+                            && key != LineKeys.POSITION_S5k
+                            && key != LineKeys.POSITION_TASK_AUTO
+                            && key != LineKeys.WEAK_FIELD
+                            && key != LineKeys.PROFILE
+                            && key != LineKeys.PROFILE_DIRECT) {
+                        if (mapColorLines.get(key.getName()) != null) {
+                            int rgb = mapColorLines.get(key.getName());
+                            rend.setSeriesPaint(i, new Color(rgb));
+                        }
+                    }
 
                     if (key != LineKeys.MAP_DIRECT && key != LineKeys.MAP_LINE && key != LineKeys.PROFILE && key != LineKeys.PROFILE_DIRECT) {
                         rend.setSeriesVisible(i, isView, true);

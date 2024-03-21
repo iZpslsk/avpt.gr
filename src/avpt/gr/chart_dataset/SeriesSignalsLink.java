@@ -20,7 +20,7 @@ public class SeriesSignalsLink extends SeriesSignals {
         switch (key) {
             case KEY_MAIN_CHANNEL : color = new Color(0xF6F6AA);
                 break;
-            case KEY_ADDITIONAL_CHANNEL : color = new Color(0xCFF352);
+            case KEY_ADDITIONAL_CHANNEL : color = new Color(0xA7F34F);
                 break;
         }
         return color;
