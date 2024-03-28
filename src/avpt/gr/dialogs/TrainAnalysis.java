@@ -621,10 +621,8 @@ public class TrainAnalysis extends JDialog {
      */
     private JButton addButton(LocalAbstractAction action, boolean isBorder) {
         JButton btn = toolBar.add(action);
-        if (!isBorder) {
-            btn.setBorderPainted(false);
-            btn.setContentAreaFilled(false);
-        }
+        btn.setBorderPainted(isBorder);
+        btn.setContentAreaFilled(isBorder);
         return btn;
     }
 
