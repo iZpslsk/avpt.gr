@@ -18,7 +18,8 @@ public class AboutDialog extends JDialog {
         setResizable(false);
         // логотип
         JLabel logoLabel = new JLabel();
-        logoLabel.setIcon(new ImageIcon(getClass().getResource("/avpt/gr/images/logo.png")));
+        logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        logoLabel.setIcon(new ImageIcon(getClass().getResource("/avpt/gr/images/logo_avp.png")));
         add(logoLabel, BorderLayout.NORTH);
         // информация
         JLabel centralLabel = new JLabel("<html><h3>ООО \"АВП технология\"</h3><h3>" + TITLE_ARM + "</h3>" +
