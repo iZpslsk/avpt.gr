@@ -214,8 +214,8 @@ public class TrainAnalysis extends JDialog {
     private FileChooserRu makeFileChooser() {
         FileChooserRu fileChooser = new FileChooserRu();
         fileChooser.setPreferredSize(new Dimension(500, 480));
-        Action details = fileChooser.getActionMap().get("viewTypeDetails");
-        details.actionPerformed(null);
+        //Action details = fileChooser.getActionMap().get("viewTypeDetails");
+        //details.actionPerformed(null);
         fileChooser.setFileFilter(new FileNameExtensionFilter("Файлы поездок", "img", "dat", "bin"));
         fileChooser.setDialogTitle("Открыть файл поездки");
         fileChooser.setCurrentDirectory(new File(PREF.get("curDir", ".")));
@@ -253,7 +253,7 @@ public class TrainAnalysis extends JDialog {
         public void actionPerformed(ActionEvent e) {
 //            isMaximize = false;
 //            isResize = false;
-            openFileTrain(isTime);
+            openFileTrain(TrainAnalysis.this, isTime);
             if (trainAnalysisSlave != null) {
                 trainAnalysisSlave.dispose();
                 trainAnalysisSlave = null;
@@ -275,7 +275,7 @@ public class TrainAnalysis extends JDialog {
         @Override
         public void actionPerformed(ActionEvent e) {
             trainAnalysisSlave = new TrainAnalysis(owner, false, TrainAnalysis.this);
-            if (trainAnalysisSlave.openFileTrain(isTime) == JFileChooser.APPROVE_OPTION ) {
+            if (trainAnalysisSlave.openFileTrain(TrainAnalysis.this, isTime) == JFileChooser.APPROVE_OPTION ) {
                 trainAnalysisSlave.setVisible(true);
                 trainAnalysisSlave.getOpenItemSlave().setEnabled(false);
                 trainAnalysisSlave.getOpenItem().setEnabled(false);
@@ -761,9 +761,9 @@ public class TrainAnalysis extends JDialog {
      * открывает файл поездки с помощью JFileChooser
      * @return - JFileChooser.*_OPTION
      */
-    public int openFileTrain(boolean isTime) {
+    public int openFileTrain(Window owner, boolean isTime) {
         String mess_error = "Неизвестный формат поездки!\nВозможно данный тип локомотива не поддерживается!";
-        int result = fileChooser.showOpenDialog(TrainAnalysis.this);
+        int result = fileChooser.showOpenDialog(owner);
         if (result == JFileChooser.APPROVE_OPTION) {
           infoTrainsDialog = null;
           fileName = fileChooser.getSelectedFile().getAbsolutePath();

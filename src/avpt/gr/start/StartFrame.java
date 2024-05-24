@@ -97,7 +97,7 @@ public class StartFrame extends JFrame {
 							@Override
 							public void run() {
                                     TrainAnalysis trainAnalysis = new TrainAnalysis(StartFrame.this, false, null);
-                                    if (trainAnalysis.openFileTrain(true) == JFileChooser.APPROVE_OPTION ) {
+                                    if (trainAnalysis.openFileTrain(StartFrame.this, true) == JFileChooser.APPROVE_OPTION ) {
                                         trainAnalysis.setVisible(true);
                                         SwingUtilities.updateComponentTreeUI(trainAnalysis);
                                     }
