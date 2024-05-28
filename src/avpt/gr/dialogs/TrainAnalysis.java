@@ -121,6 +121,7 @@ public class TrainAnalysis extends JDialog {
                     UtilsArmG.saveWinBoundOptimal(PREF);
                 }
                 PREF.putBoolean("shift", isShift);
+                PREF.putInt("pos_hor", chartPanelArm.getHorizontalSplitPos());
                 // закрываем оба окна
                 if (trainAnalysisSlave != null) {
                     trainAnalysisSlave.dispose();
@@ -633,13 +634,17 @@ public class TrainAnalysis extends JDialog {
      */
     private void addChartPanelArm(ChartDataset chartDataset, JPanel hexTablePan) {
         int curVerticalSplitPos = -1; // текущая позиция сплиттера для chartPanelArm
+        int curHorizontalSplitPos = -1;
         if (chartPanelArm != null) {
             curVerticalSplitPos = chartPanelArm.getVerticalSplitPos();
+            curHorizontalSplitPos = chartPanelArm.getHorizontalSplitPos();
             this.remove(chartPanelArm);
         }
         chartPanelArm = new ChartPanelArm(chartDataset, hexTablePan);
         // восстановление текущей позиции сплиттера для нового chartPanelArm
         chartPanelArm.setVerticalSplitPos(curVerticalSplitPos);
+        //chartPanelArm.setHorizontalSplitPos(curHorizontalSplitPos);
+        chartPanelArm.setHorizontalSplitPos(PREF.getInt("pos_hor", curHorizontalSplitPos));
         this.add(chartPanelArm, BorderLayout.CENTER);
         SwingUtilities.updateComponentTreeUI(this);
         chartPanelArm.initHeight();

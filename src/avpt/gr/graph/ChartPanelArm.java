@@ -29,6 +29,7 @@ import static avpt.gr.common.WeightBlocks.*;
  */
 public class ChartPanelArm extends JPanel {
     private final JSplitPane splitPanVertical;
+    private final JSplitPane splitPanHorizontal;
     private final ChartArm chartArm;
     private final ChartPanel chartPanel;
     private final ScrollBarArm scrollBar;
@@ -95,8 +96,8 @@ public class ChartPanelArm extends JPanel {
                 hexTab.setVisible(splitPanVertical.getDividerLocation() > 30);
             }
         });
-        JSplitPane splitPanHorisontal = makeSplitPanHorisontal(splitPanVertical, infoPanel);
-        add(splitPanHorisontal, BorderLayout.CENTER);
+        splitPanHorizontal = makeSplitPanHorisontal(splitPanVertical, infoPanel);
+        add(splitPanHorizontal, BorderLayout.CENTER);
         setKeyEventMoveCursor();
 
         // событие смены выделенной строки таблицы
@@ -371,6 +372,10 @@ public class ChartPanelArm extends JPanel {
         return splitPanVertical.getDividerLocation();
     }
 
+    public int getHorizontalSplitPos() {
+        return splitPanHorizontal.getDividerLocation();
+    }
+
     /**
      * установка позиции вертикального сплиттера
      * @param pos - позиция сплиттера
@@ -385,6 +390,11 @@ public class ChartPanelArm extends JPanel {
         splitPanVertical.setOneTouchExpandable(true);
         if (isClose)
             splitPanVertical.setDividerLocation(0.0d);
+    }
+
+    public void setHorizontalSplitPos(int pos) {
+        splitPanHorizontal.setDividerLocation(pos);
+        splitPanHorizontal.setOneTouchExpandable(true);
     }
 
     /**
