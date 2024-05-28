@@ -703,13 +703,11 @@ public class TrainAnalysis extends JDialog {
      */
     private void remakeChartDataset(boolean isTime, boolean isAnimation, int precision) {
         if (arrBlock32 == null) return;
-        JDialog owner = isAnimation ? this : null;
+      //  JDialog owner = isAnimation ? this : null;
         try {
             ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(owner, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime, precision);
             hexTabToChartPan(chartDataset);
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -769,7 +767,7 @@ public class TrainAnalysis extends JDialog {
           fileName = fileChooser.getSelectedFile().getAbsolutePath();
           try {
               UtilsArmG.checkSizeFile(fileName);
-              ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this, fileName, isShift, this.isTime = isTime, 1);
+              ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(this.owner, fileName, isShift, this.isTime = isTime, 1);
               arrBlock32 = chartDataset.getArrBlock32();
               hexTabToChartPan(chartDataset);
 

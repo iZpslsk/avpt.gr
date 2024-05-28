@@ -20,7 +20,7 @@ public class LoadAnimate extends JDialog {
         private String fileName;
         private JDialog load;
         private boolean isShift;
-        private JDialog owner;
+        private Window owner;
         private boolean isVisible = true;
         private ArrBlock32 arrBlock32;
         private int nBlStart;
@@ -55,7 +55,7 @@ public class LoadAnimate extends JDialog {
          * @param isShift - есть ли сдвижка
          * @param precision - точность 1... .
          */
-        private Worker(JDialog owner, String fileName, JDialog load, boolean isShift, boolean isTime, int precision) {
+        private Worker(Window owner, String fileName, JDialog load, boolean isShift, boolean isTime, int precision) {
             if (load != null)
                 SwingUtilities.updateComponentTreeUI(load);
             this.fileName = fileName;
@@ -93,7 +93,7 @@ public class LoadAnimate extends JDialog {
          * @param isShift - есть ли сдвижка
          * @param precision - точность 1... .
          */
-        private Worker(JDialog owner, ArrBlock32 arrBlock32, JDialog load, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision) {
+        private Worker(JFrame owner, ArrBlock32 arrBlock32, JDialog load, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision) {
             if (load != null)
                 SwingUtilities.updateComponentTreeUI(load);
             this.load = load;
@@ -162,7 +162,7 @@ public class LoadAnimate extends JDialog {
         }
     }
 
-    private LoadAnimate(JDialog owner, String caption) {
+    private LoadAnimate(JFrame owner, String caption) {
         super(owner, true);
         setResizable(false);
         JLabel gifLabel = new JLabel();
@@ -210,11 +210,11 @@ public class LoadAnimate extends JDialog {
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public static ChartDataset execMakeArrBl32(JDialog owner, String fileName, boolean isShift, boolean isTime, int precision)
+    public static ChartDataset execMakeArrBl32(Window owner, String fileName, boolean isShift, boolean isTime, int precision)
             throws ExecutionException, InterruptedException {
         LoadAnimate dialog = null;
         if (owner != null)
-            dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(fileName));
+            dialog = new LoadAnimate((JFrame)owner, "файл: " + UtilsArmG.getShortNameFile(fileName));
         Worker worker = new Worker(owner, fileName, dialog, isShift, isTime, precision);
         worker.execute();
         if (dialog != null) {
@@ -253,12 +253,12 @@ public class LoadAnimate extends JDialog {
      * @throws ExecutionException -
      * @throws InterruptedException -
      */
-    public static ChartDataset execMakeArrBl32(JDialog owner, ArrBlock32 arrBlock32, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision)
+    public static ChartDataset execMakeArrBl32(Window owner, ArrBlock32 arrBlock32, boolean isShift, int nBlStart, int nBlEnd, boolean isTime, int precision)
             throws ExecutionException, InterruptedException {
         LoadAnimate dialog = null;
         if (owner != null)
-            dialog = new LoadAnimate(owner, "файл: " + UtilsArmG.getShortNameFile(arrBlock32.getFileName()));
-        Worker worker = new Worker(owner, arrBlock32, dialog, isShift, nBlStart, nBlEnd, isTime, precision);
+            dialog = new LoadAnimate((JFrame)owner, "файл: " + UtilsArmG.getShortNameFile(arrBlock32.getFileName()));
+        Worker worker = new Worker((JFrame)owner, arrBlock32, dialog, isShift, nBlStart, nBlEnd, isTime, precision);
         worker.execute();
         if (dialog != null) {
             SwingUtilities.updateComponentTreeUI(dialog);
