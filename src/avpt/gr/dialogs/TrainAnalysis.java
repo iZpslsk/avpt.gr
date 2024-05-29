@@ -712,7 +712,9 @@ public class TrainAnalysis extends JDialog {
         try {
             ChartDataset chartDataset = LoadAnimate.execMakeArrBl32(owner, arrBlock32, isShift, 0, arrBlock32.size() - 1, isTime, precision);
             hexTabToChartPan(chartDataset);
-        } catch (ExecutionException | InterruptedException e) {
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
